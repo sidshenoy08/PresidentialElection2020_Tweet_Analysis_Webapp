@@ -79,7 +79,25 @@ print(trump_df.groupby('user_id').first().loc[:, ('user_name', 'user_followers_c
 
 print(trump_df.groupby('country')['tweet_id'].count().sort_values(ascending=False))
 
-trump_df.dropna(inplace=True)
+trump_df.info()
+
+# drop irrelevant columns
+trump_df.drop(['state_code', 'user_location'], axis=1, inplace=True)
+
+# replace null descriptions with a static string
+trump_df['user_description'].fillna("No user description", inplace=True)
+
+# replace null usernames with user screen names
+trump_df['user_name'].fillna(trump_df['user_screen_name'], inplace=True)
+
+# replace null source values using the ffill method
+trump_df['source'].fillna(method='ffill', inplace=True)
+
+trump_df.info()
+
+trump_df.dropna(subset=['lat', 'long', 'city', 'country', 'continent', 'state'], inplace=True)
+
+trump_df.head()
 
 trump_df.info()
 
@@ -113,23 +131,17 @@ trump_users_df[trump_users_df.duplicated()]
 
 trump_users_df['user_id'].nunique()
 
-trump_locations_df = trump_df[['lat', 'long', 'city', 'state', 'state_code', 'country', 'continent']]
+trump_locations_df = trump_df[['lat', 'long', 'city', 'state', 'country', 'continent']]
 
 trump_locations_df.head()
 
 trump_locations_df.info()
 
-# drop state_code as it has no practical use
-trump_locations_df.drop(['state_code'], axis=1, inplace=True)
-
 trump_locations_df[['lat', 'long']].nunique()
 
-trump_tweets_df = trump_df[['tweet_id', 'tweet', 'likes', 'retweet_count', 'source', 'created_at', 'collected_at', 'user_id', 'user_location', 'lat', 'long']]
+trump_tweets_df = trump_df[['tweet_id', 'tweet', 'likes', 'retweet_count', 'source', 'created_at', 'collected_at', 'user_id', 'lat', 'long']]
 
 trump_tweets_df.loc[:, "tweet_about"] = "Trump"
-
-# drop user_location as lat and long are parsed from this field
-trump_tweets_df.drop(['user_location'], axis=1, inplace=True)
 
 trump_tweets_df = trump_tweets_df[['tweet_id', 'tweet', 'likes', 'retweet_count', 'source', 'created_at', 'collected_at', 'tweet_about', 'user_id', 'lat', 'long']]
 
@@ -151,7 +163,21 @@ biden_df.describe()
 
 print("For user_followers_count, Mean: {0}, Standard Deviation: {1}, Min: {2}, Max: {3}".format(biden_df['user_followers_count'].mean(), biden_df['user_followers_count'].std(), biden_df['user_followers_count'].min(), biden_df['user_followers_count'].max()))
 
-biden_df.dropna(inplace=True)
+# drop irrelevant columns
+biden_df.drop(['state_code', 'user_location'], axis=1, inplace=True)
+
+# replace null descriptions with a static description
+biden_df['user_description'].fillna("No user description", inplace=True)
+
+# replace null usernames with user screen names
+biden_df['user_name'].fillna(biden_df['user_screen_name'], inplace=True)
+
+# replace null source values using the ffill method
+biden_df['source'].fillna(method='ffill', inplace=True)
+
+biden_df.info()
+
+biden_df.dropna(subset=['lat', 'long', 'city', 'country', 'continent', 'state'], inplace=True)
 
 biden_df.info()
 
@@ -167,19 +193,13 @@ biden_users_df.info()
 
 biden_users_df['user_id'].nunique()
 
-biden_locations_df = biden_df[['lat', 'long', 'city', 'state', 'state_code', 'country', 'continent']]
+biden_locations_df = biden_df[['lat', 'long', 'city', 'state', 'country', 'continent']]
 
 biden_locations_df.info()
 
-# drop state_code as it has no practical use
-biden_locations_df.drop(['state_code'], axis=1, inplace=True)
-
 biden_locations_df[['lat', 'long']].nunique()
 
-biden_tweets_df = biden_df[['tweet_id', 'tweet', 'likes', 'retweet_count', 'source', 'created_at', 'collected_at', 'user_id', 'user_location', 'lat', 'long']]
-
-# drop user_location as lat and long are parsed from this field
-biden_tweets_df.drop(['user_location'], axis=1, inplace=True)
+biden_tweets_df = biden_df[['tweet_id', 'tweet', 'likes', 'retweet_count', 'source', 'created_at', 'collected_at', 'user_id', 'lat', 'long']]
 
 biden_tweets_df.loc[:, "tweet_about"] = "Biden"
 
