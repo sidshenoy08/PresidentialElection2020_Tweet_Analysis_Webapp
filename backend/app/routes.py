@@ -1,8 +1,5 @@
 from flask import Flask
+from app.modules.homepage.routes import homepage_bp
 
-app = Flask(__name__)
-
-@app.route('/')
-def home():
-    return 'Welcome to the Election Tweet Analysis App!'
-
+def register_routes(app: Flask):
+    app.register_blueprint(homepage_bp, url_prefix='/api/homepage')
