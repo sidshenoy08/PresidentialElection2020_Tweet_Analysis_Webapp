@@ -1,7 +1,7 @@
 # from app.db import get_db
 from app.db import db
 # from sqlalchemy import text
-from app.models import Tweet
+from app.models import Tweet, User
 from sqlalchemy import func
 
 class HomepageRepository:
@@ -16,31 +16,29 @@ class HomepageRepository:
             'total_tweets': total_tweets,
             'unique_users': unique_users
         }
-
+    
 
     @staticmethod
     def get_trending_candidates(limit=5):
-        query = """
-        SELECT candidate, COUNT(*) AS tweet_count
-        FROM tweets
-        WHERE candidate IS NOT NULL
-        GROUP BY candidate
-        ORDER BY tweet_count DESC
-        LIMIT %s;
-        """
-        db = get_db()
-        res = db.execute(query, (limit,)).fetchall()
+        res = (
+            db.session.query(Tweet.tweet_about, func.count(Tweet.tweet_id).label('tweet_count'))
+            .filter(Tweet.tweet_about.isnot(None))
+            .group_by(Tweet.tweet_about)
+            .order_by(db.desc('tweet_count'))
+            .limit(limit)
+            .all()
+        )
         return res
 
     @staticmethod
     def get_most_active_users(limit=5):
-        query = """
-        SELECT user_id, username, COUNT(*) AS tweet_count
-        FROM tweets
-        GROUP BY user_id, username
-        ORDER BY tweet_count DESC
-        LIMIT %s;
-        """
-        db = get_db()
-        res = db.execute(query, (limit,)).fetchall()
+        res = (
+            db.session.query(Tweet.user_id, User.user_name, func.count(Tweet.tweet_id).label('tweet_count'))
+            .join(User, Tweet.user_id == User.user_id)
+            .group_by(Tweet.user_id, User.user_name)
+            .order_by(db.desc('tweet_count'))
+            .limit(limit)
+            .all()
+        )
         return res
+

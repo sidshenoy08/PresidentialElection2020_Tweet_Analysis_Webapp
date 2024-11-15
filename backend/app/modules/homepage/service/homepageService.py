@@ -8,8 +8,10 @@ class HomepageService:
 
     @staticmethod
     def get_trending_candidates(limit=5): #TODO change laater to pageSize
-        return HomepageRepository.get_trending_candidates(limit)
+        res = HomepageRepository.get_trending_candidates(limit)
+        return [row._asdict() for row in res]
 
     @staticmethod
     def get_most_active_users(limit=5):
-        return HomepageRepository.get_most_active_users(limit)
+        res = HomepageRepository.get_most_active_users(limit)
+        return [row._asdict() for row in res]
