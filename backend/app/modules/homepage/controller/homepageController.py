@@ -5,7 +5,9 @@ class HomepageController:
 
     @staticmethod
     def get_total_tweets_overview():
-        data = HomepageService.get_total_tweets_overview()
+        start_date_str = request.args.get('start_date') 
+        end_date_str = request.args.get('end_date') 
+        data = HomepageService.get_total_tweets_overview(start_date_str, end_date_str)
         return jsonify(data), 200
 
     @staticmethod
@@ -23,4 +25,3 @@ class HomepageController:
         order = request.args.get("order", "desc")
         data = HomepageService.get_most_active_users(limit, page, sort_by, order)
         return jsonify(data), 200
-

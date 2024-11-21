@@ -2,6 +2,7 @@
 from app.db import db
 # from sqlalchemy import text
 from app.models import Tweet, User
+from datetime import datetime
 from sqlalchemy import func, desc, asc
 
 class HomepageRepository:
@@ -9,13 +10,23 @@ class HomepageRepository:
         pass
 
     @staticmethod
-    def get_total_tweets_overview():
-        total_tweets = db.session.query(func.count(Tweet.tweet_id)).scalar()
-        unique_users = db.session.query(func.count(func.distinct(Tweet.user_id))).scalar()
-        return {
-            'total_tweets': total_tweets,
-            'unique_users': unique_users
-        }
+    def get_total_tweets_overview(start_date=None, end_date=None):
+        total_tweets_query = db.session.query(func.count(Tweet.tweet_id)).filter(Tweet.tweet_about.isnot(None))
+        if start_date:
+            total_tweets_query = total_tweets_query.filter(Tweet.created_at >= start_date)
+        if end_date:
+            total_tweets_query = total_tweets_query.filter(Tweet.created_at <= end_date)
+        total_tweets = total_tweets_query.scalar()
+
+        unique_users_query = db.session.query(func.count(func.distinct(Tweet.user_id))).filter(Tweet.tweet_about.isnot(None))
+        if start_date:
+            unique_users_query = unique_users_query.filter(Tweet.created_at >= start_date)
+        if end_date:
+            unique_users_query = unique_users_query.filter(Tweet.created_at <= end_date)
+        unique_users = unique_users_query.scalar()
+
+        return {'total_tweets': total_tweets, 'unique_users': unique_users}
+
     
 
     @staticmethod

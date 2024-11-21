@@ -1,10 +1,13 @@
 from app.modules.homepage.repository.homepageRepo import HomepageRepository
+from datetime import datetime
 
 class HomepageService:
 
     @staticmethod
-    def get_total_tweets_overview():
-        return HomepageRepository.get_total_tweets_overview()
+    def get_total_tweets_overview(start_date_str=None, end_date_str=None):
+        start_date = datetime.strptime(start_date_str, "%Y-%m-%d") if start_date_str else None
+        end_date = datetime.strptime(end_date_str, "%Y-%m-%d") if end_date_str else None
+        return HomepageRepository.get_total_tweets_overview(start_date, end_date)
 
     @staticmethod
     def get_trending_candidates(limit=5, sort_by="tweet_count", order="desc"): 
