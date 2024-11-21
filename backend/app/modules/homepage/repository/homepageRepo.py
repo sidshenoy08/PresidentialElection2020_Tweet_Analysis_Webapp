@@ -19,12 +19,14 @@ class HomepageRepository:
     
 
     @staticmethod
-    def get_trending_candidates(limit=5):
+    def get_trending_candidates(limit=5, sort_by="tweet_count", order="desc"):
+        sort_order = desc if order == "desc" else asc
+        sort_column = Tweet.tweet_about if sort_by == "candidate" else func.count(Tweet.tweet_id)
         res = (
             db.session.query(Tweet.tweet_about, func.count(Tweet.tweet_id).label('tweet_count'))
             .filter(Tweet.tweet_about.isnot(None))
             .group_by(Tweet.tweet_about)
-            .order_by(db.desc('tweet_count'))
+            .order_by(sort_order(sort_column))
             .limit(limit)
             .all()
         )

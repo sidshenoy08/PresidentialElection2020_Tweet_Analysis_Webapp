@@ -10,7 +10,9 @@ class HomepageController:
 
     @staticmethod
     def get_trending_candidates():
-        data = HomepageService.get_trending_candidates()
+        sort_by = request.args.get("sort_by", "tweet_count")
+        order = request.args.get("order", "desc")
+        data = HomepageService.get_trending_candidates(limit=5, sort_by=sort_by, order=order)
         return jsonify(data), 200
 
     @staticmethod

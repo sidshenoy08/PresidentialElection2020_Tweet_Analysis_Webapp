@@ -7,8 +7,8 @@ class HomepageService:
         return HomepageRepository.get_total_tweets_overview()
 
     @staticmethod
-    def get_trending_candidates(limit=5): #TODO change laater to pageSize
-        res = HomepageRepository.get_trending_candidates(limit)
+    def get_trending_candidates(limit=5, sort_by="tweet_count", order="desc"): 
+        res = HomepageRepository.get_trending_candidates(limit, sort_by, order)
         return [row._asdict() for row in res]
 
     @staticmethod
