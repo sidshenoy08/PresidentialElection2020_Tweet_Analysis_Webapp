@@ -1,4 +1,4 @@
-from flask import jsonify
+from flask import jsonify, request
 from app.modules.homepage.service.homepageService import HomepageService
 
 class HomepageController:
@@ -15,5 +15,10 @@ class HomepageController:
 
     @staticmethod
     def get_most_active_users():
-        data = HomepageService.get_most_active_users()
+        limit = int(request.args.get("limit", 5))
+        page = int(request.args.get("page", 1))
+        sort_by = request.args.get("sort_by", "tweet_count")
+        order = request.args.get("order", "desc")
+        data = HomepageService.get_most_active_users(limit, page, sort_by, order)
         return jsonify(data), 200
+

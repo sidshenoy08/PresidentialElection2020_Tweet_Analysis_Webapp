@@ -12,6 +12,7 @@ class HomepageService:
         return [row._asdict() for row in res]
 
     @staticmethod
-    def get_most_active_users(limit=5):
-        res = HomepageRepository.get_most_active_users(limit)
+    def get_most_active_users(limit=5, page=1, sort_by="tweet_count", order="desc"):
+        offset = (page-1)*limit
+        res = HomepageRepository.get_most_active_users(limit, offset, sort_by, order)
         return [row._asdict() for row in res]

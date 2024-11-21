@@ -2,7 +2,7 @@
 from app.db import db
 # from sqlalchemy import text
 from app.models import Tweet, User
-from sqlalchemy import func
+from sqlalchemy import func, desc, asc
 
 class HomepageRepository:
     def __init__(self):
@@ -31,12 +31,15 @@ class HomepageRepository:
         return res
 
     @staticmethod
-    def get_most_active_users(limit=5):
+    def get_most_active_users(limit=5, offset=0, sort_by="tweet_count", order="desc"):
+        sort_order = desc if order == "desc" else asc
+        sort_column = func.count(Tweet.tweet_id) if sort_by == "tweet_count" else User.user_name
         res = (
             db.session.query(Tweet.user_id, User.user_name, func.count(Tweet.tweet_id).label('tweet_count'))
             .join(User, Tweet.user_id == User.user_id)
             .group_by(Tweet.user_id, User.user_name)
-            .order_by(db.desc('tweet_count'))
+            .order_by(sort_order(sort_column))
+            .offset(offset)
             .limit(limit)
             .all()
         )
