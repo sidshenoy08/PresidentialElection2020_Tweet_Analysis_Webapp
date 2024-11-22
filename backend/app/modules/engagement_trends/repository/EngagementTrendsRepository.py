@@ -10,7 +10,7 @@ class EngagementTrendsRepository:
     # This method is used to get the days where the engagement is higher than the average engagement by a certain threshold for a given candidate
     # The engagement is calculated by adding the number of likes and retweets for each tweet
     @staticmethod
-    def get_engagement_spike_days(candidate, threshold=1.5):
+    def get_engagement_spike_days(candidate, threshold=1.5, sort_by="date", order="asc"):
         daily_engagement = (
             db.session.query(
                 cast(Tweet.created_at, Date).label('date'),
@@ -24,14 +24,14 @@ class EngagementTrendsRepository:
         average_engagement = db.session.query(
             func.avg(daily_engagement.c.engagement).label('average')
         ).scalar()
-
+        
+        order_by = daily_engagement.c.date if sort_by == "date" else daily_engagement.c.engagement
         spikes = (
             db.session.query(daily_engagement.c.date, daily_engagement.c.engagement)
             .filter(daily_engagement.c.engagement > average_engagement * Decimal(threshold))
-            .order_by(daily_engagement.c.date)
+            .order_by(order_by if order == "asc" else desc(order_by))
             .all()
         )
-
         return spikes
 
     @staticmethod
@@ -49,7 +49,9 @@ class EngagementTrendsRepository:
 
 
     @staticmethod
-    def get_high_volume_days(candidate, limit=5):
+    def get_high_volume_days(candidate, limit=5, sort_by="engagement", order="desc"):
+        order_by = Tweet.created_at if sort_by == "date" else (Tweet.likes + Tweet.retweet_count)
+        ord = desc(order_by) if order == "desc" else order_by
         res = (
             db.session.query(
                 cast(Tweet.created_at, Date).label('date'),
@@ -57,7 +59,7 @@ class EngagementTrendsRepository:
             )
             .filter(Tweet.tweet_about == candidate)
             .group_by(cast(Tweet.created_at, Date))
-            .order_by(desc('engagement'))
+            .order_by(ord)
             .limit(limit)
             .all()
         )
