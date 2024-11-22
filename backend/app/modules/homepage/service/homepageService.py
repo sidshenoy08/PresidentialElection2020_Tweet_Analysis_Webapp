@@ -5,8 +5,16 @@ class HomepageService:
 
     @staticmethod
     def get_total_tweets_overview(start_date_str=None, end_date_str=None):
-        start_date = datetime.strptime(start_date_str, "%Y-%m-%d") if start_date_str else None
-        end_date = datetime.strptime(end_date_str, "%Y-%m-%d") if end_date_str else None
+        try:
+            if start_date_str:
+                start_date = datetime.strptime(start_date_str, "%Y-%m-%d")
+            if end_date_str:
+                end_date = datetime.strptime(end_date_str, "%Y-%m-%d")
+        except ValueError:
+            raise ValueError("Invalid date format. Use YYYY-MM-DD format")
+        
+        if start_date and end_date and start_date > end_date:
+            raise ValueError("Start date cannot be after end date")
         return HomepageRepository.get_total_tweets_overview(start_date, end_date)
 
     @staticmethod
