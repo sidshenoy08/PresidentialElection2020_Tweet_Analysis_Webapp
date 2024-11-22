@@ -58,30 +58,4 @@ class CandidateAnalysisRepository:
         with current_app.app_context():
             result = db.session.execute(sql, {"candidate": candidate})
             return result.fetchall(), result.keys()
-    
-    @staticmethod
-    def get_weekly_comparison_with_events():
-        sql = """
-        WITH weekly_metrics AS (
-            SELECT 
-                DATE_TRUNC('week', t.created_at) AS week_start,
-                t.tweet_about,
-                COUNT(t.tweet_id) AS tweet_count,
-                SUM(t.likes + t.retweet_count) AS total_engagement
-            FROM tweets t
-            GROUP BY DATE_TRUNC('week', t.created_at), t.tweet_about
-        )
-        SELECT 
-            w.week_start,
-            w.tweet_about,
-            w.tweet_count,
-            w.total_engagement,
-            e.event_name,
-            e.event_date
-        FROM weekly_metrics w
-        LEFT JOIN events e ON DATE_TRUNC('week', e.event_date) = w.week_start
-        ORDER BY w.week_start, w.tweet_about;
-        """
-        result = db.session.execute(sql)
-        return result.fetchall()
 

@@ -11,7 +11,3 @@ class CandidateAnalysisService:
         rows, columns = CandidateAnalysisRepository.get_daily_trends(candidate)
         return [dict(zip(columns, row)) for row in rows]
 
-    @staticmethod
-    def get_weekly_comparison_with_events():
-        data = CandidateAnalysisRepository.get_weekly_comparison_with_events()
-        return [dict(row) for row in data]

@@ -12,8 +12,3 @@ class CandidateAnalysisController:
         candidate = request.args.get('candidate', 'Trump')
         data = CandidateAnalysisService.get_daily_trends(candidate)
         return jsonify(data), 200
-    
-    @staticmethod
-    def get_weekly_comparison_with_events():
-        data = CandidateAnalysisService.get_weekly_comparison_with_events()
-        return jsonify(data), 200
