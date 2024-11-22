@@ -1,4 +1,5 @@
 from app.db import db
+from flask import current_app
 from app.models import Tweet, User, Location
 from sqlalchemy import func, desc
 
