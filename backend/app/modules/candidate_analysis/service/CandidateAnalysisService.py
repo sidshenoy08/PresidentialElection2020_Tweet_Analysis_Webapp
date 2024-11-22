@@ -3,10 +3,9 @@ from app.modules.candidate_analysis.repository.CandidateAnalysisRepository impor
 class CandidateAnalysisService:
     @staticmethod
     def get_region_wise_engagement():
-        data = CandidateAnalysisRepository.get_region_wise_engagement()
-        # Transform SQLAlchemy row objects to dictionaries
-        return [dict(row) for row in data]
-
+        rows, columns = CandidateAnalysisRepository.get_region_wise_engagement()
+        return [dict(zip(columns, row)) for row in rows]
+    
     @staticmethod
     def get_daily_trends(candidate):
         data = CandidateAnalysisRepository.get_daily_trends(candidate)

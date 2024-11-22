@@ -22,13 +22,16 @@ class CandidateAnalysisRepository:
             country,
             tweet_about,
             total_engagement,
-            100.0 * total_engagement / SUM(total_engagement) OVER(PARTITION BY country) AS engagement_percentage
+            CASE 
+                WHEN SUM(total_engagement) OVER(PARTITION BY country) = 0 THEN 0
+                ELSE 100.0 * total_engagement / SUM(total_engagement) OVER(PARTITION BY country)
+            END AS engagement_percentage
         FROM region_engagement
         ORDER BY country, engagement_percentage DESC;
         """)
         with current_app.app_context():
             result = db.session.execute(sql)
-            return result.fetchall()
+            return result.fetchall(), result.keys()
 
     @staticmethod
     def get_daily_trends(candidate):
