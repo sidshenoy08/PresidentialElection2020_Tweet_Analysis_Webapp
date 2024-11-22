@@ -35,7 +35,7 @@ class CandidateAnalysisRepository:
 
     @staticmethod
     def get_daily_trends(candidate):
-        sql = """
+        sql = text("""
         WITH daily_metrics AS (
             SELECT 
                 CAST(t.created_at AS DATE) AS tweet_date,
@@ -54,9 +54,10 @@ class CandidateAnalysisRepository:
             ) AS rolling_avg
         FROM daily_metrics
         ORDER BY tweet_date;
-        """
-        result = db.session.execute(sql, {"candidate": candidate})
-        return result.fetchall()
+        """)
+        with current_app.app_context():
+            result = db.session.execute(sql, {"candidate": candidate})
+            return result.fetchall(), result.keys()
     
     @staticmethod
     def get_weekly_comparison_with_events():
