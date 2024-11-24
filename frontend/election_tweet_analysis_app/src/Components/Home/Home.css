@@ -1,0 +1,71 @@
+h3 {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin-top: 2.5rem !important;
+}
+
+footer {
+    padding-top: 1rem;
+    text-align: center;
+    background-color: #FFFFFF;
+}
+
+.flex-container1 {
+    display: flex;
+    flex-wrap: wrap;
+    background-color: #FFFFFF;
+}
+
+.para-text {
+    margin-top: 2.5rem;
+    color: black;
+    margin-bottom: 2.5rem;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.trump-container {
+    overflow: hidden;
+    background-color: #FF0000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 30rem;
+}
+
+.trump-thumb {
+    float: left;
+}
+
+.trump-thumb img {
+    display: block;
+    width: 70%;
+    height: 70%;
+    mix-blend-mode: overlay;
+}
+
+.candidate-content {
+    color: white;
+}
+
+.candidate-title {
+    font-size: 125%
+}
+
+.biden-container {
+    overflow: hidden;
+    background-color: #0015BC;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 30rem;
+}
+
+.biden-thumb {
+    float: right;
+}
+
+.biden-thumb img {
+    display: block;
+    width: 80%;
+    height: 80%;
+    mix-blend-mode: overlay;
+}
