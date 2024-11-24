@@ -1,0 +1,594 @@
+openapi: 3.0.0
+info:
+  title: PollPulse API
+  version: "1.0"
+  description: API documentation for the ElectraInsights project.
+
+paths:
+  /homepage/total-tweets-overview:
+    get:
+      summary: Get total tweets overview
+      description: Retrieves total tweets and unique users.
+      parameters:
+        - name: start_date
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+          description: Start date for filtering tweets (YYYY-MM-DD).
+        - name: end_date
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+          description: End date for filtering tweets (YYYY-MM-DD).
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total_tweets:
+                    type: integer
+                    description: Total number of tweets.
+                  unique_users:
+                    type: integer
+                    description: Total number of unique users.
+
+  /homepage/trending-candidates:
+    get:
+      summary: Get trending candidates
+      description: Fetches trending candidates based on tweet count.
+      parameters:
+        - name: sort_by
+          in: query
+          required: false
+          schema:
+            type: string
+            default: tweet_count
+          description: Field to sort by.
+        - name: order
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: desc
+          description: Sort order (asc or desc).
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    candidate:
+                      type: string
+                      description: Candidate name.
+                    tweet_count:
+                      type: integer
+                      description: Total number of tweets.
+
+  /homepage/most-active-users:
+    get:
+      summary: Get most active users
+      description: Retrieves the most active users based on tweet count.
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 5
+          description: Number of users to return.
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+          description: Page number for pagination.
+        - name: sort_by
+          in: query
+          required: false
+          schema:
+            type: string
+            default: tweet_count
+          description: Field to sort by.
+        - name: order
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: desc
+          description: Sort order (asc or desc).
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    user:
+                      type: string
+                      description: User name.
+                    tweet_count:
+                      type: integer
+                      description: Total number of tweets.
+
+  /popular-tweets/top-retweets:
+    get:
+      summary: Get top tweets by retweets
+      description: Fetches top tweets sorted by retweet count.
+      parameters:
+        - name: candidate
+          in: query
+          required: false
+          schema:
+            type: string
+            default: Trump
+          description: Candidate name (e.g., Trump or Biden).
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 10
+          description: Number of tweets to return.
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    tweet_id:
+                      type: integer
+                      description: Tweet ID.
+                    tweet:
+                      type: string
+                      description: Content of the tweet.
+                    retweet_count:
+                      type: integer
+                      description: Number of retweets.
+
+  /popular-tweets/top-likes:
+    get:
+      summary: Get top tweets by likes
+      description: Fetches top tweets sorted by like count.
+      parameters:
+        - name: candidate
+          in: query
+          required: false
+          schema:
+            type: string
+            default: Trump
+          description: Candidate name (e.g., Trump or Biden).
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 10
+          description: Number of tweets to return.
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    tweet_id:
+                      type: integer
+                      description: Tweet ID.
+                    tweet:
+                      type: string
+                      description: Content of the tweet.
+                    likes:
+                      type: integer
+                      description: Number of likes.
+
+  /popular-tweets/location-insights:
+    get:
+      summary: Get tweet location insights
+      description: Provides insights about popular tweets by location.
+      parameters:
+        - name: candidate
+          in: query
+          required: false
+          schema:
+            type: string
+            default: Trump
+          description: Candidate name (e.g., Trump or Biden).
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 10
+          description: Number of tweets to return.
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    tweet_id:
+                      type: integer
+                      description: Tweet ID.
+                    tweet:
+                      type: string
+                      description: Content of the tweet.
+                    location:
+                      type: string
+                      description: Location of the tweet.
+
+  /user-engagement/popular-tweets-by-users:
+    post:
+      summary: Get popular tweets by users
+      description: Retrieves popular tweets by specific users based on engagement metrics.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_ids:
+                  type: array
+                  items:
+                    type: integer
+                  description: List of user IDs to filter tweets.
+                order:
+                  type: string
+                  enum: [asc, desc]
+                  default: desc
+                  description: Sort order for tweets (ascending or descending).
+                by:
+                  type: string
+                  default: total_engagement
+                  description: Field to sort by (e.g., `total_engagement`).
+                limit:
+                  type: integer
+                  default: 10
+                  description: Maximum number of tweets to return.
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    tweet_id:
+                      type: integer
+                      description: Unique identifier for the tweet.
+                    tweet:
+                      type: string
+                      description: Text content of the tweet.
+                    likes:
+                      type: integer
+                      description: Number of likes on the tweet.
+                    retweet_count:
+                      type: integer
+                      description: Number of retweets for the tweet.
+                    source:
+                      type: string
+                      description: Source of the tweet (e.g., Twitter Web, Mobile).
+                    created_at:
+                      type: string
+                      format: date-time
+                      description: Timestamp when the tweet was created.
+                    user_name:
+                      type: string
+                      description: Name of the user who posted the tweet.
+                    user_screen_name:
+                      type: string
+                      description: Screen name (handle) of the user.
+
+  /user-engagement/top-users:
+    get:
+      summary: Get top users by engagement
+      description: Retrieves the top users ranked by total engagement.
+      parameters:
+        - name: order
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: desc
+          description: Sort order for engagement.
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 10
+          description: Number of users to return.
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    user_id:
+                      type: integer
+                      description: Unique user identifier.
+                    user_name:
+                      type: string
+                      description: Name of the user.
+                    total_engagement:
+                      type: integer
+                      description: Total engagement (likes + retweets).
+  
+  /user-engagement/activity-breakdown:
+    get:
+      summary: Get user activity breakdown
+      description: Shows which users engage the most with a candidate.
+      parameters:
+        - name: candidate
+          in: query
+          required: false
+          schema:
+            type: string
+            default: Trump
+          description: Candidate name (e.g., Trump or Biden).
+        - name: order
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: desc
+          description: Sort order for engagement.
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 10
+          description: Number of users to return.
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    user_id:
+                      type: integer
+                      description: Unique user identifier.
+                    user_name:
+                      type: string
+                      description: Name of the user.
+                    tweet_count:
+                      type: integer
+                      description: Number of tweets.
+
+  /engagement-trends/spike-days:
+    get:
+      summary: Get engagement spike days
+      description: Fetches days with unusual spikes in engagement.
+      parameters:
+        - name: candidate
+          in: query
+          required: false
+          schema:
+            type: string
+            default: Trump
+          description: Candidate name (e.g., Trump or Biden).
+        - name: threshold
+          in: query
+          required: false
+          schema:
+            type: number
+            default: 1.5
+          description: Spike threshold multiplier.
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    date:
+                      type: string
+                      format: date
+                      description: Date of the spike.
+                    engagement:
+                      type: integer
+                      description: Engagement count.
+
+  /engagement-trends/rolling-average-comparison:
+    get:
+      summary: Get rolling average comparison
+      description: Retrieves daily engagement for a candidate and calculates a rolling average over a specified window.
+      parameters:
+        - name: candidate
+          in: query
+          required: false
+          schema:
+            type: string
+            default: Trump
+          description: Candidate name (e.g., Trump or Biden).
+        - name: window
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 7
+          description: Size of the rolling window (in days).
+        - name: sort_by
+          in: query
+          required: false
+          schema:
+            type: string
+            default: date
+          description: Field to sort by (e.g., `date` or `engagement`).
+        - name: order
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: desc
+          description: Sort order (ascending or descending).
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    date:
+                      type: string
+                      format: date
+                      description: Date of the engagement.
+                    engagement:
+                      type: integer
+                      description: Total engagement (likes + retweets) for the day.
+                    rolling_avg:
+                      type: number
+                      format: float
+                      description: Rolling average of engagement over the specified window.
+
+  /engagement-trends/high-volume-days:
+    get:
+      summary: Get high volume days
+      description: Retrieves the days with the highest engagement for a candidate.
+      parameters:
+        - name: candidate
+          in: query
+          required: false
+          schema:
+            type: string
+            default: Trump
+          description: Candidate name (e.g., Trump or Biden).
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 5
+          description: Maximum number of high-volume days to return.
+        - name: sort_by
+          in: query
+          required: false
+          schema:
+            type: string
+            default: engagement
+          description: Field to sort by (e.g., `date` or `engagement`).
+        - name: order
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: desc
+          description: Sort order (ascending or descending).
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    date:
+                      type: string
+                      format: date
+                      description: Date of high engagement.
+                    engagement:
+                      type: integer
+                      description: Total engagement (likes + retweets) for the day.
+
+
+  /candidate-analysis/region-wise-engagement:
+    get:
+      summary: Get region-wise engagement
+      description: Retrieves engagement metrics grouped by region.
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    region:
+                      type: string
+                      description: Region name.
+                    engagement:
+                      type: integer
+                      description: Engagement count.
+
+  /candidate-analysis/daily-trends:
+    get:
+      summary: Get daily trends
+      description: Retrieves daily engagement trends for a candidate.
+      parameters:
+        - name: candidate
+          in: query
+          required: false
+          schema:
+            type: string
+            default: Trump
+          description: Candidate name (e.g., Trump or Biden).
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    date:
+                      type: string
+                      format: date
+                      description: Date of the engagement.
+                    engagement:
+                      type: integer
+                      description: Engagement count.

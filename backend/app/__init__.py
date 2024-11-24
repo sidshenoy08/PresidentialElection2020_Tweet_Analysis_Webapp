@@ -1,4 +1,5 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, send_from_directory
+from flask_swagger_ui import get_swaggerui_blueprint
 from app.config import Config
 from app.db import init_db
 from app.routes import register_routes
@@ -10,6 +11,18 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
     init_db(app)
+
+    # Swagger UI setup
+    SWAGGER_URL = "/docs"  # URL for Swagger UI
+    API_URL = "/static/swagger.yaml"
+    swaggerui_blueprint = get_swaggerui_blueprint(SWAGGER_URL, API_URL)
+    app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
+
+    # Serve Swagger YAML file
+    @app.route("/static/swagger.yaml")
+    def swagger_yaml():
+        return send_from_directory("../static", "swagger.yaml")
+
     register_routes(app)
     register_error_handlers(app)
     return app

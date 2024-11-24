@@ -1,6 +1,9 @@
 from flask import jsonify, request
 from app.modules.candidate_analysis.service.CandidateAnalysisService import CandidateAnalysisService
 
+
+
+
 class CandidateAnalysisController:
     @staticmethod
     def get_region_wise_engagement():
