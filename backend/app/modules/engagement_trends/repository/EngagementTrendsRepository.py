@@ -50,8 +50,9 @@ class EngagementTrendsRepository:
 
     @staticmethod
     def get_high_volume_days(candidate, limit=5, sort_by="engagement", order="desc"):
-        order_by = Tweet.created_at if sort_by == "date" else (Tweet.likes + Tweet.retweet_count)
+        order_by = cast(Tweet.created_at, Date) if sort_by == "date" else 'engagement'
         ord = desc(order_by) if order == "desc" else order_by
+
         res = (
             db.session.query(
                 cast(Tweet.created_at, Date).label('date'),

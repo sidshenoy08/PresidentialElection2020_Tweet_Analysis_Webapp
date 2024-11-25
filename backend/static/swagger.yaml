@@ -4,8 +4,12 @@ info:
   version: "1.0"
   description: API documentation for the ElectraInsights project.
 
+servers:
+  - url: /api
+    description: Base API URL for all endpoints.
+
 paths:
-  /homepage/total-tweets-overview:
+  /homepage/overview:
     get:
       summary: Get total tweets overview
       description: Retrieves total tweets and unique users.
@@ -127,7 +131,7 @@ paths:
                       type: integer
                       description: Total number of tweets.
 
-  /popular-tweets/top-retweets:
+  /popular-tweets/retweets:
     get:
       summary: Get top tweets by retweets
       description: Fetches top tweets sorted by retweet count.
@@ -166,7 +170,7 @@ paths:
                       type: integer
                       description: Number of retweets.
 
-  /popular-tweets/top-likes:
+  /popular-tweets/likes:
     get:
       summary: Get top tweets by likes
       description: Fetches top tweets sorted by like count.
@@ -244,7 +248,7 @@ paths:
                       type: string
                       description: Location of the tweet.
 
-  /user-engagement/popular-tweets-by-users:
+  /user-engagement/popular-tweets:
     post:
       summary: Get popular tweets by users
       description: Retrieves popular tweets by specific users based on engagement metrics.
@@ -396,7 +400,7 @@ paths:
                       type: integer
                       description: Number of tweets.
 
-  /engagement-trends/spike-days:
+  /engagement-trends/spikes:
     get:
       summary: Get engagement spike days
       description: Fetches days with unusual spikes in engagement.
@@ -433,7 +437,7 @@ paths:
                       type: integer
                       description: Engagement count.
 
-  /engagement-trends/rolling-average-comparison:
+  /engagement-trends/rolling-average:
     get:
       summary: Get rolling average comparison
       description: Retrieves daily engagement for a candidate and calculates a rolling average over a specified window.

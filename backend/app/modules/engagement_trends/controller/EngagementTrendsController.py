@@ -27,5 +27,6 @@ class EngagementTrendsController:
         limit = int(request.args.get('limit', 5))
         sort_by = request.args.get("sort_by", "engagement")
         order = request.args.get("order", "desc")
-        data = EngagementTrendsService.get_high_volume_days(candidate, limit, sort_by, order)
+        page = int(request.args.get('page', 1))
+        data = EngagementTrendsService.get_high_volume_days(candidate, limit, page, sort_by, order)
         return jsonify(data), 200

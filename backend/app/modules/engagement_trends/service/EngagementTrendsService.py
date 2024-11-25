@@ -18,6 +18,7 @@ class EngagementTrendsService:
     @staticmethod
     def get_rolling_average_comparison(candidate, window=7, sort_by="date", order="asc"):
         #Validating input
+        window = int(window)
         if window <= 0:
             raise ValueError("Window must be a positive number")
         
@@ -38,6 +39,8 @@ class EngagementTrendsService:
     @staticmethod
     def get_high_volume_days(candidate, limit=5, page=1, sort_by="engagement", order="desc"):
         #Validating input
+        page = int(page)
+        limit = int(limit)
         if limit <= 0:
             raise ValueError("Limit must be a positive number")
         if page <= 0:
