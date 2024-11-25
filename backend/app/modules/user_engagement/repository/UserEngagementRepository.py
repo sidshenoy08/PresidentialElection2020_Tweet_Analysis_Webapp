@@ -15,7 +15,7 @@ class UserEngagementRepository:
                     (User.user_followers_count > 0, 
                      func.sum(Tweet.likes + Tweet.retweet_count) / func.max(User.user_followers_count)),
                     else_=0
-                ).label("follower_to_engagement_ratio"),
+                ).label("engagement_to_followers_ratio"),
                 func.max(User.user_followers_count).label("followers")
             )
             .join(Tweet, Tweet.user_id == User.user_id)
@@ -44,7 +44,7 @@ class UserEngagementRepository:
         )
 
     @staticmethod
-    def get_popular_tweets_by_users(user_ids, sort_order, limit=10, by="total_engagement"):
+    def get_popular_tweets_by_users(user_ids, sort_order, limit=10, by="retweet_count"):
         engagement = Tweet.likes + Tweet.retweet_count
         sort_by = {
             "total_engagement": engagement,
