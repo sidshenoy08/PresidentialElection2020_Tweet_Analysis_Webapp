@@ -69,26 +69,23 @@ class GeographicAnalysisRepository:
             return result.fetchall(), result.keys()
         
     @staticmethod
-    def get_weekly_sentiment_analysis(candidate, start_date, end_date):
+    def get_engagement_by_timezone(candidate, sort_by, order, limit):
         sql = text(f"""
-            WITH weekly_data AS (
-                SELECT 
-                    DATE_TRUNC('week', t.created_at) AS week_start, 
-                    COUNT(t.tweet_id) AS tweet_count,
-                    SUM(CASE WHEN sentiment = 'positive' THEN 1 ELSE 0 END) AS positive,
-                    SUM(CASE WHEN sentiment = 'negative' THEN 1 ELSE 0 END) AS negative,
-                    SUM(CASE WHEN sentiment = 'neutral' THEN 1 ELSE 0 END) AS neutral
-                FROM tweets t
-                WHERE t.tweet_about = :candidate AND t.created_at BETWEEN :start_date AND :end_date
-                GROUP BY DATE_TRUNC('week', t.created_at)
-            )
-            SELECT * FROM weekly_data
-            ORDER BY week_start;
+            SELECT 
+                l.time_zone, 
+                COUNT(t.tweet_id) AS tweet_count, 
+                SUM(t.likes) AS likes, 
+                SUM(t.retweet_count) AS retweets
+            FROM tweets t
+            JOIN locations l ON t.lat = l.lat AND t.long = l.long
+            WHERE t.tweet_about = :candidate
+            GROUP BY l.time_zone
+            ORDER BY {sort_by} {order}
+            LIMIT :limit;
         """)
         with current_app.app_context():
             result = db.session.execute(sql, {
                 "candidate": candidate,
-                "start_date": start_date,
-                "end_date": end_date
+                "limit": limit
             })
             return result.fetchall(), result.keys()

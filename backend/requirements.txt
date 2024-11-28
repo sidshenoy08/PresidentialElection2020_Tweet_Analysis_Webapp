@@ -6,3 +6,4 @@ python-dotenv
 pandas
 flask-restx
 flask-swagger-ui
+timezonefinder

@@ -15,3 +15,8 @@ class GeographicAnalysisService:
     def get_top_tweets_by_region(filters, sort_by="likes", order="DESC", limit=10):
         rows, keys = GeographicAnalysisRepository.get_top_tweets_by_region(filters, sort_by, order, limit)
         return [dict(zip(keys, row)) for row in rows]
+    
+    @staticmethod
+    def get_engagement_by_timezone(candidate="Trump", sort_by="tweet_count", order="DESC", limit=10):
+        rows, keys = GeographicAnalysisRepository.get_engagement_by_timezone(candidate, sort_by, order, limit)
+        return [dict(zip(keys, row)) for row in rows]
