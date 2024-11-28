@@ -69,23 +69,19 @@ class GeographicAnalysisRepository:
             return result.fetchall(), result.keys()
         
     @staticmethod
-    def get_engagement_by_timezone(candidate, sort_by, order, limit):
-        sql = text(f"""
+    def get_engagement_by_timezone(candidate):
+        sql = text("""
             SELECT 
-                l.time_zone, 
+                l.lat, 
+                l.long, 
                 COUNT(t.tweet_id) AS tweet_count, 
                 SUM(t.likes) AS likes, 
                 SUM(t.retweet_count) AS retweets
             FROM tweets t
             JOIN locations l ON t.lat = l.lat AND t.long = l.long
             WHERE t.tweet_about = :candidate
-            GROUP BY l.time_zone
-            ORDER BY {sort_by} {order}
-            LIMIT :limit;
+            GROUP BY l.lat, l.long;
         """)
         with current_app.app_context():
-            result = db.session.execute(sql, {
-                "candidate": candidate,
-                "limit": limit
-            })
+            result = db.session.execute(sql, {"candidate": candidate})
             return result.fetchall(), result.keys()

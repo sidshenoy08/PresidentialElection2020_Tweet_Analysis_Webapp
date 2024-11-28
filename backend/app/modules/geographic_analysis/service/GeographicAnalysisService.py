@@ -1,4 +1,5 @@
 from app.modules.geographic_analysis.repository.GeographicAnalysisRepository import GeographicAnalysisRepository
+from timezonefinder import TimezoneFinder
 
 class GeographicAnalysisService:
     @staticmethod
@@ -17,6 +18,34 @@ class GeographicAnalysisService:
         return [dict(zip(keys, row)) for row in rows]
     
     @staticmethod
-    def get_engagement_by_timezone(candidate="Trump", sort_by="tweet_count", order="DESC", limit=10):
-        rows, keys = GeographicAnalysisRepository.get_engagement_by_timezone(candidate, sort_by, order, limit)
-        return [dict(zip(keys, row)) for row in rows]
+    def get_engagement_by_timezone(candidate="Trump"):
+        rows, keys = GeographicAnalysisRepository.get_engagement_by_timezone(candidate)
+        tf = TimezoneFinder()
+
+        # Process results to include the time zone
+        enriched_data = []
+        for row in rows:
+            record = dict(zip(keys, row))
+            time_zone = tf.timezone_at(lat=record['lat'], lng=record['long'])
+            if time_zone:
+                record['time_zone'] = time_zone
+                enriched_data.append(record)
+
+        aggregated_data = {}
+        for record in enriched_data:
+            tz = record['time_zone']
+            if tz not in aggregated_data:
+                aggregated_data[tz] = {
+                    "tweet_count": 0,
+                    "likes": 0,
+                    "retweets": 0
+                }
+            aggregated_data[tz]["tweet_count"] += record["tweet_count"]
+            aggregated_data[tz]["likes"] += record["likes"]
+            aggregated_data[tz]["retweets"] += record["retweets"]
+
+        # Convert aggregated data into a sorted list to return to controller
+        sorted_data = sorted(aggregated_data.items(), key=lambda x: x[1]["tweet_count"], reverse=True)
+        return [
+            {"time_zone": tz, **metrics} for tz, metrics in sorted_data
+        ]

@@ -35,8 +35,8 @@ class GeographicAnalysisController:
     @staticmethod
     def get_engagement_by_timezone():
         candidate = request.args.get("candidate", "Trump")
-        sort_by = request.args.get("sort_by", "tweet_count")
-        order = request.args.get("order", "DESC").upper()
-        limit = int(request.args.get("limit", 10))
-        data = GeographicAnalysisService.get_engagement_by_timezone(candidate, sort_by, order, limit)
+        # sort_by = request.args.get("sort_by", "tweet_count")
+        # order = request.args.get("order", "DESC").upper()
+        # limit = int(request.args.get("limit", 10))
+        data = GeographicAnalysisService.get_engagement_by_timezone(candidate)
         return jsonify(data), 200
