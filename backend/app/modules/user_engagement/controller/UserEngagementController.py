@@ -35,3 +35,11 @@ class UserEngagementController:
         limit = int(dataIn.get("limit", 10))
         data = UserEngagementService.get_popular_tweets_by_users(user_ids, order, limit, by)
         return jsonify(data), 200
+    
+      
+    @staticmethod
+    def get_influential_users():
+        candidate = request.args.get("candidate", "Trump")
+        limit = int(request.args.get("limit", 10))
+        data = UserEngagementService.get_influential_users(candidate, limit)
+        return jsonify(data), 200

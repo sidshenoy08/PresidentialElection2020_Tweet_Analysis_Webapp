@@ -1,6 +1,7 @@
 from app.db import db
 from app.models import Tweet, User
-from sqlalchemy import func, desc, asc, case
+from sqlalchemy import func, desc, asc, case, text
+from flask import current_app
 
 class UserEngagementRepository:
     @staticmethod
@@ -69,3 +70,23 @@ class UserEngagementRepository:
             .limit(limit)
             .all()
         )
+    
+    @staticmethod
+    def get_influential_users(candidate, limit):
+        sql = text(f"""
+            SELECT 
+                u.user_id, 
+                u.user_name, 
+                u.user_followers_count,
+                ROUND(SUM(t.likes + t.retweet_count) / NULLIF(u.user_followers_count, 0), 2) AS engagement_ratio
+            FROM users u
+            JOIN tweets t ON u.user_id = t.user_id
+            WHERE t.tweet_about = :candidate
+            GROUP BY u.user_id, u.user_name, u.user_followers_count
+            HAVING ROUND(SUM(t.likes + t.retweet_count) / NULLIF(u.user_followers_count, 0), 2) IS NOT NULL
+            ORDER BY engagement_ratio DESC
+            LIMIT :limit;
+        """)
+        with current_app.app_context():
+            result = db.session.execute(sql, {"candidate": candidate, "limit": limit})
+            return result.fetchall(), result.keys()

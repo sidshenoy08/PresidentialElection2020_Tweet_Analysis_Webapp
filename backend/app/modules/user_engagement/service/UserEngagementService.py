@@ -19,3 +19,8 @@ class UserEngagementService:
         sort_order = desc if order == "desc" else asc
         tweets = UserEngagementRepository.get_popular_tweets_by_users(user_ids, sort_order, limit, by)
         return [row._asdict() for row in tweets]
+    
+    @staticmethod
+    def get_influential_users(candidate="Trump", limit=10):
+        rows, keys = UserEngagementRepository.get_influential_users(candidate, limit)
+        return [dict(zip(keys, row)) for row in rows]
