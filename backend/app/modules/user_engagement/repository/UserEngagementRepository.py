@@ -11,6 +11,7 @@ class UserEngagementRepository:
                 User.user_name,
                 User.user_screen_name,
                 func.sum(Tweet.likes + Tweet.retweet_count).label("total_engagement"),
+                # TODO: Add condition to check if total_engagement is > 0
                 case(
                     (User.user_followers_count > 0, 
                      func.sum(Tweet.likes + Tweet.retweet_count) / func.max(User.user_followers_count)),

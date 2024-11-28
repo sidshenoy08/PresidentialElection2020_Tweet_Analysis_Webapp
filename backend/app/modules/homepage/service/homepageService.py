@@ -27,3 +27,8 @@ class HomepageService:
         offset = (page-1)*limit
         res = HomepageRepository.get_most_active_users(limit, offset, sort_by, order)
         return [row._asdict() for row in res]
+    
+    @staticmethod
+    def get_tweet_stats_by_candidate():
+        rows, columns = HomepageRepository.get_tweet_stats_by_candidate()
+        return [dict(zip(columns, row)) for row in rows]

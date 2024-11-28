@@ -1,9 +1,10 @@
 # from app.db import get_db
 from app.db import db
-# from sqlalchemy import text
+from sqlalchemy import text
 from app.models import Tweet, User
 from datetime import datetime
 from sqlalchemy import func, desc, asc
+from flask import current_app
 
 class HomepageRepository:
     def __init__(self):
@@ -26,8 +27,6 @@ class HomepageRepository:
         unique_users = unique_users_query.scalar()
 
         return {'total_tweets': total_tweets, 'unique_users': unique_users}
-
-    
 
     @staticmethod
     def get_trending_candidates(limit=5, sort_by="tweet_count", order="desc"):
@@ -57,4 +56,18 @@ class HomepageRepository:
             .all()
         )
         return res
-
+    
+    @staticmethod
+    def get_tweet_stats_by_candidate():
+        sql = text("""
+        SELECT
+            tweet_about,
+            COUNT(tweet_id) AS total_tweets, 
+            SUM(retweet_count) AS total_retweets,
+            SUM(likes) AS total_likes
+        FROM tweets
+        GROUP BY tweet_about;
+        """)
+        with current_app.app_context():
+            result = db.session.execute(sql)
+            return result.fetchall(), result.keys()

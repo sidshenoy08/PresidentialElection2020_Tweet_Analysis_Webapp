@@ -4,8 +4,17 @@ from app.modules.user_engagement.service.UserEngagementService import UserEngage
 class UserEngagementController:
     @staticmethod
     def get_top_users_by_engagement():
-        order = request.args.get("order", "desc")
-        limit = int(request.args.get("limit", 10))
+        # try-except blocks to handle incorrect or blank query parameters
+        try:
+            order = request.args.get("order", "desc")
+            if(order not in {"asc", "desc"}):
+                order = "desc"
+        except:
+            order = "desc"
+        try:
+            limit = int(request.args.get("limit", 10))
+        except:
+            limit = 10
         data = UserEngagementService.get_top_users_by_engagement(order, limit)
         return jsonify(data), 200
 

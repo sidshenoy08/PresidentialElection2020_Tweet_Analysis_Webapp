@@ -25,3 +25,8 @@ class HomepageController:
         order = request.args.get("order", "desc")
         data = HomepageService.get_most_active_users(limit, page, sort_by, order)
         return jsonify(data), 200
+    
+    @staticmethod
+    def get_tweet_stats_by_candidate():
+        data = HomepageService.get_tweet_stats_by_candidate()
+        return jsonify(data), 200

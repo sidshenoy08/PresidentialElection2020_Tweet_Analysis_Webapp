@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, send_from_directory
 from flask_swagger_ui import get_swaggerui_blueprint
+from flask_cors import CORS, cross_origin
 from app.config import Config
 from app.db import init_db
 from app.routes import register_routes
@@ -9,6 +10,7 @@ load_dotenv()
 
 def create_app():
     app = Flask(__name__)
+    cors = CORS(app)
     app.config.from_object(Config)
     init_db(app)
 
