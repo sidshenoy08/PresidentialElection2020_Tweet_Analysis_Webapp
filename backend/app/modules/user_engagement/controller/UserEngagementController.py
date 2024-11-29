@@ -53,7 +53,16 @@ class UserEngagementController:
       
     @staticmethod
     def get_influential_users():
-        candidate = request.args.get("candidate", "Trump")
-        limit = int(request.args.get("limit", 10))
+        # try-except blocks to handle incorrect or blank query parameters
+        try:
+            candidate = request.args.get("candidate", "Trump")
+            if(candidate not in {"Trump", "Biden"}):
+                candidate = "Trump"
+        except:
+            candidate = "Trump"
+        try:
+            limit = int(request.args.get("limit", 10))
+        except:
+            limit = 10
         data = UserEngagementService.get_influential_users(candidate, limit)
         return jsonify(data), 200
