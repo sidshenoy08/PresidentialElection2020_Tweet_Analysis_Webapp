@@ -20,9 +20,23 @@ class UserEngagementController:
 
     @staticmethod
     def get_user_activity_breakdown():
-        candidate = request.args.get("candidate", "Trump")
-        order = request.args.get("order", "desc")
-        limit = int(request.args.get("limit", 10))
+        # try-except blocks to handle incorrect or blank query parameters
+        try:
+            candidate = request.args.get("candidate", "Trump")
+            if(candidate not in {"Trump", "Biden"}):
+                candidate = "Trump"
+        except:
+            candidate = "Trump"
+        try:
+            order = request.args.get("order", "desc")
+            if(order not in {"asc", "desc"}):
+                order = "desc"
+        except:
+            order = "desc"
+        try:
+            limit = int(request.args.get("limit", 10))
+        except:
+            limit = 10
         data = UserEngagementService.get_user_activity_breakdown(candidate, order, limit)
         return jsonify(data), 200
 
