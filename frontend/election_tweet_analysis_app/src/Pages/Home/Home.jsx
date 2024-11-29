@@ -56,7 +56,6 @@ function Home() {
                         </Col>
                     </Row>
                 </div>
-                <div className="trump-img"><img src={trump_img} alt="Donald Trump" /></div>
             </div>
 
             <div className="biden-container">
