@@ -25,8 +25,14 @@ class HomepageService:
     @staticmethod
     def get_most_active_users(limit=5, page=1, sort_by="tweet_count", order="desc"):
         offset = (page-1)*limit
-        res = HomepageRepository.get_most_active_users(limit, offset, sort_by, order)
-        return [row._asdict() for row in res]
+        valid_sort_columns = {"tweet_count": "tweet_count", "user_name": "user_name"}
+        valid_sort_orders = {"asc": "ASC", "desc": "DESC"}
+        if sort_by not in valid_sort_columns:
+            raise ValueError(f"Invalid sort column. Valid columns are {valid_sort_columns.keys()}")
+        if order not in valid_sort_orders:
+            raise ValueError(f"Invalid order. Valid orders are {valid_sort_orders.keys()}")
+        rows, columns = HomepageRepository.get_most_active_users(limit, offset, sort_by, order)
+        return [dict(zip(columns, row)) for row in rows]
     
     @staticmethod
     def get_tweet_stats_by_candidate():

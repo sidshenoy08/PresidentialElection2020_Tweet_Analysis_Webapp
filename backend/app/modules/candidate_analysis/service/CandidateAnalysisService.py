@@ -10,4 +10,3 @@ class CandidateAnalysisService:
     def get_daily_trends(candidate):
         rows, columns = CandidateAnalysisRepository.get_daily_trends(candidate)
         return [dict(zip(columns, row)) for row in rows]
-

@@ -57,18 +57,26 @@ class HomepageRepository:
 
     @staticmethod
     def get_most_active_users(limit=5, offset=0, sort_by="tweet_count", order="desc"):
-        sort_order = desc if order == "desc" else asc
-        sort_column = func.count(Tweet.tweet_id) if sort_by == "tweet_count" else User.user_name
-        res = (
-            db.session.query(Tweet.user_id, User.user_name, func.count(Tweet.tweet_id).label('tweet_count'))
-            .join(User, Tweet.user_id == User.user_id)
-            .group_by(Tweet.user_id, User.user_name)
-            .order_by(sort_order(sort_column))
-            .offset(offset)
-            .limit(limit)
-            .all()
-        )
-        return res
+        sort_order = "DESC" if order == "desc" else "ASC"
+        sort_column = "tweet_count" if sort_by == "tweet_count" else "user_name"
+        sql = text(f"""
+        SELECT 
+            t.user_id, 
+            u.user_name, 
+            COUNT(t.tweet_id) AS tweet_count
+        FROM tweets t
+        JOIN users u ON t.user_id = u.user_id
+        GROUP BY t.user_id, u.user_name
+        ORDER BY {sort_column} {sort_order}
+        LIMIT :limit OFFSET :offset;
+        """)
+        params = {
+            "limit": limit,
+            "offset": offset
+        }
+        with current_app.app_context():
+            result = db.session.execute(sql, params)
+            return result.fetchall(), result.keys()
     
     @staticmethod
     def get_tweet_stats_by_candidate():

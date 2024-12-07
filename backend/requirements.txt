@@ -7,3 +7,6 @@ pandas
 flask-restx
 flask-swagger-ui
 timezonefinder
+react-chartjs-2
+nltk
+textblob
