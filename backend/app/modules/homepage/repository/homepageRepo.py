@@ -12,21 +12,34 @@ class HomepageRepository:
 
     @staticmethod
     def get_total_tweets_overview(start_date=None, end_date=None):
-        total_tweets_query = db.session.query(func.count(Tweet.tweet_id)).filter(Tweet.tweet_about.isnot(None))
+        sql = """
+        SELECT
+            COUNT(tweet_id) AS total_tweets,
+            COUNT(DISTINCT user_id) AS unique_users
+        FROM tweets
+        WHERE tweet_about IS NOT NULL
+        """
+        params = {}
         if start_date:
-            total_tweets_query = total_tweets_query.filter(Tweet.created_at >= start_date)
+            print(start_date)
+            sql += " AND created_at >= :start_date"
+            params["start_date"] = start_date
         if end_date:
-            total_tweets_query = total_tweets_query.filter(Tweet.created_at <= end_date)
-        total_tweets = total_tweets_query.scalar()
+            print(end_date)
+            sql += " AND created_at <= :end_date"
+            params["end_date"] = end_date
 
-        unique_users_query = db.session.query(func.count(func.distinct(Tweet.user_id))).filter(Tweet.tweet_about.isnot(None))
-        if start_date:
-            unique_users_query = unique_users_query.filter(Tweet.created_at >= start_date)
-        if end_date:
-            unique_users_query = unique_users_query.filter(Tweet.created_at <= end_date)
-        unique_users = unique_users_query.scalar()
-
-        return {'total_tweets': total_tweets, 'unique_users': unique_users}
+        with current_app.app_context():
+            if not start_date and not end_date:
+                result = db.session.execute(text(sql))
+            else:
+                print(sql)
+                result = db.session.execute(text(sql), params)
+            row = result.mappings().fetchone()
+            return {
+                "total_tweets": row["total_tweets"],
+                "unique_users": row["unique_users"]
+            }
 
     @staticmethod
     def get_trending_candidates(limit=5, sort_by="tweet_count", order="desc"):
