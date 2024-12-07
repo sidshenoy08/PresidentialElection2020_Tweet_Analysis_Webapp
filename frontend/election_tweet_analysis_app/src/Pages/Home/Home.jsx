@@ -1,6 +1,16 @@
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { useState, useEffect } from 'react';
+import {
+    Chart as ChartJS,
+    CategoryScale,
+    LinearScale,
+    BarElement,
+    Title,
+    Tooltip,
+    Legend,
+} from 'chart.js';
+import { Bar } from 'react-chartjs-2';
 
 import AppNavbar from '../../Components/AppNavbar/AppNavbar';
 
@@ -12,6 +22,64 @@ import biden_img from './biden.png';
 function Home() {
     const [trumpStats, setTrumpStats] = useState({});
     const [bidenStats, setBidenStats] = useState({});
+
+    ChartJS.register(
+        CategoryScale,
+        LinearScale,
+        BarElement,
+        Title,
+        Tooltip,
+        Legend
+    );
+
+    const data = {
+        labels: ['Total Tweets', 'Total Retweets', 'Total Likes'],
+        datasets: [
+            {
+                label: 'Trump',
+                data: [trumpStats.total_tweets, trumpStats.total_retweets, trumpStats.total_likes],
+                backgroundColor: 'rgba(255, 0, 0)',
+            },
+            {
+                label: 'Biden',
+                data: [bidenStats.total_tweets, bidenStats.total_retweets, bidenStats.total_likes],
+                backgroundColor: 'rgba(0, 21, 188)',
+            },
+        ],
+    };
+
+    const options = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'top',
+            },
+            title: {
+                display: true,
+                text: 'Trump vs Biden Statistics',
+                color: 'black',
+                font: {
+                    size: 24,
+                    family: 'Segoe UI'
+                }
+            },
+        },
+        scales: {
+            x: {
+                title: {
+                    display: true,
+                    text: 'Metrics',
+                    font: {
+                        size: 15
+                    }
+                },
+            },
+            y: {
+                beginAtZero: true,
+            },
+        },
+    };
 
     useEffect(() => {
         fetch('http://127.0.0.1:5000/api/homepage/tweet-stats-by-candidate', { mode: 'cors' })
@@ -76,6 +144,9 @@ function Home() {
                 <div className="biden-thumb"><img src={biden_img} alt="Joe Biden" /></div>
             </div>
 
+            <div className='chart-box'>
+                <Bar options={options} data={data} />
+            </div>
             <footer>
                 <p>Created by Group 26</p>
             </footer>

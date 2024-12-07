@@ -70,3 +70,11 @@ footer {
     height: 70%;
     mix-blend-mode: overlay;
 }
+
+.chart-box {
+    display: flex;
+    width: 90%;
+    justify-content: center !important;
+    align-items: center !important;
+    margin: auto;
+}
