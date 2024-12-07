@@ -15,9 +15,9 @@ class UserEngagementService:
         return [row._asdict() for row in users]
 
     @staticmethod
-    def get_popular_tweets_by_users(user_ids, order="desc", limit=10, by="total_engagement"):
+    def get_popular_tweets_by_users(user_ids, order="desc", by="total_engagement"):
         sort_order = desc if order == "desc" else asc
-        tweets = UserEngagementRepository.get_popular_tweets_by_users(user_ids, sort_order, limit, by)
+        tweets = UserEngagementRepository.get_popular_tweets_by_users(user_ids, sort_order, by)
         return [row._asdict() for row in tweets]
     
     @staticmethod

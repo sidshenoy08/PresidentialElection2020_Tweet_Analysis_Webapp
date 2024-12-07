@@ -46,8 +46,7 @@ class UserEngagementController:
         user_ids = dataIn.get("user_ids", [])
         order = dataIn.get("order", "desc")
         by = dataIn.get("by", "total_engagement")
-        limit = int(dataIn.get("limit", 10))
-        data = UserEngagementService.get_popular_tweets_by_users(user_ids, order, limit, by)
+        data = UserEngagementService.get_popular_tweets_by_users(user_ids, order, by)
         return jsonify(data), 200
     
       

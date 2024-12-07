@@ -46,7 +46,7 @@ class UserEngagementRepository:
         )
 
     @staticmethod
-    def get_popular_tweets_by_users(user_ids, sort_order, limit=10, by="total_engagement"):
+    def get_popular_tweets_by_users(user_ids, sort_order, by="total_engagement"):
         engagement = Tweet.likes + Tweet.retweet_count
         sort_by = {
             "total_engagement": engagement,
@@ -67,7 +67,6 @@ class UserEngagementRepository:
             .join(User, Tweet.user_id == User.user_id)
             .filter(Tweet.user_id.in_(user_ids))
             .order_by(sort_order(sort_by))
-            .limit(limit)
             .all()
         )
     
