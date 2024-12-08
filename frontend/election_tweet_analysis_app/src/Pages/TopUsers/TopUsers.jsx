@@ -44,9 +44,7 @@ function TopUsers() {
     useEffect(() => {
         fetch(`http://127.0.0.1:5000/api/user-engagement/top-users`, { mode: 'cors' })
             .then((response) => response.json())
-            .then((data) => {
-                setUsers(data);
-            })
+            .then((data) => setUsers(data))
             .catch((err) => {
                 console.log(err.message);
             });

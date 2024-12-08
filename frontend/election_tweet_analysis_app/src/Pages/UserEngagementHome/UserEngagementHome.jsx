@@ -13,7 +13,6 @@ function UserEngagementHome() {
             <ButtonGroup variant="outlined" color="secondary" aria-label="Basic button group" orientation="vertical">
                 <Button href='/user-engagement/top-users'>Top Users</Button>
                 <Button href='/user-engagement/activity-breakdown'>User Activity Breakdown</Button>
-                <Button>Three</Button>
             </ButtonGroup>
             </div>
         </>
