@@ -12,28 +12,36 @@ class EngagementTrendsRepository:
     # The engagement is calculated by adding the number of likes and retweets for each tweet
     @staticmethod
     def get_engagement_spike_days(candidate, threshold=1.5, sort_by="date", order="asc"):
-        daily_engagement = (
-            db.session.query(
-                cast(Tweet.created_at, Date).label('date'),
-                func.sum(Tweet.likes + Tweet.retweet_count).label('engagement')
+        sql = text(f"""
+            WITH daily_engagement AS (
+                SELECT 
+                    CAST(created_at AS DATE) AS date,
+                    SUM(likes + retweet_count) AS engagement
+                FROM tweets
+                WHERE tweet_about = :candidate
+                GROUP BY CAST(created_at AS DATE)
+            ),
+            average_engagement AS (
+                SELECT AVG(engagement) AS average
+                FROM daily_engagement
             )
-            .filter(Tweet.tweet_about == candidate)
-            .group_by(cast(Tweet.created_at, Date))
-            .subquery()
-        )
+            SELECT 
+                de.date, 
+                de.engagement
+            FROM daily_engagement de
+            CROSS JOIN average_engagement ae
+            WHERE de.engagement > ae.average * :threshold
+            ORDER BY 
+                { 'de.date' if sort_by == 'date' else 'de.engagement' } 
+                { order };
+        """)
 
-        average_engagement = db.session.query(
-            func.avg(daily_engagement.c.engagement).label('average')
-        ).scalar()
-        
-        order_by = daily_engagement.c.date if sort_by == "date" else daily_engagement.c.engagement
-        spikes = (
-            db.session.query(daily_engagement.c.date, daily_engagement.c.engagement)
-            .filter(daily_engagement.c.engagement > average_engagement * Decimal(threshold))
-            .order_by(order_by if order == "asc" else desc(order_by))
-            .all()
-        )
-        return spikes
+        with current_app.app_context():
+            result = db.session.execute(sql, {
+                "candidate": candidate,
+                "threshold": threshold
+            })
+            return result.fetchall(), result.keys()
 
     @staticmethod
     def get_daily_engagement(candidate):

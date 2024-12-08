@@ -11,9 +11,9 @@ class EngagementTrendsService:
         
         if sort_by not in {"date", "engagement"}:
             raise ValueError(f"Invalid sort_by value: {sort_by}. Allowed parameters: 'date', 'engagement'")
-        spikes = EngagementTrendsRepository.get_engagement_spike_days(candidate, threshold, sort_by, order)
+        rows, keys = EngagementTrendsRepository.get_engagement_spike_days(candidate, threshold, sort_by, order)
 
-        return [row._asdict() for row in spikes]
+        return [dict(zip(keys, row)) for row in rows]
 
     @staticmethod
     def get_rolling_average_comparison(candidate, window=7, sort_by="date", order="asc"):
