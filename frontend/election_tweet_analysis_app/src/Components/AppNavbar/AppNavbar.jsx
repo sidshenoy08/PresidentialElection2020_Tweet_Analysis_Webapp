@@ -4,6 +4,8 @@ import Navbar from 'react-bootstrap/Navbar';
 import { Link } from 'react-router-dom';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 
+import './AppNavbar.css';
+
 function AppNavbar() {
     return (
         <>
@@ -20,6 +22,7 @@ function AppNavbar() {
                                 <NavDropdown.Item href='/geographic-analytics'>Geographic Analytics</NavDropdown.Item>
                                 <NavDropdown.Item>Source Analytics</NavDropdown.Item>
                             </NavDropdown>
+                            <Nav.Link as={Link} className='hof glow' to='/hall-of-fame'>Hall of Fame</Nav.Link>
                         </Nav>
                     </Navbar.Collapse>
                 </Container>

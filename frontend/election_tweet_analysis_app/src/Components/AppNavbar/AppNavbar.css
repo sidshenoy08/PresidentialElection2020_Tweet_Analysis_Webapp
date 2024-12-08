@@ -1,0 +1,31 @@
+.hof {
+  color: black;
+  text-decoration: none;
+  font-size: 1.2rem;
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+.hof.glow {
+  color: black;
+  text-shadow: 0 0 5px #fff, 0 0 10px #00f, 0 0 20px #00f, 0 0 40px #00f;
+}
+
+.hof:hover {
+  text-shadow: 0 0 10px #fff, 0 0 20px #00f, 0 0 40px #00f, 0 0 80px #00f;
+  animation: glowEffect 1.5s infinite;
+}
+
+@keyframes glowEffect {
+  0% {
+    text-shadow: 0 0 10px #fff, 0 0 20px #00f, 0 0 40px #00f, 0 0 80px #00f;
+  }
+
+  50% {
+    text-shadow: 0 0 15px #fff, 0 0 30px #00f, 0 0 50px #00f, 0 0 100px #00f;
+  }
+
+  100% {
+    text-shadow: 0 0 10px #fff, 0 0 20px #00f, 0 0 40px #00f, 0 0 80px #00f;
+  }
+}

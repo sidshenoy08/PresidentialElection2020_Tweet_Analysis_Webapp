@@ -7,6 +7,7 @@ import UserActivity from "./Pages/UserActivity/UserActivity";
 import GeographicAnalysisHome from "./Pages/GeographicAnalysisHome/GeographicAnalysisHome";
 import CountryCityAnalysis from "./Pages/CountryCityAnalysis/CountryCityAnalysis";
 import RegionTimezoneAnalysis from "./Pages/RegionTimezoneAnalysis/RegionTimezoneAnalysis";
+import HallOfFame from "./Pages/HallOfFame/HallOfFame";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path='/geographic-analytics' element={<GeographicAnalysisHome />} />
         <Route path='/geographic-analysis/country-city-analysis' element={<CountryCityAnalysis />} />
         <Route path='/geographic-analysis/region-timezone-analysis' element={<RegionTimezoneAnalysis />} />
+        <Route path='/hall-of-fame' element={<HallOfFame />} />
       </Routes>
     </BrowserRouter>
   );
