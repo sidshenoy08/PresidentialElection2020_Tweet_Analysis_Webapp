@@ -11,6 +11,10 @@ import {
     Legend,
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import dayjs from 'dayjs';
 
 import AppNavbar from '../../Components/AppNavbar/AppNavbar';
 
@@ -22,6 +26,12 @@ import biden_img from './biden.png';
 function Home() {
     const [trumpStats, setTrumpStats] = useState({});
     const [bidenStats, setBidenStats] = useState({});
+
+    const [startDate, setStartDate] = useState(dayjs('2020-10-15'));
+    const [endDate, setEndDate] = useState(dayjs('2020-11-08'));
+
+    const [totalTweets, setTotalTweets] = useState();
+    const [uniqueUsers, setUniqueUsers] = useState();
 
     ChartJS.register(
         CategoryScale,
@@ -81,7 +91,7 @@ function Home() {
     };
 
     useEffect(() => {
-        fetch('http://127.0.0.1:5000/api/homepage/tweet-stats-by-candidate', { mode: 'cors' })
+        fetch(`http://127.0.0.1:5000/api/homepage/tweet-stats-by-candidate`, { mode: 'cors' })
             .then((response) => response.json())
             .then((data) => {
                 for (let i in data) {
@@ -97,6 +107,17 @@ function Home() {
             })
     }, []);
 
+    useEffect(() => {
+        fetch(`http://127.0.0.1:5000/api/homepage/overview?start_date=${dayjs(startDate).format('YYYY-MM-DD')}&end_date=${dayjs(endDate).format('YYYY-MM-DD')}`, { mode: 'cors' })
+            .then((response) => response.json())
+            .then((data) => {
+                setTotalTweets(data.total_tweets);
+                setUniqueUsers(data.unique_users);
+            })
+            .catch((err) => {
+                console.log(err.message);
+            });
+    }, [startDate, endDate]);
 
     return (
         <>
@@ -145,6 +166,15 @@ function Home() {
 
             <div className='chart-box'>
                 <Bar options={options} data={data} />
+            </div>
+            <div>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <p>Between </p>
+                    <DatePicker label="Start Date" defaultValue={startDate} onChange={(newValue) => setStartDate(newValue)} />
+                    <p> and </p>
+                    <DatePicker label="End Date" defaultValue={endDate} onChange={(newValue) => setEndDate(newValue)} />
+                    <p>, there have been {totalTweets} tweets by {uniqueUsers} unique users.</p>
+                </LocalizationProvider>
             </div>
             <footer>
                 <p>Created by Group 26</p>
