@@ -1,6 +1,7 @@
 from app.db import db
 from app.models import Tweet
-from sqlalchemy import func, desc, cast, Date
+from sqlalchemy import func, desc, cast, Date, text
+from flask import current_app
 from decimal import Decimal
 
 class EngagementTrendsRepository:
@@ -65,3 +66,30 @@ class EngagementTrendsRepository:
             .all()
         )
         return res
+    
+    @staticmethod
+    def get_weekly_sentiment_analysis(candidate, start_date, end_date):
+        sql = text("""
+            WITH weekly_data AS (
+                SELECT 
+                    DATE_TRUNC('week', t.created_at) AS week_start, 
+                    COUNT(t.tweet_id) AS tweet_count,
+                    SUM(CASE WHEN ts.sentiment = 'positive' THEN 1 ELSE 0 END) AS positive,
+                    SUM(CASE WHEN ts.sentiment = 'negative' THEN 1 ELSE 0 END) AS negative,
+                    SUM(CASE WHEN ts.sentiment = 'neutral' THEN 1 ELSE 0 END) AS neutral
+                FROM tweets t
+                JOIN tweet_sentiment ts ON t.tweet_id = ts.tweet_id
+                WHERE t.tweet_about = :candidate 
+                  AND t.created_at BETWEEN :start_date AND :end_date
+                GROUP BY DATE_TRUNC('week', t.created_at)
+            )
+            SELECT * FROM weekly_data
+            ORDER BY week_start;
+        """)
+        with current_app.app_context():
+            result = db.session.execute(sql, {
+                "candidate": candidate,
+                "start_date": start_date,
+                "end_date": end_date
+            })
+            return result.fetchall(), result.keys()

@@ -30,3 +30,11 @@ class EngagementTrendsController:
         page = int(request.args.get('page', 1))
         data = EngagementTrendsService.get_high_volume_days(candidate, limit, page, sort_by, order)
         return jsonify(data), 200
+    
+    @staticmethod
+    def get_weekly_sentiment_analysis():
+        candidate = request.args.get("candidate", "Trump")
+        start_date = request.args.get("start_date", '2020-01-01')
+        end_date = request.args.get("end_date", '2021-12-31')
+        data = EngagementTrendsService.get_weekly_sentiment_analysis(candidate, start_date, end_date)
+        return jsonify(data), 200

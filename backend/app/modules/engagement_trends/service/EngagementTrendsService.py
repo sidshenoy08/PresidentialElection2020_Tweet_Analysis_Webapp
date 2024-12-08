@@ -50,3 +50,8 @@ class EngagementTrendsService:
         offset = (page - 1) * limit
         days = EngagementTrendsRepository.get_high_volume_days(candidate, limit+offset, sort_by, order)
         return [row._asdict() for row in days]
+    
+    @staticmethod
+    def get_weekly_sentiment_analysis(candidate="Trump", start_date=None, end_date=None):
+        rows, keys = EngagementTrendsRepository.get_weekly_sentiment_analysis(candidate, start_date, end_date)
+        return [dict(zip(keys, row)) for row in rows]
