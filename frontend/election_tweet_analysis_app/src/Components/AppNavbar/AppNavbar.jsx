@@ -17,7 +17,7 @@ function AppNavbar() {
                             <NavDropdown title="Analytics" id="basic-nav-dropdown">
                                 <NavDropdown.Item>Candidate Analytics</NavDropdown.Item>
                                 <NavDropdown.Item href='/user-engagement'>User Analytics</NavDropdown.Item>
-                                <NavDropdown.Item>Geographic Analytics</NavDropdown.Item>
+                                <NavDropdown.Item href='/geographic-analytics'>Geographic Analytics</NavDropdown.Item>
                                 <NavDropdown.Item>Source Analytics</NavDropdown.Item>
                             </NavDropdown>
                         </Nav>
