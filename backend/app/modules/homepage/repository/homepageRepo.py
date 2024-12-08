@@ -33,7 +33,6 @@ class HomepageRepository:
             if not start_date and not end_date:
                 result = db.session.execute(text(sql))
             else:
-                print(sql)
                 result = db.session.execute(text(sql), params)
             row = result.mappings().fetchone()
             return {

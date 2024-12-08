@@ -19,8 +19,16 @@ class HomepageController:
 
     @staticmethod
     def get_most_active_users():
-        limit = int(request.args.get("limit", 5))
-        page = int(request.args.get("page", 1))
+        try:
+            limit = int(request.args.get("limit", 5))
+        except:
+            limit = 10
+        try:
+            page = int(request.args.get("page", 1))
+            if(page <= 0):
+                page = 1
+        except:
+            page = 1
         sort_by = request.args.get("sort_by", "tweet_count")
         order = request.args.get("order", "desc")
         data = HomepageService.get_most_active_users(limit, page, sort_by, order)
