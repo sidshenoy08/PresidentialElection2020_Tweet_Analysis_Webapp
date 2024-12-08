@@ -4,7 +4,7 @@ from flask import current_app
 
 class GeographicAnalysisRepository:
     @staticmethod
-    def get_most_tweets_by_country(limit, sort_by, order):
+    def get_most_tweets_by_country(sort_by, order):
         sql = text(f"""
             SELECT 
                 l.country, 
@@ -12,11 +12,10 @@ class GeographicAnalysisRepository:
             FROM tweets t
             JOIN locations l ON t.lat = l.lat AND t.long = l.long
             GROUP BY l.country
-            ORDER BY {sort_by} {order}
-            LIMIT :limit;
+            ORDER BY {sort_by} {order};
         """)
         with current_app.app_context():
-            result = db.session.execute(sql, {"limit": limit})
+            result = db.session.execute(sql)
             return result.fetchall(), result.keys()
 
     @staticmethod

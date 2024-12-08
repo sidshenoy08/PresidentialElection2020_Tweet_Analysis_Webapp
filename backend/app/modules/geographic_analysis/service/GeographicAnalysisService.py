@@ -3,8 +3,8 @@ from timezonefinder import TimezoneFinder
 
 class GeographicAnalysisService:
     @staticmethod
-    def get_most_tweets_by_country(limit=10, sort_by="tweet_count", order="DESC"):
-        rows, keys = GeographicAnalysisRepository.get_most_tweets_by_country(limit, sort_by, order)
+    def get_most_tweets_by_country(sort_by="tweet_count", order="DESC"):
+        rows, keys = GeographicAnalysisRepository.get_most_tweets_by_country(sort_by, order)
         return [dict(zip(keys, row)) for row in rows]
 
     @staticmethod
