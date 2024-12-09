@@ -56,3 +56,43 @@ class OptimizationRepository:
         with current_app.app_context():
             result = db.session.execute(sql)
             return result.fetchall(), result.keys()
+        
+    @staticmethod
+    def get_weekly_engagement_with_events(event_dates):
+        sql = text("""
+            WITH WeeklyEngagement AS (
+                SELECT
+                    DATE_TRUNC('week', t.created_at) AS tweet_week,
+                    t.tweet_about AS candidate,
+                    COUNT(t.tweet_id) AS weekly_tweet_count,
+                    SUM(t.likes + t.retweet_count) AS weekly_engagement
+                FROM tweets t
+                GROUP BY DATE_TRUNC('week', t.created_at), t.tweet_about
+            ),
+            EventDays AS (
+                SELECT
+                    t.created_at::DATE AS event_date,
+                    t.tweet_about AS candidate,
+                    COUNT(t.tweet_id) AS event_tweet_count,
+                    SUM(t.likes + t.retweet_count) AS event_engagement
+                FROM tweets t
+                WHERE t.created_at::DATE = ANY(:event_dates)
+                GROUP BY t.created_at::DATE, t.tweet_about
+            )
+            SELECT
+                w.tweet_week,
+                w.candidate,
+                w.weekly_tweet_count,
+                w.weekly_engagement,
+                e.event_date,
+                e.event_tweet_count,
+                e.event_engagement
+            FROM WeeklyEngagement w
+            LEFT JOIN EventDays e 
+                ON DATE_TRUNC('week', e.event_date) = w.tweet_week 
+                AND e.candidate = w.candidate
+            ORDER BY w.candidate, w.tweet_week;
+        """)
+        with current_app.app_context():
+            result = db.session.execute(sql, {"event_dates": event_dates})
+            return result.fetchall(), result.keys()
