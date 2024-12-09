@@ -239,7 +239,7 @@ function RegionTimezoneAnalysis() {
                     getRowId={(row) => row.tweet_id}
                     columns={regionColumns}
                     initialState={{ pagination: { paginationModel } }}
-                    pageSizeOptions={[5, 10]}
+                    pageSizeOptions={[5, 10, 100]}
                 />
             </Paper>
             <Box>
@@ -278,7 +278,7 @@ function RegionTimezoneAnalysis() {
                     getRowId={(row) => row.time_zone}
                     columns={timezoneColumns}
                     initialState={{ pagination: { paginationModel } }}
-                    pageSizeOptions={[5, 10]}
+                    pageSizeOptions={[5, 10, 100]}
                 />
             </Paper>}
         </>

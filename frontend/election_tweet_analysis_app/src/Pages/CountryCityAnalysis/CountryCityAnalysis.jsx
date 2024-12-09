@@ -266,7 +266,7 @@ function CountryCityAnalysis() {
                         getRowId={(row) => row.city}
                         columns={groupedBarChartColumns}
                         initialState={{ pagination: { groupedBarChartPaginationModel } }}
-                        pageSizeOptions={[5, 10]}
+                        pageSizeOptions={[5, 10, 100]}
                         sx={{ border: 0 }}
                     />
                 </Paper>}

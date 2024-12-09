@@ -119,7 +119,7 @@ function TopUsers() {
                     onCellClick={(row) => handleRowClick(row.id)}
                     columns={userColumns}
                     initialState={{ pagination: { paginationModel } }}
-                    pageSizeOptions={[5, 10]}
+                    pageSizeOptions={[5, 10, 100]}
                     sx={{ border: 0 }}
                 />
             </Paper>
@@ -130,7 +130,7 @@ function TopUsers() {
                     getRowId={(row) => row.tweet_id}
                     columns={tweetColumns}
                     initialState={{ pagination: { paginationModel } }}
-                    pageSizeOptions={[5, 10]}
+                    pageSizeOptions={[5, 10, 100]}
                     sx={{ border: 0 }}
                 />
             </Paper>

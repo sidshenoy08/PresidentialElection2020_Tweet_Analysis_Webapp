@@ -178,7 +178,7 @@ function UserActivity() {
                     getRowId={(row) => row.user_id}
                     columns={influenceColumns}
                     initialState={{ pagination: { paginationModel } }}
-                    pageSizeOptions={[5, 10]}
+                    pageSizeOptions={[5, 10, 100]}
                 />
             </Paper>
         </>
