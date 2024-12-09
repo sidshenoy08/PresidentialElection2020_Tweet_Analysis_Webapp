@@ -1,4 +1,4 @@
-from flask import jsonify
+from flask import jsonify, request
 from app.modules.optimization.service.OptimizationService import OptimizationService
 
 class OptimizationController:
@@ -10,6 +10,7 @@ class OptimizationController:
     
     @staticmethod
     def get_weekly_engagement_with_events():
-        event_dates = request.args.getlist('event_dates')  # Example: ["2020-10-22", "2020-11-03"]
+        data_in = request.get_json()
+        event_dates = data_in.get("event_dates", [])
         data = OptimizationService.get_weekly_engagement_with_events(event_dates)
         return jsonify(data), 200

@@ -76,7 +76,7 @@ class OptimizationRepository:
                     COUNT(t.tweet_id) AS event_tweet_count,
                     SUM(t.likes + t.retweet_count) AS event_engagement
                 FROM tweets t
-                WHERE t.created_at::DATE = ANY(:event_dates)
+                WHERE t.created_at::DATE = ANY(CAST(:event_dates AS DATE[]))
                 GROUP BY t.created_at::DATE, t.tweet_about
             )
             SELECT
