@@ -1,4 +1,4 @@
-from app.modules.optimization.repository.optimizationRepo import OptimizationRepository
+from app.modules.optimization.repository.OptimizationRepository import OptimizationRepository
 
 class OptimizationService:
 
