@@ -24,7 +24,7 @@ class CandidateAnalysisRepository:
             total_engagement,
             CASE 
                 WHEN SUM(total_engagement) OVER(PARTITION BY country) = 0 THEN 0
-                ELSE 100.0 * total_engagement / SUM(total_engagement) OVER(PARTITION BY country)
+                ELSE ROUND(100.0 * total_engagement / SUM(total_engagement) OVER(PARTITION BY country), 2)
             END AS engagement_percentage
         FROM region_engagement
         ORDER BY country, engagement_percentage DESC;

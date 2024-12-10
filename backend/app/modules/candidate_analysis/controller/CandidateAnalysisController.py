@@ -12,6 +12,11 @@ class CandidateAnalysisController:
     
     @staticmethod
     def get_daily_trends():
-        candidate = request.args.get('candidate', 'Trump')
+        try:
+            candidate = request.args.get('candidate', 'Trump')
+            if(candidate not in {"Trump", "Biden"}):
+                candidate = "Trump"
+        except:
+            candidate = "Trump"
         data = CandidateAnalysisService.get_daily_trends(candidate)
         return jsonify(data), 200
