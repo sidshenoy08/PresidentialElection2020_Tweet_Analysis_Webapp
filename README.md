@@ -49,4 +49,7 @@ cd path_to_project/tweet-analysis-app/frontend/election_tweet_analysis_app
 ```
 npm install
 ```
-3. 
+3. Start the Frontend Server
+```
+npm start
+```
