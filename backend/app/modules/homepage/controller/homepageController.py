@@ -21,6 +21,8 @@ class HomepageController:
     def get_most_active_users():
         try:
             limit = int(request.args.get("limit", 5))
+            if(limit <= 0):
+                limit = 5
         except:
             limit = 10
         try:

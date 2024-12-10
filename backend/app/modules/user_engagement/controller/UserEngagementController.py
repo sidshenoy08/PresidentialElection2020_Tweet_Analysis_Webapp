@@ -13,6 +13,8 @@ class UserEngagementController:
             order = "desc"
         try:
             limit = int(request.args.get("limit", 10))
+            if(limit <= 0):
+                limit = 10
         except:
             limit = 10
         data = UserEngagementService.get_top_users_by_engagement(order, limit)
@@ -35,6 +37,8 @@ class UserEngagementController:
             order = "desc"
         try:
             limit = int(request.args.get("limit", 10))
+            if(limit <= 0):
+                limit = 10
         except:
             limit = 10
         data = UserEngagementService.get_user_activity_breakdown(candidate, order, limit)
@@ -61,6 +65,8 @@ class UserEngagementController:
             candidate = "Trump"
         try:
             limit = int(request.args.get("limit", 10))
+            if(limit <= 0):
+                limit = 10
         except:
             limit = 10
         data = UserEngagementService.get_influential_users(candidate, limit)

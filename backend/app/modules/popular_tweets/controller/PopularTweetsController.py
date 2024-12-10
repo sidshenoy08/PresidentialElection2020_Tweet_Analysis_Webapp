@@ -13,6 +13,8 @@ class PopularTweetsController:
             candidate = "Trump"
         try:
             limit = int(request.args.get('limit', 10))
+            if(limit <= 0):
+                limit = 10
         except:
             limit = 10
         data = PopularTweetsService.get_top_tweets_by_retweets(candidate, limit)
@@ -28,6 +30,8 @@ class PopularTweetsController:
             candidate = "Trump"
         try:
             limit = int(request.args.get('limit', 10))
+            if(limit <= 0):
+                limit = 10
         except:
             limit = 10
         data = PopularTweetsService.get_top_tweets_by_likes(candidate, limit)
@@ -43,6 +47,8 @@ class PopularTweetsController:
             candidate = "Trump"
         try:
             limit = int(request.args.get('limit', 10))
+            if(limit <= 0):
+                limit = 10
         except:
             limit = 10
         data = PopularTweetsService.get_tweet_location_insights(candidate, limit)

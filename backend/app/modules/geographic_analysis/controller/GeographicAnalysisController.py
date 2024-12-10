@@ -14,6 +14,8 @@ class GeographicAnalysisController:
     def get_city_level_analysis():
         try:
             limit = int(request.args.get("limit", 10))
+            if(limit <= 0):
+                limit = 10
         except:
             limit = 10
         try:
@@ -54,6 +56,8 @@ class GeographicAnalysisController:
             order = "DESC"
         try:
             limit = int(request.args.get("limit", 10))
+            if(limit <= 0):
+                limit = 10
         except:
             limit = 10
         data = GeographicAnalysisService.get_top_tweets_by_region(filters, sort_by, order, limit)
