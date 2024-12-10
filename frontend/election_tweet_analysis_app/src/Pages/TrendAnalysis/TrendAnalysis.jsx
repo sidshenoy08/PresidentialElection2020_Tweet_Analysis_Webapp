@@ -1,0 +1,437 @@
+import AppNavbar from "../../Components/AppNavbar/AppNavbar";
+
+import { useState, useEffect } from "react";
+import ToggleButton from '@mui/material/ToggleButton';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import { DataGrid } from '@mui/x-data-grid';
+import Paper from '@mui/material/Paper';
+import {
+    Chart as ChartJS,
+    CategoryScale,
+    LinearScale,
+    LineElement,
+    Title,
+    Tooltip,
+    Legend,
+    PointElement
+} from 'chart.js';
+import { Line } from 'react-chartjs-2';
+import { TextField } from "@mui/material";
+import Box from "@mui/material/Box";
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
+import FormLabel from '@mui/material/FormLabel';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+
+function TrendAnalysis() {
+    const [rollavgData, setRollavgData] = useState([]);
+    const [rollavgCandidate, setRollavgCandidate] = useState('Trump');
+    const [window, setWindow] = useState();
+    const [rollavgSortMetric, setRollavgSortMetric] = useState('date');
+    const [rollavgOrder, setRollavgOrder] = useState('desc');
+    const [rollavgDataFormat, setRollAvgDataFormat] = useState('chart');
+
+    const [spikeData, setSpikeData] = useState([]);
+    const [spikeCandidate, setSpikeCandidate] = useState('Trump');
+    const [threshold, setThreshold] = useState();
+    const [spikeSortMetric, setSpikeSortMetric] = useState('date');
+    const [spikeOrder, setSpikeOrder] = useState('desc');
+    const [spikeDataFormat, setSpikeDataFormat] = useState('chart');
+
+    const [highVolumeData, setHighVolumeData] = useState([]);
+    const [highVolumeCandidate, setHighVolumeCandidate] = useState('Trump');
+    const [limit, setLimit] = useState();
+    const [highVolumeSortMetric, setHighVolumeSortMetric] = useState('date');
+    const [highVolumeOrder, setHighVolumeOrder] = useState('desc');
+    const [page, setPage] = useState();
+    const [highVolumeDataFormat, setHighVolumeDataFormat] = useState('chart');
+
+    ChartJS.register(
+        CategoryScale,
+        LinearScale,
+        LineElement,
+        Title,
+        Tooltip,
+        Legend,
+        PointElement
+    );
+
+    const rollavgColumns = [
+        { field: 'date', headerName: 'Date', width: 250 },
+        { field: 'engagement', headerName: 'Engagement', type: 'number', width: 100 },
+        { field: 'rolling_avg', headerName: 'Rolling Average', type: 'number', width: 100 }
+    ];
+
+    const spikeColumns = [
+        { field: 'date', headerName: 'Date', width: 250 },
+        { field: 'engagement', headerName: 'Engagement', type: 'number', width: 100 }
+    ];
+
+    const highVolumeColumns = [
+        { field: 'date', headerName: 'Date', width: 250 },
+        { field: 'engagement', headerName: 'Engagement', type: 'number', width: 100 }
+    ];
+
+    const paginationModel = { page: 0, pageSize: 5 };
+
+    let rollavgChartData = {
+        labels: rollavgData.map((row) => row.date.substring(0, row.date.indexOf(" 00:00:00"))),
+        datasets: [
+            {
+                label: "Total Engagement",
+                data: rollavgData.map((row) => row.engagement),
+                borderColor: "rgba(75, 192, 192, 1)",
+                backgroundColor: "rgba(75, 192, 192, 0.2)",
+                borderWidth: 2,
+                tension: 0.4
+            },
+            {
+                label: "Rolling Average",
+                data: rollavgData.map((row) => row.rolling_avg),
+                borderColor: "rgba(153, 102, 255, 1)",
+                backgroundColor: "rgba(153, 102, 255, 0.2)",
+                borderWidth: 2,
+                tension: 0.4,
+                borderDash: [5, 5]
+            }
+        ]
+    };
+
+    let spikeChartData = {
+        labels: spikeData.map((row) => row.date.substring(0, row.date.indexOf(" 00:00:00"))),
+        datasets: [
+            {
+                label: "Total Engagement",
+                data: spikeData.map((row) => row.engagement),
+                borderColor: "rgba(75, 192, 192, 1)",
+                backgroundColor: "rgba(75, 192, 192, 0.2)"
+            }
+        ]
+    };
+
+    let highVolumeChartData = {
+        labels: highVolumeData.map((row) => row.date.substring(0, row.date.indexOf(" 00:00:00"))),
+        datasets: [
+            {
+                label: "Total Engagement",
+                data: highVolumeData.map((row) => row.engagement),
+                borderColor: "rgba(75, 192, 192, 1)",
+                backgroundColor: "rgba(75, 192, 192, 0.2)"
+            }
+        ]
+    };
+
+    const rollavgChartOptions = {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: "top",
+            },
+            title: {
+                display: true,
+                text: "Engagement over Time: Total vs Rolling Average",
+            }
+        },
+        scales: {
+            x: {
+                title: {
+                    display: true,
+                    text: "Day"
+                },
+            },
+            y: {
+                title: {
+                    display: true,
+                    text: "Engagement"
+                }
+            }
+        }
+    };
+
+    const spikeChartOptions = {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: "top",
+            },
+            title: {
+                display: true,
+                text: "Spikes in Engagement over Time",
+            }
+        },
+        scales: {
+            x: {
+                title: {
+                    display: true,
+                    text: "Day"
+                },
+            },
+            y: {
+                title: {
+                    display: true,
+                    text: "Total Engagement"
+                }
+            }
+        }
+    };
+
+    const highVolumeChartOptions = {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: "top",
+            },
+            title: {
+                display: true,
+                text: "Days with High Volume of Engagement",
+            }
+        },
+        scales: {
+            x: {
+                title: {
+                    display: true,
+                    text: "Day"
+                },
+            },
+            y: {
+                title: {
+                    display: true,
+                    text: "Total Engagement"
+                }
+            }
+        }
+    };
+
+    useEffect(() => {
+        fetch(`http://127.0.0.1:5000/api/engagement-trends/rolling-average?candidate=${rollavgCandidate}&window=${window}&sort_by=${rollavgSortMetric}&order=${rollavgOrder}`, { mode: 'cors' })
+            .then((response) => response.json())
+            .then((data) => setRollavgData(data))
+            .catch((err) => {
+                console.log(err.message);
+            });
+    }, [rollavgCandidate, window, rollavgSortMetric, rollavgOrder]);
+
+    useEffect(() => {
+        fetch(`http://127.0.0.1:5000/api/engagement-trends/spikes?candidate=${spikeCandidate}&threshold=${threshold}&sort_by=${spikeSortMetric}&order=${spikeOrder}`, {mode: 'cors'})
+            .then((response) => response.json())
+            .then((data) => setSpikeData(data))
+            .catch((err) => {
+                console.log(err.message);
+            });
+    }, [spikeCandidate, threshold, spikeSortMetric, spikeOrder]);
+
+    useEffect(() => {
+        fetch(`http://127.0.0.1:5000/api/engagement-trends/high-volume-days?candidate=${highVolumeCandidate}&limit=${limit}&sort_by=${highVolumeSortMetric}&order=${highVolumeOrder}&page=${page}`, {mode: 'cors'})
+            .then((response) => response.json())
+            .then((data) => setHighVolumeData(data))
+            .catch((err) => {
+                console.log(err.message);
+            });
+    }, [highVolumeCandidate, limit, highVolumeSortMetric, highVolumeOrder, page]);
+
+    return (
+        <>
+            <AppNavbar />
+            <h3>Rolling Average By Day</h3>
+            <Box>
+                <FormControl>
+                    <InputLabel id="rollavg-candidate-select-label">Candidate</InputLabel>
+                    <Select
+                        labelId="rollavg-candidate-select-label"
+                        id="rollavg-candidate-simple-select"
+                        label="Candidate"
+                        sx={{ width: 150 }}
+                        onChange={(event) => setRollavgCandidate(event.target.value)}
+                        defaultValue={rollavgCandidate}
+                    >
+                        <MenuItem value="Trump">Trump</MenuItem>
+                        <MenuItem value="Biden">Biden</MenuItem>
+                    </Select>
+                </FormControl>
+                <TextField id="outlined-basic" label="Window" onChange={(event) => setWindow(event.target.value)} variant="outlined" />
+                <FormControl>
+                    <InputLabel id="rollavg-metric-select-label">Sort Metric</InputLabel>
+                    <Select
+                        labelId="rollavg-metric-select-label"
+                        id="rollavg-metric-simple-select"
+                        label="Sort Metric"
+                        sx={{ width: 150 }}
+                        onChange={(event) => setRollavgSortMetric(event.target.value)}
+                        defaultValue={rollavgSortMetric}
+                    >
+                        <MenuItem value="date">Date</MenuItem>
+                        <MenuItem value="engagement">Total Engagement</MenuItem>
+                        <MenuItem value="rolling_avg">Rollung Average</MenuItem>
+                    </Select>
+                </FormControl>
+                <FormControl>
+                    <FormLabel id="demo-radio-buttons-group-label">Sorting Order</FormLabel>
+                    <RadioGroup
+                        aria-labelledby="demo-radio-buttons-group-label"
+                        name="radio-buttons-group"
+                        defaultValue={rollavgOrder}
+                    >
+                        <FormControlLabel value="asc" onChange={(event) => setRollavgOrder(event.target.value)} control={<Radio />} label="Ascending" />
+                        <FormControlLabel value="desc" onChange={(event) => setRollavgOrder(event.target.value)} control={<Radio />} label="Descending" />
+                    </RadioGroup>
+                </FormControl>
+            </Box>
+            <ToggleButtonGroup
+                color="primary"
+                value={rollavgDataFormat}
+                exclusive
+                onChange={(event, newFormat) => setRollAvgDataFormat(newFormat)}
+                aria-label="Data View"
+            >
+                <ToggleButton value="chart">Chart</ToggleButton>
+                <ToggleButton value="table">Table</ToggleButton>
+            </ToggleButtonGroup>
+            {rollavgDataFormat === "chart" ? <Line data={rollavgChartData} options={rollavgChartOptions} />
+                : <Paper sx={{ height: 400, width: '100%' }}>
+                <DataGrid
+                    rows={rollavgData}
+                    getRowId={(row) => row.date}
+                    columns={rollavgColumns}
+                    initialState={{ pagination: { paginationModel } }}
+                    pageSizeOptions={[5, 10, 100]}
+                    sx={{ border: 0 }}
+                />
+            </Paper>}
+            <h3>Spikes in Total Engagment</h3>
+            <Box>
+                <FormControl>
+                    <InputLabel id="spike-candidate-select-label">Candidate</InputLabel>
+                    <Select
+                        labelId="spike-candidate-select-label"
+                        id="spike-candidate-simple-select"
+                        label="Candidate"
+                        sx={{ width: 150 }}
+                        onChange={(event) => setSpikeCandidate(event.target.value)}
+                        defaultValue={spikeCandidate}
+                    >
+                        <MenuItem value="Trump">Trump</MenuItem>
+                        <MenuItem value="Biden">Biden</MenuItem>
+                    </Select>
+                </FormControl>
+                <TextField id="outlined-basic" label="Threshold" onChange={(event) => setThreshold(event.target.value)} variant="outlined" />
+                <FormControl>
+                    <InputLabel id="spike-metric-select-label">Sort Metric</InputLabel>
+                    <Select
+                        labelId="spike-metric-select-label"
+                        id="spike-metric-simple-select"
+                        label="Sort Metric"
+                        sx={{ width: 150 }}
+                        onChange={(event) => setSpikeSortMetric(event.target.value)}
+                        defaultValue={spikeSortMetric}
+                    >
+                        <MenuItem value="date">Date</MenuItem>
+                        <MenuItem value="engagement">Total Engagement</MenuItem>
+                    </Select>
+                </FormControl>
+                <FormControl>
+                    <FormLabel id="demo-radio-buttons-group-label">Sorting Order</FormLabel>
+                    <RadioGroup
+                        aria-labelledby="demo-radio-buttons-group-label"
+                        name="radio-buttons-group"
+                        defaultValue={spikeOrder}
+                    >
+                        <FormControlLabel value="asc" onChange={(event) => setSpikeOrder(event.target.value)} control={<Radio />} label="Ascending" />
+                        <FormControlLabel value="desc" onChange={(event) => setSpikeOrder(event.target.value)} control={<Radio />} label="Descending" />
+                    </RadioGroup>
+                </FormControl>
+            </Box>
+            <ToggleButtonGroup
+                color="primary"
+                value={spikeDataFormat}
+                exclusive
+                onChange={(event, newFormat) => setSpikeDataFormat(newFormat)}
+                aria-label="Data View"
+            >
+                <ToggleButton value="chart">Chart</ToggleButton>
+                <ToggleButton value="table">Table</ToggleButton>
+            </ToggleButtonGroup>
+            {spikeDataFormat === "chart" ? <Line data={spikeChartData} options={spikeChartOptions} />
+                : <Paper sx={{ height: 400, width: '100%' }}>
+                <DataGrid
+                    rows={spikeData}
+                    getRowId={(row) => row.date}
+                    columns={spikeColumns}
+                    initialState={{ pagination: { paginationModel } }}
+                    pageSizeOptions={[5, 10, 100]}
+                    sx={{ border: 0 }}
+                />
+            </Paper>}
+            <h3>Days with High Engagement</h3>
+            <Box>
+                <FormControl>
+                    <InputLabel id="highvolume-candidate-select-label">Candidate</InputLabel>
+                    <Select
+                        labelId="highvolume-candidate-select-label"
+                        id="highvolume-candidate-simple-select"
+                        label="Candidate"
+                        sx={{ width: 150 }}
+                        onChange={(event) => setHighVolumeCandidate(event.target.value)}
+                        defaultValue={highVolumeCandidate}
+                    >
+                        <MenuItem value="Trump">Trump</MenuItem>
+                        <MenuItem value="Biden">Biden</MenuItem>
+                    </Select>
+                </FormControl>
+                <TextField id="outlined-basic" label="Number of Days" onChange={(event) => setLimit(event.target.value)} variant="outlined" />
+                <FormControl>
+                    <InputLabel id="highvolume-metric-select-label">Sort Metric</InputLabel>
+                    <Select
+                        labelId="highvolume-metric-select-label"
+                        id="highvolume-metric-simple-select"
+                        label="Sort Metric"
+                        sx={{ width: 150 }}
+                        onChange={(event) => setHighVolumeSortMetric(event.target.value)}
+                        defaultValue={highVolumeSortMetric}
+                    >
+                        <MenuItem value="date">Date</MenuItem>
+                        <MenuItem value="engagement">Total Engagement</MenuItem>
+                    </Select>
+                </FormControl>
+                <TextField id="outlined-basic" label="Page Number" onChange={(event) => setPage(event.target.value)} variant="outlined" />
+                <FormControl>
+                    <FormLabel id="demo-radio-buttons-group-label">Sorting Order</FormLabel>
+                    <RadioGroup
+                        aria-labelledby="demo-radio-buttons-group-label"
+                        name="radio-buttons-group"
+                        defaultValue={highVolumeOrder}
+                    >
+                        <FormControlLabel value="asc" onChange={(event) => setHighVolumeOrder(event.target.value)} control={<Radio />} label="Ascending" />
+                        <FormControlLabel value="desc" onChange={(event) => setHighVolumeOrder(event.target.value)} control={<Radio />} label="Descending" />
+                    </RadioGroup>
+                </FormControl>
+            </Box>
+            <ToggleButtonGroup
+                color="primary"
+                value={highVolumeDataFormat}
+                exclusive
+                onChange={(event, newFormat) => setHighVolumeDataFormat(newFormat)}
+                aria-label="Data View"
+            >
+                <ToggleButton value="chart">Chart</ToggleButton>
+                <ToggleButton value="table">Table</ToggleButton>
+            </ToggleButtonGroup>
+            {highVolumeDataFormat === "chart" ? <Line data={highVolumeChartData} options={highVolumeChartOptions} />
+                : <Paper sx={{ height: 400, width: '100%' }}>
+                <DataGrid
+                    rows={highVolumeData}
+                    getRowId={(row) => row.date}
+                    columns={highVolumeColumns}
+                    initialState={{ pagination: { paginationModel } }}
+                    pageSizeOptions={[5, 10, 100]}
+                    sx={{ border: 0 }}
+                />
+            </Paper>}
+        </>
+    );
+}
+
+export default TrendAnalysis;

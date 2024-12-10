@@ -8,6 +8,8 @@ import GeographicAnalysisHome from "./Pages/GeographicAnalysisHome/GeographicAna
 import CountryCityAnalysis from "./Pages/CountryCityAnalysis/CountryCityAnalysis";
 import RegionTimezoneAnalysis from "./Pages/RegionTimezoneAnalysis/RegionTimezoneAnalysis";
 import HallOfFame from "./Pages/HallOfFame/HallOfFame";
+import TrendAnalysis from "./Pages/TrendAnalysis/TrendAnalysis";
+import SentimentAnalysis from "./Pages/SentimentAnalysis/SentimentAnalysis";
 
 function App() {
   return (
@@ -21,6 +23,8 @@ function App() {
         <Route path='/geographic-analysis/country-city-analysis' element={<CountryCityAnalysis />} />
         <Route path='/geographic-analysis/region-timezone-analysis' element={<RegionTimezoneAnalysis />} />
         <Route path='/hall-of-fame' element={<HallOfFame />} />
+        <Route path='/trend-analytics' element={<TrendAnalysis />} />
+        <Route path='/sentiment-analytics' element={<SentimentAnalysis />} />
       </Routes>
     </BrowserRouter>
   );

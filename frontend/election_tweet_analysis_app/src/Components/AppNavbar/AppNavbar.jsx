@@ -17,10 +17,10 @@ function AppNavbar() {
                         <Nav className='ms-auto'>
                             <Nav.Link as={Link} to='/'>Home</Nav.Link>
                             <NavDropdown title="Analytics" id="basic-nav-dropdown">
-                                <NavDropdown.Item>Candidate Analytics</NavDropdown.Item>
+                                <NavDropdown.Item href='/trend-analytics'>Trend Analytics</NavDropdown.Item>
                                 <NavDropdown.Item href='/user-engagement'>User Analytics</NavDropdown.Item>
                                 <NavDropdown.Item href='/geographic-analytics'>Geographic Analytics</NavDropdown.Item>
-                                <NavDropdown.Item>Source Analytics</NavDropdown.Item>
+                                <NavDropdown.Item href='/sentiment-analytics'>Sentiment Analytics</NavDropdown.Item>
                             </NavDropdown>
                             <Nav.Link as={Link} className='hof glow' to='/hall-of-fame'>Hall of Fame</Nav.Link>
                         </Nav>
