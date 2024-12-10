@@ -16,7 +16,23 @@ Follow these steps to set up and run the application on your local machine: -
 ##### Steps
  1.  Clone the Repository:
  2.  Navigate to the Backend:
+```
+cd path_to_project/tweet-analysis-app/backend
+```
  3.  Create a Virtual Environment:
 ```
 python -m venv venv
 ```
+ 4.  Activate the Virtual Environment
+```
+source venv/bin/activate
+```
+ 5.  Install Dependencies
+```
+pip install -r requirements.txt
+```
+6. Setup .env File
+```
+POSTGRES_DATABASE_URL=postgresql://<username>:<password>@<host>:<port>/<database_name>
+```
+7. 
