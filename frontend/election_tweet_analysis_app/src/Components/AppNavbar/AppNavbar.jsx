@@ -21,6 +21,7 @@ function AppNavbar() {
                                 <NavDropdown.Item href='/user-engagement'>User Analytics</NavDropdown.Item>
                                 <NavDropdown.Item href='/geographic-analytics'>Geographic Analytics</NavDropdown.Item>
                                 <NavDropdown.Item href='/sentiment-analytics'>Sentiment Analytics</NavDropdown.Item>
+                                <NavDropdown.Item href='/candidate-analytics'>Candidate Analytics</NavDropdown.Item>
                             </NavDropdown>
                             <Nav.Link as={Link} className='hof glow' to='/hall-of-fame'>Hall of Fame</Nav.Link>
                         </Nav>

@@ -10,6 +10,7 @@ import RegionTimezoneAnalysis from "./Pages/RegionTimezoneAnalysis/RegionTimezon
 import HallOfFame from "./Pages/HallOfFame/HallOfFame";
 import TrendAnalysis from "./Pages/TrendAnalysis/TrendAnalysis";
 import SentimentAnalysis from "./Pages/SentimentAnalysis/SentimentAnalysis";
+import CandidateAnalysis from "./Pages/CandidateAnalysis/CandidateAnalysis";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
         <Route path='/hall-of-fame' element={<HallOfFame />} />
         <Route path='/trend-analytics' element={<TrendAnalysis />} />
         <Route path='/sentiment-analytics' element={<SentimentAnalysis />} />
+        <Route path='/candidate-analytics' element={<CandidateAnalysis />} />
       </Routes>
     </BrowserRouter>
   );
