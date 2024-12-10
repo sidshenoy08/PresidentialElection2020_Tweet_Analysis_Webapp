@@ -32,8 +32,13 @@ source venv/bin/activate
 ```
 pip install -r requirements.txt
 ```
-6. Setup .env File
+6. Setup .env File in the backend folder
 ```
 POSTGRES_DATABASE_URL=postgresql://<username>:<password>@<host>:<port>/<database_name>
 ```
-7. 
+7. Start the Backend Server
+```
+python -m flask run --debug
+```
+8. Check the API specification for testing using Swagger - default on http://127.0.0.1:5000/docs
+
