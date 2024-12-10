@@ -99,12 +99,26 @@ function HallOfFame() {
         responsive: true,
         plugins: {
             legend: {
-                position: "top",
+                position: "top"
             },
             title: {
                 display: true,
-                text: "Number of Tweets By Users",
+                text: "Number of Tweets By Users"
             },
+        },
+        scales: {
+            x: {
+              title: {
+                display: true,
+                text: "User"
+              },
+            },
+            y: {
+              title: {
+                display: true,
+                text: "Number of Tweets"
+              }
+            }
         }
     };
 
@@ -113,12 +127,26 @@ function HallOfFame() {
         indexAxis: "y",
         plugins: {
             legend: {
-                position: "top",
+                position: "top"
             },
             title: {
                 display: true,
-                text: "Number of Tweets By City",
+                text: "Number of Tweets By City"
+            }
+        },
+        scales: {
+            x: {
+              title: {
+                display: true,
+                text: "Number of Tweets"
+              },
             },
+            y: {
+              title: {
+                display: true,
+                text: "Location"
+              }
+            }
         }
     }
 

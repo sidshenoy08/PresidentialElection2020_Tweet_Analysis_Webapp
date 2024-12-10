@@ -102,7 +102,6 @@ function TopUsers() {
                 <FormLabel id="demo-radio-buttons-group-label">Sorting Order</FormLabel>
                 <RadioGroup
                     aria-labelledby="demo-radio-buttons-group-label"
-                    defaultValue="female"
                     name="radio-buttons-group"
                 >
                     <FormControlLabel value="asc" onChange={handleOrderChange} control={<Radio />} label="Ascending" />
