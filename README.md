@@ -6,15 +6,12 @@ PollPulse is a social media analysis platform for tracking and visualizing engag
 
 ### How to Run the App Locally
 Follow these steps to set up and run the application on your local machine: -
-
-#### BACKEND
-
 ##### Prerequisites
 * Python 3.8 or higher installed on your machine
 * CLI
 * reactjs (or Node.js required for frontend setup)
 
-##### Steps
+#### BACKEND Setup Steps
  1.  Clone the Repository:
  2.  Navigate to the Backend:
 ```
@@ -42,3 +39,14 @@ python -m flask run --debug
 ```
 8. Check the API specification for testing using Swagger - default on http://127.0.0.1:5000/docs
 
+
+#### FRONTEND Setup Steps
+1. Navigate to the Frontend folder:
+```
+cd path_to_project/tweet-analysis-app/frontend/election_tweet_analysis_app
+```
+2. Install dependencies
+```
+npm install
+```
+3. 
