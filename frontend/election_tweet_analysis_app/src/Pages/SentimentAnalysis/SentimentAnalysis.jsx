@@ -24,7 +24,7 @@ function SentimentAnalysis() {
     const [trumpData, setTrumpData] = useState([]);
     const [trumpDataFormat, setTrumpDataFormat] = useState('chart');
 
-    const [bidenData, setBidenData] = useState();
+    const [bidenData, setBidenData] = useState([]);
     const [bidenDataFormat, setBidenDataFormat] = useState('chart');
 
     ChartJS.register(
