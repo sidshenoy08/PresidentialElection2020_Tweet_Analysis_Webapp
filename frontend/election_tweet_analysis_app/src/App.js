@@ -11,6 +11,7 @@ import HallOfFame from "./Pages/HallOfFame/HallOfFame";
 import TrendAnalysis from "./Pages/TrendAnalysis/TrendAnalysis";
 import SentimentAnalysis from "./Pages/SentimentAnalysis/SentimentAnalysis";
 import CandidateAnalysis from "./Pages/CandidateAnalysis/CandidateAnalysis";
+import Optimization from "./Pages/Optimization/Optimization";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
         <Route path='/trend-analytics' element={<TrendAnalysis />} />
         <Route path='/sentiment-analytics' element={<SentimentAnalysis />} />
         <Route path='/candidate-analytics' element={<CandidateAnalysis />} />
+        <Route path='/optimization' element={<Optimization />} />
       </Routes>
     </BrowserRouter>
   );
