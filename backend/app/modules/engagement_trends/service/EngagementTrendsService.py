@@ -22,10 +22,9 @@ class EngagementTrendsService:
         return df.to_dict(orient="records")
 
     @staticmethod
-    def get_high_volume_days(candidate, limit=5, page=1, sort_by="engagement", order="desc"):
-        offset = (page - 1) * limit
-        days = EngagementTrendsRepository.get_high_volume_days(candidate, limit, offset, sort_by, order)
-        return [row._asdict() for row in days]
+    def get_high_volume_days(rank_limit, sort_by, order):
+        rows, keys = EngagementTrendsRepository.get_high_volume_days(rank_limit, sort_by, order)
+        return [dict(zip(keys, row)) for row in rows]
     
     @staticmethod
     def get_weekly_sentiment_analysis(candidate="Trump", start_date=None, end_date=None):

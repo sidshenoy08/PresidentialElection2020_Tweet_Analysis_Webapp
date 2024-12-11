@@ -64,12 +64,6 @@ class EngagementTrendsController:
     @staticmethod
     def get_high_volume_days():
         try:
-            candidate = request.args.get('candidate', 'Trump')
-            if(candidate not in {"Trump", "Biden"}):
-                candidate = "Trump"
-        except:
-            candidate = "Trump"
-        try:
             limit = int(request.args.get('limit', 5))
             if(limit <= 0):
                 limit = 5
@@ -87,13 +81,7 @@ class EngagementTrendsController:
                 order = "desc"
         except:
             order = "desc"
-        try:
-            page = int(request.args.get('page', 1))
-            if(page <= 0):
-                page = 1
-        except:
-            page = 1
-        data = EngagementTrendsService.get_high_volume_days(candidate, limit, page, sort_by, order)
+        data = EngagementTrendsService.get_high_volume_days(limit, sort_by, order)
         return jsonify(data), 200
     
     @staticmethod

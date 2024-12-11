@@ -58,23 +58,46 @@ class EngagementTrendsRepository:
 
 
     @staticmethod
-    def get_high_volume_days(candidate, limit=5, offset=0, sort_by="engagement", order="desc"):
-        order_by = cast(Tweet.created_at, Date) if sort_by == "date" else 'engagement'
-        ord = desc(order_by) if order == "desc" else order_by
+    def get_high_volume_days(rank_limit=5, sort_by="engagement", order="desc"):
+        sort_by = sort_by if sort_by in ["date", "engagement"] else "engagement"
+        sort_column = "total_engagement" if sort_by == "engagement" else "tweet_date"
+        order = "ASC" if order.lower() == "asc" else "DESC"
 
-        res = (
-            db.session.query(
-                cast(Tweet.created_at, Date).label('date'),
-                func.sum(Tweet.likes + Tweet.retweet_count).label('engagement')
+        sql = text(f"""
+            WITH DailyCandidateVolume AS (
+                SELECT
+                    t.created_at::DATE AS tweet_date,
+                    t.tweet_about AS candidate,
+                    COUNT(t.tweet_id) AS tweet_count,
+                    SUM(t.likes + t.retweet_count) AS total_engagement
+                FROM tweets t
+                WHERE t.tweet_about IN ('Biden', 'Trump')
+                GROUP BY t.created_at::DATE, t.tweet_about
+            ),
+            HighVolumeDays AS (
+                SELECT
+                    candidate,
+                    tweet_date,
+                    tweet_count,
+                    total_engagement,
+                    RANK() OVER(PARTITION BY candidate ORDER BY tweet_count DESC) AS daily_rank
+                FROM DailyCandidateVolume
             )
-            .filter(Tweet.tweet_about == candidate)
-            .group_by(cast(Tweet.created_at, Date))
-            .order_by(ord)
-            .offset(offset)
-            .limit(limit)
-            .all()
-        )
-        return res
+            SELECT
+                tweet_date,
+                candidate,
+                tweet_count,
+                total_engagement
+            FROM HighVolumeDays
+            WHERE daily_rank <= :rank_limit
+            ORDER BY {sort_column} {order};
+        """)
+
+        with current_app.app_context():
+            result = db.session.execute(sql, {"rank_limit": rank_limit})
+            return result.fetchall(), result.keys()
+
+
     
     @staticmethod
     def get_weekly_sentiment_analysis(candidate, start_date, end_date):

@@ -11,3 +11,4 @@ react-chartjs-2
 nltk
 textblob
 dayjs
+react-csv
