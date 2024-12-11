@@ -1,11 +1,81 @@
-h3 {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin-top: 2.5rem !important;
+/* Container styling */
+.user-engagement-container {
+    padding: 20px;
+    margin: auto;
+    max-width: 1200px;
+    text-align: center;
+    font-family: 'Arial', sans-serif;
 }
 
-.para-text {
-    margin-top: 2.5rem;
-    color: black;
-    margin-bottom: 2.5rem;
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
+/* Page title and description */
+.page-title {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.page-description {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 30px;
+}
+
+/* Card styling */
+.engagement-card {
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.engagement-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Typography within the card */
+.card-title {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.card-description {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+/* Button styles */
+.custom-button {
+    font-size: 1rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    color: white;
+    border: none; /* Remove the default border */
+}
+
+/* Red button */
+.red-button {
+    background-color: #d32f2f; /* Red color */
+}
+
+.red-button:hover {
+    background-color: #c2185b; /* Darker red on hover */
+    transform: scale(1.05);
+}
+
+/* Blue button */
+.blue-button {
+    background-color: #1976d2; /* Blue color */
+}
+
+.blue-button:hover {
+    background-color: #1565c0; /* Darker blue on hover */
+    transform: scale(1.05);
 }

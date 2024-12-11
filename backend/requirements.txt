@@ -1,6 +1,6 @@
 flask
 psycopg2-binary
-flask-cors
+flask_cors
 flask-sqlalchemy
 python-dotenv
 pandas
@@ -11,3 +11,7 @@ react-chartjs-2
 nltk
 textblob
 dayjs
+dotenv
+flask-swagger-ui
+flask-cors
+flask_sqlalchemy
