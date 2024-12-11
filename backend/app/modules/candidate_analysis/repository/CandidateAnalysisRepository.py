@@ -49,9 +49,9 @@ class CandidateAnalysisRepository:
             tweet_date,
             tweet_count,
             total_engagement,
-            AVG(total_engagement) OVER (
+            ROUND(AVG(total_engagement) OVER (
                 ORDER BY tweet_date ROWS BETWEEN 2 PRECEDING AND CURRENT ROW
-            ) AS rolling_avg
+            ), 2) AS rolling_avg
         FROM daily_metrics
         ORDER BY tweet_date;
         """)

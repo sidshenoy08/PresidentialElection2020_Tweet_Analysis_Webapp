@@ -170,9 +170,9 @@ function Home() {
             <div>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <p>Between </p>
-                    <DatePicker label="Start Date" defaultValue={startDate} onChange={(newValue) => setStartDate(newValue)} />
+                    <DatePicker label="Start Date" defaultValue={startDate} minDate={dayjs('2020-10-15')} maxDate={endDate} onChange={(newValue) => setStartDate(newValue)} />
                     <p> and </p>
-                    <DatePicker label="End Date" defaultValue={endDate} onChange={(newValue) => setEndDate(newValue)} />
+                    <DatePicker label="End Date" defaultValue={endDate} minDate={startDate} maxDate={dayjs('2020-11-08')} onChange={(newValue) => setEndDate(newValue)} />
                     <p>, there have been {totalTweets} tweets by {uniqueUsers} unique users.</p>
                 </LocalizationProvider>
             </div>
