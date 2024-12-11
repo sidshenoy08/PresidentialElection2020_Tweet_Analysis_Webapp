@@ -14,3 +14,8 @@ class OptimizationController:
         event_dates = data_in.get("event_dates", [])
         data = OptimizationService.get_weekly_engagement_with_events(event_dates)
         return jsonify(data), 200
+    
+    @staticmethod
+    def get_user_engagement_with_candidate():
+        data = OptimizationService.get_user_engagement_with_candidate()
+        return jsonify(data), 200

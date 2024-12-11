@@ -84,9 +84,9 @@ class OptimizationRepository:
                 w.candidate,
                 w.weekly_tweet_count,
                 w.weekly_engagement,
-                e.event_date,
-                e.event_tweet_count,
-                e.event_engagement
+                COALESCE(e.event_date, w.tweet_week) AS event_date,
+                COALESCE(e.event_tweet_count, 0) AS event_tweet_count,
+                COALESCE(e.event_engagement, 0) AS event_engagement
             FROM WeeklyEngagement w
             LEFT JOIN EventDays e 
                 ON DATE_TRUNC('week', e.event_date) = w.tweet_week 
@@ -95,4 +95,38 @@ class OptimizationRepository:
         """)
         with current_app.app_context():
             result = db.session.execute(sql, {"event_dates": event_dates})
+            return result.fetchall(), result.keys()
+        
+    @staticmethod
+    def get_user_engagement_with_candidate():
+        sql = text("""
+            WITH UserEngagement AS (
+                SELECT
+                    u.user_id,
+                    u.user_name,
+                    t.tweet_about AS candidate,
+                    u.user_followers_count,
+                    COUNT(t.tweet_id) AS total_tweets,
+                    SUM(t.likes + t.retweet_count) AS total_engagement,
+                    CASE
+                        WHEN u.user_followers_count = 0 THEN 0
+                        ELSE ROUND(CAST(CAST(SUM(t.likes + t.retweet_count) AS FLOAT) / u.user_followers_count AS NUMERIC), 2)
+                    END AS engagement_to_followers_ratio
+                FROM users u
+                JOIN tweets t ON u.user_id = t.user_id
+                GROUP BY u.user_id, u.user_name, t.tweet_about, u.user_followers_count
+            )
+            SELECT
+                user_id,
+                user_name,
+                candidate,
+                user_followers_count,
+                total_tweets,
+                total_engagement,
+                engagement_to_followers_ratio
+            FROM UserEngagement
+            ORDER BY candidate, engagement_to_followers_ratio DESC;
+        """)
+        with current_app.app_context():
+            result = db.session.execute(sql)
             return result.fetchall(), result.keys()

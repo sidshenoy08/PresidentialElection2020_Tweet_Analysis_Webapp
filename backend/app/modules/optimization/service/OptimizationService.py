@@ -11,3 +11,8 @@ class OptimizationService:
     def get_weekly_engagement_with_events(event_dates):
         results, keys = OptimizationRepository.get_weekly_engagement_with_events(event_dates)
         return [dict(zip(keys, row)) for row in results]
+    
+    @staticmethod
+    def get_user_engagement_with_candidate():
+        results, keys = OptimizationRepository.get_user_engagement_with_candidate()
+        return [dict(zip(keys, row)) for row in results]
