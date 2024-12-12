@@ -20,7 +20,7 @@ class GeographicAnalysisController:
             limit = 10
         try:
             sort_by = request.args.get("sort_by", "tweet_count")
-            if(sort_by not in {"likes", "tweet_count", "likes", "retweets"}):
+            if(sort_by not in {"city", "tweet_count", "likes", "retweets"}):
                 sort_by = "tweet_count"
         except:
             sort_by = "tweet_count"
@@ -37,10 +37,10 @@ class GeographicAnalysisController:
     @staticmethod
     def get_top_tweets_by_region():
         filters = {
-            "continent": request.args.get("continent") if(request.args.get("continent") != 'undefined') else None,
-            "country": request.args.get("country") if(request.args.get("country") != 'undefined') else None,
-            "state": request.args.get("state") if(request.args.get("state") != 'undefined') else None,
-            "city": request.args.get("city") if(request.args.get("city") != 'undefined') else None
+            "continent": request.args.get("continent") if((request.args.get("continent") != 'undefined') and (request.args.get("continent") != '')) else None,
+            "country": request.args.get("country") if((request.args.get("country") != 'undefined') and (request.args.get("country") != '')) else None,
+            "state": request.args.get("state") if((request.args.get("state") != 'undefined') and (request.args.get("state") != '')) else None,
+            "city": request.args.get("city") if((request.args.get("city") != 'undefined') and (request.args.get("city") != '')) else None
         }
         try:
             sort_by = request.args.get("sort_by", "likes")
