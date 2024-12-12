@@ -158,6 +158,7 @@ function CandidateAnalysis() {
                         pageSizeOptions={[10, 50, 100]}
                         sx={{ border: 0 }}
                     />
+                    <Download data={dailyTrendsData} filename="daily-trends-by-candidate" />
                 </Paper>}
         </>
     );

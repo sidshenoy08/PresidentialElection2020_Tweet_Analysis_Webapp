@@ -1,4 +1,5 @@
 import AppNavbar from "../../Components/AppNavbar/AppNavbar";
+import Download from "../../Components/Download/Download";
 
 import { DataGrid } from '@mui/x-data-grid';
 import Paper from '@mui/material/Paper';
@@ -8,8 +9,6 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
-import Fab from '@mui/material/Fab';
-import SearchIcon from '@mui/icons-material/Search';
 import { useState, useEffect } from "react";
 
 function TopUsers() {
@@ -17,7 +16,7 @@ function TopUsers() {
     const [userIds, setUserIds] = useState([]);
     const [tweets, setTweets] = useState([]);
     const [limit, setLimit] = useState();
-    const [order, setOrder] = useState();
+    const [order, setOrder] = useState('desc');
 
     const userColumns = [
         { field: 'user_id', headerName: 'User ID', width: 150 },
@@ -42,38 +41,13 @@ function TopUsers() {
     const paginationModel = { page: 0, pageSize: 5 };
 
     useEffect(() => {
-        fetch(`http://127.0.0.1:5000/api/user-engagement/top-users`, { mode: 'cors' })
-            .then((response) => response.json())
-            .then((data) => setUsers(data))
-            .catch((err) => {
-                console.log(err.message);
-            });
-    }, []);
-
-    function handleLimitChange(event) {
-        setLimit(event.target.value);
-    }
-
-    function handleOrderChange(event) {
-        setOrder(event.target.value);
-    }
-
-    function handleParamChange() {
-        fetchTopUsers();
-    }
-
-    function fetchTopUsers() {
         fetch(`http://127.0.0.1:5000/api/user-engagement/top-users?limit=${limit}&order=${order}`, { mode: 'cors' })
             .then((response) => response.json())
             .then((data) => setUsers(data))
             .catch((err) => {
                 console.log(err.message);
             });
-    }
-
-    function handleRowClick(userId) {
-        setUserIds([...userIds, userId]);
-    }
+    }, [limit, order]);
 
     useEffect(() => {
         fetch(`http://127.0.0.1:5000/api/user-engagement/popular-tweets`, {
@@ -97,30 +71,29 @@ function TopUsers() {
         <>
             <AppNavbar />
             <h3>Top Users by Engagement</h3>
-            <TextField id="outlined-basic" label="Number of Top Users" onChange={handleLimitChange} variant="outlined" />
+            <TextField id="outlined-basic" label="Number of Top Users" onChange={(event) => setLimit(event.target.value)} variant="outlined" />
             <FormControl>
                 <FormLabel id="demo-radio-buttons-group-label">Sorting Order</FormLabel>
                 <RadioGroup
                     aria-labelledby="demo-radio-buttons-group-label"
                     name="radio-buttons-group"
+                    defaultValue={order}
                 >
-                    <FormControlLabel value="asc" onChange={handleOrderChange} control={<Radio />} label="Ascending" />
-                    <FormControlLabel value="desc" onChange={handleOrderChange} control={<Radio />} label="Descending" />
+                    <FormControlLabel value="asc" onChange={(event) => setOrder(event.target.value)} control={<Radio />} label="Ascending" />
+                    <FormControlLabel value="desc" onChange={(event) => setOrder(event.target.value)} control={<Radio />} label="Descending" />
                 </RadioGroup>
             </FormControl>
-            <Fab color="primary" aria-label="add" onClick={handleParamChange}>
-                <SearchIcon />
-            </Fab>
             <Paper sx={{ height: 400, width: '100%' }}>
                 <DataGrid
                     rows={users}
                     getRowId={(row) => row.user_id}
-                    onCellClick={(row) => handleRowClick(row.id)}
+                    onCellClick={(row) => setUserIds([...userIds, row.row.user_id])}
                     columns={userColumns}
                     initialState={{ pagination: { paginationModel } }}
                     pageSizeOptions={[5, 10, 100]}
                     sx={{ border: 0 }}
                 />
+                <Download data={users} filename="top-users-by-engagement" />
             </Paper>
             <h3>Tweets by Top Users</h3>
             <Paper sx={{ height: 400, width: '100%' }}>
@@ -132,6 +105,7 @@ function TopUsers() {
                     pageSizeOptions={[5, 10, 100]}
                     sx={{ border: 0 }}
                 />
+                <Download data={tweets} filename="tweets-by-top-users" />
             </Paper>
         </>
     );

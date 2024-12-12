@@ -86,12 +86,12 @@ function Optimization() {
 
     const userEngagementColumns = [
         { field: 'candidate', headerName: 'Candidate', width: 150 },
-        { field: 'user_id', headerName: 'User ID', width: 150 },
+        { field: 'user_id', headerName: 'User ID', width: 200 },
         { field: 'user_name', headerName: 'Username', width: 150 },
-        { field: 'total_engagement', headerName: 'Total Engagement', type: 'number', width: 100 },
+        { field: 'total_engagement', headerName: 'Total Engagement', type: 'number', width: 150 },
         { field: 'user_followers_count', headerName: 'Followers', type: 'number', width: 100 },
-        { field: 'engagement_to_followers_ratio', headerName: 'Ratio of Total Engagement to Followers', type: 'number', width: 100 },
-        { field: 'total_tweets', headerName: 'Number of Tweets', type: 'number', width: 120 }
+        { field: 'engagement_to_followers_ratio', headerName: 'Ratio of Total Engagement to Followers', type: 'number', width: 300 },
+        { field: 'total_tweets', headerName: 'Number of Tweets', type: 'number', width: 150 }
     ]
 
     const paginationModel = { page: 0, pageSize: 5 };
@@ -253,7 +253,7 @@ function Optimization() {
                         pageSizeOptions={[5, 10, 100]}
                         sx={{ border: 0 }}
                     />
-                    <Download data={highVolumeData} filename="high-volume-days" />
+                    <Download data={userCandidateData} filename="most-tweeted-candidate-by-users" />
                 </Paper>}
             <h3>Weekly Engagement with Events</h3>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -281,7 +281,7 @@ function Optimization() {
                     pageSizeOptions={[5, 50, 100]}
                     sx={{ border: 0 }}
                 />
-                <Download data={eventData} filename="weekly-engagement-with-events" />
+                <Download data={userEngagementData} filename="user-engagement-by-candidate" />
             </Paper>
         </>
     );

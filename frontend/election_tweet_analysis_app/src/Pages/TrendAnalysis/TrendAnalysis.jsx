@@ -1,4 +1,5 @@
 import AppNavbar from "../../Components/AppNavbar/AppNavbar";
+import Download from "../../Components/Download/Download";
 
 import { useState, useEffect } from "react";
 import ToggleButton from '@mui/material/ToggleButton';
@@ -239,6 +240,7 @@ function TrendAnalysis() {
                     pageSizeOptions={[5, 10, 100]}
                     sx={{ border: 0 }}
                 />
+                <Download data={rollavgData} filename="rolling-average-by-day" />
             </Paper>}
             <h3>Spikes in Total Engagment</h3>
             <Box>
@@ -303,6 +305,7 @@ function TrendAnalysis() {
                     pageSizeOptions={[5, 10, 100]}
                     sx={{ border: 0 }}
                 />
+                <Download data={spikeData} filename="spikes-in-total-engagement" />
             </Paper>}
         </>
     );

@@ -1,4 +1,5 @@
 import AppNavbar from "../../Components/AppNavbar/AppNavbar";
+import Download from "../../Components/Download/Download";
 
 import { DataGrid } from '@mui/x-data-grid';
 import Paper from '@mui/material/Paper';
@@ -8,8 +9,6 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
-import Fab from '@mui/material/Fab';
-import SearchIcon from '@mui/icons-material/Search';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
@@ -20,7 +19,7 @@ function UserActivity() {
     const [userActivity, setUserActivity] = useState([]);
     const [activityCandidate, setActivityCandidate] = useState('Trump');
     const [activityLimit, setActivityLimit] = useState();
-    const [order, setOrder] = useState();
+    const [order, setOrder] = useState('desc');
 
     const [influentialUsers, setInfluentialUsers] = useState([]);
     const [influenceCandidate, setInfluenceCandidate] = useState('Trump');
@@ -53,58 +52,22 @@ function UserActivity() {
     ];
 
     useEffect(() => {
-        fetch(`http://127.0.0.1:5000/api/user-engagement/activity-breakdown`, { mode: 'cors' })
-            .then((response) => response.json())
-            .then((data) => setUserActivity(data))
-            .catch((err) => {
-                console.log(err.message);
-            });
-
-        fetch(`http://127.0.0.1:5000/api/user-engagement/influential-users`, { mode: 'cors' })
-            .then((response) => response.json())
-            .then((data) => setInfluentialUsers(data))
-            .catch((err) => {
-                console.log(err.message);
-            });
-    }, []);
-
-    function handleActivityCandidateChange(event) {
-        setActivityCandidate(event.target.value);
-    }
-
-    function handleActivityLimitChange(event) {
-        setActivityLimit(event.target.value);
-    }
-
-    function handleOrderChange(event) {
-        setOrder(event.target.value);
-    }
-
-    function handleActivityParamsChange() {
         fetch(`http://127.0.0.1:5000/api/user-engagement/activity-breakdown?candidate=${activityCandidate}&limit=${activityLimit}&order=${order}`, { mode: 'cors' })
             .then((response) => response.json())
             .then((data) => setUserActivity(data))
             .catch((err) => {
                 console.log(err.message);
             });
-    }
+    }, [activityCandidate, activityLimit, order]);
 
-    function handleInfluenceCandidateChange(event) {
-        setInfluenceCandidate(event.target.value);
-    }
-
-    function handleInfluenceLimitChange(event) {
-        setInfluenceLimit(event.target.value);
-    }
-
-    function handleInfluenceParamsChange() {
+    useEffect(() => {
         fetch(`http://127.0.0.1:5000/api/user-engagement/influential-users?candidate=${influenceCandidate}&limit=${influenceLimit}`, { mode: 'cors' })
             .then((response) => response.json())
             .then((data) => setInfluentialUsers(data))
             .catch((err) => {
                 console.log(err.message);
             });
-    }
+    }, [influenceCandidate, influenceLimit])
 
     return (
         <>
@@ -119,27 +82,24 @@ function UserActivity() {
                         label="Candidate"
                         sx={{ width: 150 }}
                         value={activityCandidate}
-                        onChange={handleActivityCandidateChange}
+                        onChange={(event) => setActivityCandidate(event.target.value)}
                     >
                         <MenuItem value="Trump">Trump</MenuItem>
                         <MenuItem value="Biden">Biden</MenuItem>
                     </Select>
                 </FormControl>
-
-                <TextField id="outlined-basic" label="Number of Users" onChange={handleActivityLimitChange} variant="outlined" />
+                <TextField id="outlined-basic" label="Number of Users" onChange={(event) => setActivityLimit(event.target.value)} variant="outlined" />
                 <FormControl>
                     <FormLabel id="demo-radio-buttons-group-label">Sorting Order</FormLabel>
                     <RadioGroup
                         aria-labelledby="demo-radio-buttons-group-label"
                         name="radio-buttons-group"
+                        defaultValue={order}
                     >
-                        <FormControlLabel value="asc" onChange={handleOrderChange} control={<Radio />} label="Ascending" />
-                        <FormControlLabel value="desc" onChange={handleOrderChange} control={<Radio />} label="Descending" />
+                        <FormControlLabel value="asc" onChange={(event) => setOrder(event.target.value)} control={<Radio />} label="Ascending" />
+                        <FormControlLabel value="desc" onChange={(event) => setOrder(event.target.value)} control={<Radio />} label="Descending" />
                     </RadioGroup>
                 </FormControl>
-                <Fab color="primary" aria-label="add" onClick={handleActivityParamsChange}>
-                    <SearchIcon />
-                </Fab>
             </Box>
             <Paper sx={{ height: 400 }}>
                 <DataGrid
@@ -149,6 +109,7 @@ function UserActivity() {
                     initialState={{ pagination: { paginationModel } }}
                     pageSizeOptions={[5, 10]}
                 />
+                <Download data={userActivity} filename="user-activity-breakdown" />
             </Paper>
             <h3>Influential Users</h3>
             <Box>
@@ -160,17 +121,13 @@ function UserActivity() {
                         label="Candidate"
                         sx={{ width: 150 }}
                         value={influenceCandidate}
-                        onChange={handleInfluenceCandidateChange}
+                        onChange={(event) => setInfluenceCandidate(event.target.value)}
                     >
                         <MenuItem value="Trump">Trump</MenuItem>
                         <MenuItem value="Biden">Biden</MenuItem>
                     </Select>
                 </FormControl>
-
-                <TextField id="outlined-basic" label="Number of Users" onChange={handleInfluenceLimitChange} variant="outlined" />
-                <Fab color="primary" aria-label="add" onClick={handleInfluenceParamsChange}>
-                    <SearchIcon />
-                </Fab>
+                <TextField id="outlined-basic" label="Number of Users" onChange={(event) => setInfluenceLimit(event.target.value)} variant="outlined" />
             </Box>
             <Paper sx={{ height: 400 }}>
                 <DataGrid
@@ -180,6 +137,7 @@ function UserActivity() {
                     initialState={{ pagination: { paginationModel } }}
                     pageSizeOptions={[5, 10, 100]}
                 />
+                <Download data={influentialUsers} filename="influential-users" />
             </Paper>
         </>
     );

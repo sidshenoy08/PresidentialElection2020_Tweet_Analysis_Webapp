@@ -1,4 +1,5 @@
 import AppNavbar from "../../Components/AppNavbar/AppNavbar";
+import Download from "../../Components/Download/Download";
 
 import { useState, useEffect } from "react";
 import ToggleButton from '@mui/material/ToggleButton';
@@ -16,8 +17,6 @@ import {
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
 import { TextField } from "@mui/material";
-import Fab from '@mui/material/Fab';
-import SearchIcon from '@mui/icons-material/Search';
 import Box from "@mui/material/Box";
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
@@ -108,16 +107,16 @@ function HallOfFame() {
         },
         scales: {
             x: {
-              title: {
-                display: true,
-                text: "User"
-              },
+                title: {
+                    display: true,
+                    text: "User"
+                },
             },
             y: {
-              title: {
-                display: true,
-                text: "Number of Tweets"
-              }
+                title: {
+                    display: true,
+                    text: "Number of Tweets"
+                }
             }
         }
     };
@@ -136,84 +135,46 @@ function HallOfFame() {
         },
         scales: {
             x: {
-              title: {
-                display: true,
-                text: "Number of Tweets"
-              },
+                title: {
+                    display: true,
+                    text: "Number of Tweets"
+                },
             },
             y: {
-              title: {
-                display: true,
-                text: "Location"
-              }
+                title: {
+                    display: true,
+                    text: "Location"
+                }
             }
         }
     }
 
     useEffect(() => {
-        fetch(`http://127.0.0.1:5000/api/homepage/most-active-users`, { mode: 'cors' })
-            .then((response) => response.json())
-            .then((data) => setActiveUsers(data))
-            .catch((err) => {
-                console.log(err.message);
-            });
-    }, []);
-
-    useEffect(() => {
-        fetch(`http://127.0.0.1:5000/api/popular-tweets/${metric}`, { mode: 'cors' })
-            .then((response) => response.json())
-            .then((data) => setPopularTweeets(data))
-            .catch((err) => {
-                console.log(err.message);
-            });
-    }, [metric])
-
-    useEffect(() => {
-        fetch(`http://127.0.0.1:5000/api/popular-tweets/location-insights?candidate=${locationCandidate}`, { mode: 'cors' })
-            .then((response) => response.json())
-            .then((data) => setLocationInsights(data))
-            .catch((err) => {
-                console.log(err.message);
-            });
-    }, [locationCandidate])
-
-    function handleActiveUsersParamsChange() {
         fetch(`http://127.0.0.1:5000/api/homepage/most-active-users?limit=${activeUsersLimit}&page=${page}`, { mode: 'cors' })
             .then((response) => response.json())
             .then((data) => setActiveUsers(data))
             .catch((err) => {
                 console.log(err.message);
             });
+    }, [activeUsersLimit, page]);
 
-        activeUsersChartData = {
-            labels: activeUsers.map((row) => row.user_name),
-            datasets: [
-                {
-                    label: "Number of Tweets",
-                    data: activeUsers.map((row) => row.tweet_count),
-                    backgroundColor: "rgba(75, 192, 192, 0.6)"
-                }
-            ]
-        };
-    }
-
-    function handlePopularTweetsParamsChange() {
+    useEffect(() => {
         fetch(`http://127.0.0.1:5000/api/popular-tweets/${metric}?candidate=${popularityCandidate}&limit=${popularTweetsLimit}`, { mode: 'cors' })
             .then((response) => response.json())
             .then((data) => setPopularTweeets(data))
             .catch((err) => {
                 console.log(err.message);
             });
-    }
+    }, [metric, popularityCandidate, popularTweetsLimit]);
 
-    function handleLocationInsightsParamsChange() {
-        fetch(`http://127.0.0.1:5000/api/popular-tweets/location-insights?candidate=Trump&limit=${cityLimit}`, { mode: 'cors' })
+    useEffect(() => {
+        fetch(`http://127.0.0.1:5000/api/popular-tweets/location-insights?candidate=${locationCandidate}&limit=${cityLimit}`, { mode: 'cors' })
             .then((response) => response.json())
             .then((data) => setLocationInsights(data))
             .catch((err) => {
                 console.log(err.message);
             });
-    }
+    }, [locationCandidate, cityLimit]);
 
     return (
         <>
@@ -222,9 +183,6 @@ function HallOfFame() {
             <Box>
                 <TextField id="outlined-basic" label="Number of Users" onChange={(event) => setActiveUsersLimit(event.target.value)} variant="outlined" />
                 <TextField id="outlined-basic" label="Page Number" onChange={(event) => setPage(event.target.value)} variant="outlined" />
-                <Fab color="primary" aria-label="add" onClick={handleActiveUsersParamsChange}>
-                    <SearchIcon />
-                </Fab>
             </Box>
             <ToggleButtonGroup
                 color="primary"
@@ -246,22 +204,25 @@ function HallOfFame() {
                         pageSizeOptions={[5, 10, 100]}
                         sx={{ border: 0 }}
                     />
+                    <Download data={activeUsers} filename="most-active-users" />
                 </Paper>}
-            <h3 style={{ display: "inline" }}>Most Popular Tweets By </h3>
-            <FormControl>
-                <InputLabel id="popular-metric-select-label">Popularity Metric</InputLabel>
-                <Select
-                    labelId="metric-select-label"
-                    id="metric-simple-select"
-                    label="Metric"
-                    sx={{ width: 150 }}
-                    onChange={(event) => setMetric(event.target.value)}
-                    defaultValue={metric}
-                >
-                    <MenuItem value="retweets">Retweets</MenuItem>
-                    <MenuItem value="likes">Likes</MenuItem>
-                </Select>
-            </FormControl>
+            <div style={{ marginTop: "4rem" }}>
+                <h3 style={{ display: "inline" }}>Most Popular Tweets By </h3>
+                <FormControl>
+                    <InputLabel id="popular-metric-select-label">Popularity Metric</InputLabel>
+                    <Select
+                        labelId="metric-select-label"
+                        id="metric-simple-select"
+                        label="Metric"
+                        sx={{ width: 150 }}
+                        onChange={(event) => setMetric(event.target.value)}
+                        defaultValue={metric}
+                    >
+                        <MenuItem value="retweets">Retweets</MenuItem>
+                        <MenuItem value="likes">Likes</MenuItem>
+                    </Select>
+                </FormControl>
+            </div>
             <Box>
                 <FormControl>
                     <InputLabel id="popular-candidate-select-label">Candidate</InputLabel>
@@ -278,9 +239,6 @@ function HallOfFame() {
                     </Select>
                 </FormControl>
                 <TextField id="outlined-basic" label="Number of Tweets" onChange={(event) => setPopularTweeetsLimit(event.target.value)} variant="outlined" />
-                <Fab color="primary" aria-label="add" onClick={handlePopularTweetsParamsChange}>
-                    <SearchIcon />
-                </Fab>
             </Box>
             <Paper sx={{ height: 400, width: '100%' }}>
                 <DataGrid
@@ -291,27 +249,27 @@ function HallOfFame() {
                     pageSizeOptions={[5, 10, 100]}
                     sx={{ border: 0 }}
                 />
+                <Download data={popularTweets} filename="most-popular-tweets" />
             </Paper>
-            <h3 style={{ display: "inline" }}>Location Insights of Tweets Made About </h3>
-            <FormControl>
-                <InputLabel id="location-candidate-select-label"></InputLabel>
-                <Select
-                    labelId="location-candidate-select-label"
-                    id="location-candidate-simple-select"
-                    label="Candidate"
-                    sx={{ width: 150 }}
-                    onChange={(event) => setLocationCandidate(event.target.value)}
-                    defaultValue={locationCandidate}
-                >
-                    <MenuItem value="Trump">Trump</MenuItem>
-                    <MenuItem value="Biden">Biden</MenuItem>
-                </Select>
-            </FormControl>
+            <div style={{ marginTop: "4rem" }}>
+                <h3 style={{ display: "inline" }}>Location Insights of Tweets Made About </h3>
+                <FormControl>
+                    <InputLabel id="location-candidate-select-label">Candidate</InputLabel>
+                    <Select
+                        labelId="location-candidate-select-label"
+                        id="location-candidate-simple-select"
+                        label="Candidate"
+                        sx={{ width: 150 }}
+                        onChange={(event) => setLocationCandidate(event.target.value)}
+                        defaultValue={locationCandidate}
+                    >
+                        <MenuItem value="Trump">Trump</MenuItem>
+                        <MenuItem value="Biden">Biden</MenuItem>
+                    </Select>
+                </FormControl>
+            </div>
             <Box>
                 <TextField id="outlined-basic" label="Number of Cities" onChange={(event) => setCityLimit(event.target.value)} variant="outlined" />
-                <Fab color="primary" aria-label="add" onClick={handleLocationInsightsParamsChange}>
-                    <SearchIcon />
-                </Fab>
             </Box>
             <ToggleButtonGroup
                 color="primary"
@@ -333,6 +291,7 @@ function HallOfFame() {
                         pageSizeOptions={[5, 10, 100]}
                         sx={{ border: 0 }}
                     />
+                    <Download data={locationInsights} filename="location-insights" />
                 </Paper>}
         </>
     );

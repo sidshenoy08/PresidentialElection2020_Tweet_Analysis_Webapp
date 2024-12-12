@@ -1,4 +1,5 @@
 import AppNavbar from "../../Components/AppNavbar/AppNavbar";
+import Download from "../../Components/Download/Download";
 
 import { useState, useEffect } from 'react';
 import ToggleButton from '@mui/material/ToggleButton';
@@ -40,10 +41,10 @@ function SentimentAnalysis() {
 
     const tableColumns = [
         { field: 'week_start', headerName: 'Week Start', width: 250 },
-        { field: 'positive', headerName: 'Positive Tweets', type: 'number', width: 100 },
-        { field: 'negative', headerName: 'Negative Tweets', type: 'number', width: 100 },
-        { field: 'neutral', headerName: 'Neutral Tweets', type: 'number', width: 100 },
-        { field: 'tweet_count', headerName: 'Total Tweets', type: 'number', width: 100 }
+        { field: 'positive', headerName: 'Positive Tweets', type: 'number', width: 150 },
+        { field: 'negative', headerName: 'Negative Tweets', type: 'number', width: 150 },
+        { field: 'neutral', headerName: 'Neutral Tweets', type: 'number', width: 150 },
+        { field: 'tweet_count', headerName: 'Total Tweets', type: 'number', width: 150 }
     ];
 
     let trumpChartData = {
@@ -148,6 +149,7 @@ function SentimentAnalysis() {
                         columns={tableColumns}
                         sx={{ border: 0 }}
                     />
+                    <Download data={trumpData} filename="analysis-tweets-trump" />
                 </Paper>}
             <h3>Analysis of Tweets made about Biden</h3>
             <ToggleButtonGroup
@@ -168,6 +170,7 @@ function SentimentAnalysis() {
                         columns={tableColumns}
                         sx={{ border: 0 }}
                     />
+                    <Download data={bidenData} filename="analysis-tweets-biden" />
                 </Paper>}
         </>
     );

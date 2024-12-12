@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import AppNavbar from "../../Components/AppNavbar/AppNavbar";
+import Download from "../../Components/Download/Download";
 
 import { Chart } from 'react-google-charts';
 import ToggleButton from '@mui/material/ToggleButton';
@@ -22,8 +23,6 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
-import Fab from '@mui/material/Fab';
-import SearchIcon from '@mui/icons-material/Search';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
@@ -38,7 +37,7 @@ function CountryCityAnalysis() {
     
     const [cityLimit, setCityLimit] = useState();
     const [sortMetric, setSortMetric] = useState();
-    const [order, setOrder] = useState();
+    const [order, setOrder] = useState('desc');
 
     ChartJS.register(
         CategoryScale,
@@ -71,13 +70,6 @@ function CountryCityAnalysis() {
             .catch((err) => {
                 console.log(err.message);
             });
-
-        fetch(`http://127.0.0.1:5000/api/geographic-analysis/city-level-analysis`, { mode: 'cors' })
-            .then((response) => response.json())
-            .then((data) => setGroupedBarChartData(data))
-            .catch((err) => {
-                console.log(err.message);
-            })
     }, []);
 
     const finalGeoChartData = [
@@ -135,56 +127,15 @@ function CountryCityAnalysis() {
             return country;
         }
     }
-
-    function handleGeoFormatChange(event, newFormat) {
-        setGeoChartDataFormat(newFormat);
-    }
-
-    function handleCityLimitChange(event) {
-        setCityLimit(event.target.value);
-    }
-
-    function handleSortMetricChange(event) {
-        setSortMetric(event.target.value);
-    }
-
-    function handleOrderChange(event) {
-        setOrder(event.target.value);
-    }
-
-    function handleGroupedFormatChange(event, newFormat) {
-        setGroupedBarChartDataFormat(newFormat);
-    }
-
-    function handleCityParamsChange() {
+    
+    useEffect(() => {
         fetch(`http://127.0.0.1:5000/api/geographic-analysis/city-level-analysis?limit=${cityLimit}&sort_by=${sortMetric}&order=${order}`, { mode: 'cors' })
             .then((response) => response.json())
             .then((data) => setGroupedBarChartData(data))
             .catch((err) => {
                 console.log(err.message);
             });
-
-        groupedBarChart = {
-            labels: groupedBarChartData.map((row) => row.city),
-            datasets: [
-                {
-                    label: "Number of Tweets",
-                    data: groupedBarChartData.map((row) => row.tweet_count),
-                    backgroundColor: "rgba(75, 192, 192)"
-                },
-                {
-                    label: "Number of Retweets",
-                    data: groupedBarChartData.map((row) => row.retweets),
-                    backgroundColor: "rgba(153, 102, 255)"
-                },
-                {
-                    label: "Number of Likes",
-                    data: groupedBarChartData.map((row) => row.likes),
-                    backgroundColor: "rgba(255, 159, 64)"
-                }
-            ]
-        };
-    }
+    }, [cityLimit, sortMetric, order]);
 
     return (
         <>
@@ -195,7 +146,7 @@ function CountryCityAnalysis() {
                     color="primary"
                     value={geoChartDataFormat}
                     exclusive
-                    onChange={handleGeoFormatChange}
+                    onChange={(event, newFormat) => setGeoChartDataFormat(newFormat)}
                     aria-label="Data View"
                 >
                     <ToggleButton value="map">Map</ToggleButton>
@@ -216,10 +167,12 @@ function CountryCityAnalysis() {
                         pageSizeOptions={[25, 50, 100]}
                         sx={{ border: 0 }}
                     />
+                    <Download data={geoChartData} filename="number-of-tweets-by-country" />
                 </Paper>}
             </div>
+            <h3>Tweet Engagement By City</h3>
             <Box>
-                <TextField id="outlined-basic" label="Number of Cities" onChange={handleCityLimitChange} variant="outlined" />
+                <TextField id="outlined-basic" label="Number of Cities" onChange={(event) => setCityLimit(event.target.value)} variant="outlined" />
                 <FormControl>
                     <InputLabel id="demo-simple-select-label">Sort By Metric</InputLabel>
                     <Select
@@ -227,7 +180,7 @@ function CountryCityAnalysis() {
                         id="demo-simple-select"
                         label="Metric"
                         sx={{ width: 150 }}
-                        onChange={handleSortMetricChange}
+                        onChange={(event) => setSortMetric(event.target.value)}
                     >
                         <MenuItem value="city">City</MenuItem>
                         <MenuItem value="tweet_count">Number of Tweets</MenuItem>
@@ -240,20 +193,18 @@ function CountryCityAnalysis() {
                     <RadioGroup
                         aria-labelledby="demo-radio-buttons-group-label"
                         name="radio-buttons-group"
+                        defaultValue={order}
                     >
-                        <FormControlLabel value="asc" onChange={handleOrderChange} control={<Radio />} label="Ascending" />
-                        <FormControlLabel value="desc" onChange={handleOrderChange} control={<Radio />} label="Descending" />
+                        <FormControlLabel value="asc" onChange={(event) => setOrder(event.target.value)} control={<Radio />} label="Ascending" />
+                        <FormControlLabel value="desc" onChange={(event) => setOrder(event.target.value)} control={<Radio />} label="Descending" />
                     </RadioGroup>
                 </FormControl>
-                <Fab color="primary" aria-label="add" onClick={handleCityParamsChange}>
-                    <SearchIcon />
-                </Fab>
             </Box>
             <ToggleButtonGroup
                 color="primary"
                 value={groupedBarChartDataFormat}
                 exclusive
-                onChange={handleGroupedFormatChange}
+                onChange={(event, newFormat) => setGroupedBarChartDataFormat(newFormat)}
                 aria-label="Data View"
             >
                 <ToggleButton value="chart">Chart</ToggleButton>
@@ -269,6 +220,7 @@ function CountryCityAnalysis() {
                         pageSizeOptions={[5, 10, 100]}
                         sx={{ border: 0 }}
                     />
+                    <Download data={groupedBarChartData} filename="tweet-engagement-by-city" />
                 </Paper>}
         </>
     );
