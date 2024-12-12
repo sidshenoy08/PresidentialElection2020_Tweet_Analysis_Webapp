@@ -2,7 +2,7 @@ import pytest
 from flask import Flask
 from app import create_app
 
-# FILE: tweet-analysis-app/backend/app/test___init__.py
+# Coverage with respect to: tweet-analysis-app/backend/app/test___init__.py
 
 @pytest.fixture
 def app():
