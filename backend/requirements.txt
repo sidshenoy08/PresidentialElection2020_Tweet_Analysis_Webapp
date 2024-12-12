@@ -7,11 +7,11 @@ pandas
 flask-restx
 flask_swagger_ui
 timezonefinder
-react-chartjs-2
 nltk
 textblob
-dayjs
-react-csv
 coverage
 pytest
 pytest-cov
+react-chartjs-2
+dayjs
+react-csv
