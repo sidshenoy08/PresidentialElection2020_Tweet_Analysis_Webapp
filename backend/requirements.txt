@@ -12,3 +12,6 @@ nltk
 textblob
 dayjs
 react-csv
+coverage
+pytest
+pytest-cov
