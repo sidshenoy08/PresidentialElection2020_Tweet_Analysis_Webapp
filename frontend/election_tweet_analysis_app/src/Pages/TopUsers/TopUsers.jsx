@@ -15,6 +15,8 @@ import { useState, useEffect } from "react";
 
 import './TopUsers.css';
 
+const config = require("../../config.json");
+
 function TopUsers() {
     const [users, setUsers] = useState([]);
     const [userIds, setUserIds] = useState([]);
@@ -45,7 +47,7 @@ function TopUsers() {
     const paginationModel = { page: 0, pageSize: 5 };
 
     useEffect(() => {
-        fetch(`http://127.0.0.1:5000/api/user-engagement/top-users?limit=${limit}&order=${order}`, { mode: 'cors' })
+        fetch(`${config.api_url}/user-engagement/top-users?limit=${limit}&order=${order}`, { mode: 'cors' })
             .then((response) => response.json())
             .then((data) => setUsers(data))
             .catch((err) => {
@@ -54,7 +56,7 @@ function TopUsers() {
     }, [limit, order]);
 
     useEffect(() => {
-        fetch(`http://127.0.0.1:5000/api/user-engagement/popular-tweets`, {
+        fetch(`${config.api_url}/user-engagement/popular-tweets`, {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json"

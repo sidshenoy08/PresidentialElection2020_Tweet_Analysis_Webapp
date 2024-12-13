@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import AppNavbar from "../../Components/AppNavbar/AppNavbar";
 import Download from "../../Components/Download/Download";
+import Footer from "../../Components/Footer/Footer";
 
 import { Chart } from 'react-google-charts';
 import ToggleButton from '@mui/material/ToggleButton';
@@ -28,13 +29,17 @@ import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import Box from "@mui/material/Box";
 
+import './CountryCityAnalysis.css';
+
+const config = require("../../config.json");
+
 function CountryCityAnalysis() {
     const [geoChartData, setGeoChartData] = useState([]);
     const [geoChartDataFormat, setGeoChartDataFormat] = useState('map');
 
     const [groupedBarChartData, setGroupedBarChartData] = useState([]);
     const [groupedBarChartDataFormat, setGroupedBarChartDataFormat] = useState('chart');
-    
+
     const [cityLimit, setCityLimit] = useState();
     const [sortMetric, setSortMetric] = useState();
     const [order, setOrder] = useState('desc');
@@ -64,7 +69,7 @@ function CountryCityAnalysis() {
     const groupedBarChartPaginationModel = { page: 0, pageSize: 5 };
 
     useEffect(() => {
-        fetch(`http://127.0.0.1:5000/api/geographic-analysis/most-tweets-by-country`, { mode: 'cors' })
+        fetch(`${config.api_url}/geographic-analysis/most-tweets-by-country`, { mode: 'cors' })
             .then((response) => response.json())
             .then((data) => setGeoChartData(data))
             .catch((err) => {
@@ -78,10 +83,10 @@ function CountryCityAnalysis() {
     ];
 
     const geoChartOptions = {
-        colorAxis: { minValue: 1, maxValue: 172473, colors: ["#00FFFF", "#FF00FF"] },
-        backgroundColor: "#f5f5f5",
+        colorAxis: { minValue: 1, maxValue: 172473, colors: ["#E3F2FD", "#4CAF50"] },
+        backgroundColor: "#FFFFFF",
         datalessRegionColor: "#cccccc",
-        defaultColor: "#f5f5f5",
+        defaultColor: "#FFFFFF",
     };
 
     let groupedBarChart = {
@@ -90,17 +95,17 @@ function CountryCityAnalysis() {
             {
                 label: "Number of Tweets",
                 data: groupedBarChartData.map((row) => row.tweet_count),
-                backgroundColor: "rgba(75, 192, 192, 0.6)"
+                backgroundColor: "#1DA1F2"
             },
             {
                 label: "Number of Retweets",
                 data: groupedBarChartData.map((row) => row.retweets),
-                backgroundColor: "rgba(153, 102, 255, 0.6)"
+                backgroundColor: "#4CAF50"
             },
             {
                 label: "Number of Likes",
                 data: groupedBarChartData.map((row) => row.likes),
-                backgroundColor: "rgba(255, 159, 64, 0.6)"
+                backgroundColor: "#FF6F61"
             }
         ]
     };
@@ -127,9 +132,9 @@ function CountryCityAnalysis() {
             return country;
         }
     }
-    
+
     useEffect(() => {
-        fetch(`http://127.0.0.1:5000/api/geographic-analysis/city-level-analysis?limit=${cityLimit}&sort_by=${sortMetric}&order=${order}`, { mode: 'cors' })
+        fetch(`${config.api_url}/geographic-analysis/city-level-analysis?limit=${cityLimit}&sort_by=${sortMetric}&order=${order}`, { mode: 'cors' })
             .then((response) => response.json())
             .then((data) => setGroupedBarChartData(data))
             .catch((err) => {
@@ -138,27 +143,29 @@ function CountryCityAnalysis() {
     }, [cityLimit, sortMetric, order]);
 
     return (
-        <>
+        <div className="body">
             <AppNavbar />
-            <div>
-                <h3>Number of Tweets By Country</h3>
-                <ToggleButtonGroup
-                    color="primary"
-                    value={geoChartDataFormat}
-                    exclusive
-                    onChange={(event, newFormat) => setGeoChartDataFormat(newFormat)}
-                    aria-label="Data View"
-                >
-                    <ToggleButton value="map">Map</ToggleButton>
-                    <ToggleButton value="table">Table</ToggleButton>
-                </ToggleButtonGroup>
+            <h3>Number of Tweets By Country</h3>
+            <ToggleButtonGroup
+                color="primary"
+                value={geoChartDataFormat}
+                exclusive
+                onChange={(event, newFormat) => setGeoChartDataFormat(newFormat)}
+                aria-label="Data View"
+                style={{ marginLeft: "2rem", marginBottom: "1rem" }}
+            >
+                <ToggleButton value="map">Map</ToggleButton>
+                <ToggleButton value="table">Table</ToggleButton>
+            </ToggleButtonGroup>
+            <div className="data">
                 {geoChartDataFormat === "map" ? <Chart
                     chartType="GeoChart"
                     data={finalGeoChartData}
                     options={geoChartOptions}
-                    width="100%"
+                    width="90%"
                     height="500px"
-                /> : <Paper sx={{ height: 400, width: '100%' }}>
+                    style={{ marginLeft: "auto", marginRight: "auto" }}
+                /> : <Paper sx={{ height: 400, width: '45%', marginLeft: 'auto', marginRight: 'auto' }}>
                     <DataGrid
                         rows={geoChartData}
                         getRowId={(row) => row.country}
@@ -171,9 +178,9 @@ function CountryCityAnalysis() {
                 </Paper>}
             </div>
             <h3>Tweet Engagement By City</h3>
-            <Box>
-                <TextField id="outlined-basic" label="Number of Cities" onChange={(event) => setCityLimit(event.target.value)} variant="outlined" />
-                <FormControl>
+            <Box className="query-params">
+                <TextField id="outlined-basic" label="Number of Cities" style={{ marginLeft: "2rem" }} onChange={(event) => setCityLimit(event.target.value)} variant="outlined" />
+                <FormControl style={{ marginLeft: "2rem" }}>
                     <InputLabel id="demo-simple-select-label">Sort By Metric</InputLabel>
                     <Select
                         labelId="demo-simple-select-label"
@@ -188,7 +195,7 @@ function CountryCityAnalysis() {
                         <MenuItem value="likes">Number of Likes</MenuItem>
                     </Select>
                 </FormControl>
-                <FormControl>
+                <FormControl style={{ marginLeft: "2rem" }}>
                     <FormLabel id="demo-radio-buttons-group-label">Sorting Order</FormLabel>
                     <RadioGroup
                         aria-labelledby="demo-radio-buttons-group-label"
@@ -206,23 +213,27 @@ function CountryCityAnalysis() {
                 exclusive
                 onChange={(event, newFormat) => setGroupedBarChartDataFormat(newFormat)}
                 aria-label="Data View"
+                style={{ marginLeft: "2rem", marginBottom: "1rem" }}
             >
                 <ToggleButton value="chart">Chart</ToggleButton>
                 <ToggleButton value="table">Table</ToggleButton>
             </ToggleButtonGroup>
-            {groupedBarChartDataFormat === "chart" ? <Bar data={groupedBarChart} options={groupedBarChartOptions} />
-                : <Paper sx={{ height: 400, width: '100%' }}>
-                    <DataGrid
-                        rows={groupedBarChartData}
-                        getRowId={(row) => row.city}
-                        columns={groupedBarChartColumns}
-                        initialState={{ pagination: { groupedBarChartPaginationModel } }}
-                        pageSizeOptions={[5, 10, 100]}
-                        sx={{ border: 0 }}
-                    />
-                    <Download data={groupedBarChartData} filename="tweet-engagement-by-city" />
-                </Paper>}
-        </>
+            <div className="data">
+                {groupedBarChartDataFormat === "chart" ? <Bar data={groupedBarChart} options={groupedBarChartOptions} />
+                    : <Paper sx={{ height: 400, width: '90%', marginLeft: 'auto', marginRight: 'auto' }}>
+                        <DataGrid
+                            rows={groupedBarChartData}
+                            getRowId={(row) => row.city}
+                            columns={groupedBarChartColumns}
+                            initialState={{ pagination: { groupedBarChartPaginationModel } }}
+                            pageSizeOptions={[5, 10, 100]}
+                            sx={{ border: 0 }}
+                        />
+                        <Download data={groupedBarChartData} filename="tweet-engagement-by-city" />
+                    </Paper>}
+            </div>
+            <Footer />
+        </div>
     );
 }
 

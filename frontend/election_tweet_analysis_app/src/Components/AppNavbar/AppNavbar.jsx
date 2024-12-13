@@ -11,6 +11,15 @@ function AppNavbar() {
         <>
             <Navbar sticky="top" expand="lg" bg="dark" data-bs-theme="dark">
                 <Container>
+                    <Navbar.Brand as={Link} to= '/'>
+                        <img
+                            src="./logo.png"
+                            width="30"
+                            height="30"
+                            className="d-inline-block align-top"
+                            alt="React Bootstrap logo"
+                        />
+                    </Navbar.Brand>
                     <Navbar.Brand as={Link} to='/'>PollPulse</Navbar.Brand>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">

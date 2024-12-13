@@ -31,6 +31,8 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 
+const config = require("../../config.json");
+
 function TrendAnalysis() {
     const [rollavgData, setRollavgData] = useState([]);
     const [rollavgCandidate, setRollavgCandidate] = useState('Trump');
@@ -159,7 +161,7 @@ function TrendAnalysis() {
     };
 
     useEffect(() => {
-        fetch(`http://127.0.0.1:5000/api/engagement-trends/rolling-average?candidate=${rollavgCandidate}&window=${window}&sort_by=${rollavgSortMetric}&order=${rollavgOrder}`, { mode: 'cors' })
+        fetch(`${config.api_url}/engagement-trends/rolling-average?candidate=${rollavgCandidate}&window=${window}&sort_by=${rollavgSortMetric}&order=${rollavgOrder}`, { mode: 'cors' })
             .then((response) => response.json())
             .then((data) => setRollavgData(data))
             .catch((err) => {
@@ -168,7 +170,7 @@ function TrendAnalysis() {
     }, [rollavgCandidate, window, rollavgSortMetric, rollavgOrder]);
 
     useEffect(() => {
-        fetch(`http://127.0.0.1:5000/api/engagement-trends/spikes?candidate=${spikeCandidate}&threshold=${threshold}&sort_by=${spikeSortMetric}&order=${spikeOrder}`, { mode: 'cors' })
+        fetch(`${config.api_url}/engagement-trends/spikes?candidate=${spikeCandidate}&threshold=${threshold}&sort_by=${spikeSortMetric}&order=${spikeOrder}`, { mode: 'cors' })
             .then((response) => response.json())
             .then((data) => setSpikeData(data))
             .catch((err) => {
@@ -229,7 +231,7 @@ function TrendAnalysis() {
                 exclusive
                 onChange={(event, newFormat) => setRollAvgDataFormat(newFormat)}
                 aria-label="Data View"
-                style={{ marginLeft: "2rem" }}
+                style={{ marginLeft: "2rem", marginBottom: "1rem" }}
             >
                 <ToggleButton value="chart">Chart</ToggleButton>
                 <ToggleButton value="table">Table</ToggleButton>
@@ -297,7 +299,7 @@ function TrendAnalysis() {
                 exclusive
                 onChange={(event, newFormat) => setSpikeDataFormat(newFormat)}
                 aria-label="Data View"
-                style={{ marginLeft: "2rem" }}
+                style={{ marginLeft: "2rem", marginBottom: "1rem" }}
             >
                 <ToggleButton value="chart">Chart</ToggleButton>
                 <ToggleButton value="table">Table</ToggleButton>

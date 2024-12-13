@@ -21,6 +21,11 @@ import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 
 import AppNavbar from "../../Components/AppNavbar/AppNavbar";
 import Download from "../../Components/Download/Download";
+import Footer from "../../Components/Footer/Footer";
+
+import './CandidateAnalysis.css';
+
+const config = require("../../config.json");
 
 function CandidateAnalysis() {
     const [regionEngagement, setRegionEngagement] = useState([]);
@@ -60,17 +65,17 @@ function CandidateAnalysis() {
             {
                 label: "Number of Tweets",
                 data: dailyTrendsData.map((row) => row.tweet_count),
-                backgroundColor: "rgba(75, 192, 192, 0.6)"
+                backgroundColor: "#1DA1F2"
             },
             {
                 label: "Total Engagement",
                 data: dailyTrendsData.map((row) => row.total_engagement),
-                backgroundColor: "rgba(153, 102, 255, 0.6)"
+                backgroundColor: "#8BC34A"
             },
             {
                 label: "Engagement (Rolling Average)",
                 data: dailyTrendsData.map((row) => row.rolling_avg),
-                backgroundColor: "rgba(255, 159, 64, 0.6)"
+                backgroundColor: "#FFC107"
             }
         ]
     };
@@ -89,7 +94,7 @@ function CandidateAnalysis() {
     };
 
     useEffect(() => {
-        fetch(`http://127.0.0.1:5000/api/candidate-analysis/region-wise-engagement`, { mode: 'cors' })
+        fetch(`${config.api_url}/candidate-analysis/region-wise-engagement`, { mode: 'cors' })
             .then((response) => response.json())
             .then((data) => setRegionEngagement(data))
             .catch((err) => {
@@ -98,7 +103,7 @@ function CandidateAnalysis() {
     }, []);
 
     useEffect(() => {
-        fetch(`http://127.0.0.1:5000/api/candidate-analysis/daily-trends?candidate=${candidate}`, { mode: 'cors' })
+        fetch(`${config.api_url}/candidate-analysis/daily-trends?candidate=${candidate}`, { mode: 'cors' })
             .then((response) => response.json())
             .then((data) => setDailyTrendsData(data))
             .catch((err) => {
@@ -107,23 +112,25 @@ function CandidateAnalysis() {
     }, [candidate]);
 
     return (
-        <>
+        <div className="body">
             <AppNavbar />
             <h3>Candidate-Wise Engagement By Region</h3>
-            <Paper sx={{ height: 400, width: '100%' }}>
-                <DataGrid
-                    rows={regionEngagement}
-                    getRowId={(row) => row.country + row.tweet_about}
-                    columns={regionEngagementColumns}
-                    initialState={{ pagination: { paginationModel } }}
-                    pageSizeOptions={[10, 50, 100]}
-                    sx={{ border: 0 }}
-                />
-                <Download data={regionEngagement} filename="candidate-region-engagement" />
-            </Paper>
+            <div className="data">
+                <Paper sx={{ height: 400, width: '60%', marginLeft: 'auto', marginRight: 'auto' }}>
+                    <DataGrid
+                        rows={regionEngagement}
+                        getRowId={(row) => row.country + row.tweet_about}
+                        columns={regionEngagementColumns}
+                        initialState={{ pagination: { paginationModel } }}
+                        pageSizeOptions={[10, 50, 100]}
+                        sx={{ border: 0 }}
+                    />
+                    <Download data={regionEngagement} filename="candidate-region-engagement" />
+                </Paper>
+            </div>
             <h3>Daily Trends By Candidate</h3>
-            <Box>
-                <FormControl>
+            <Box className="query-params">
+                <FormControl style={{ marginLeft: "2rem" }}>
                     <InputLabel id="candidate-select-label">Candidate</InputLabel>
                     <Select
                         labelId="candidate-select-label"
@@ -144,23 +151,27 @@ function CandidateAnalysis() {
                 exclusive
                 onChange={(event) => setDailyTrendsDataFormat(event.target.value)}
                 aria-label="Data View"
+                style={{ marginLeft: "2rem", marginBottom: "1rem" }}
             >
                 <ToggleButton value="chart">Chart</ToggleButton>
                 <ToggleButton value="table">Table</ToggleButton>
             </ToggleButtonGroup>
-            {dailyTrendsDataFormat === "chart" ? <Bar data={dailyTrendsChartData} options={dailyTrendsChartOptions} />
-                : <Paper sx={{ height: 400, width: '100%' }}>
-                    <DataGrid
-                        rows={dailyTrendsData}
-                        getRowId={(row) => row.tweet_date}
-                        columns={dailyTrendsColumns}
-                        initialState={{ pagination: { paginationModel } }}
-                        pageSizeOptions={[10, 50, 100]}
-                        sx={{ border: 0 }}
-                    />
-                    <Download data={dailyTrendsData} filename="daily-trends-by-candidate" />
-                </Paper>}
-        </>
+            <div className="data">
+                {dailyTrendsDataFormat === "chart" ? <Bar data={dailyTrendsChartData} options={dailyTrendsChartOptions} />
+                    : <Paper sx={{ height: 400, width: '65%', marginLeft: 'auto', marginRight: 'auto' }}>
+                        <DataGrid
+                            rows={dailyTrendsData}
+                            getRowId={(row) => row.tweet_date}
+                            columns={dailyTrendsColumns}
+                            initialState={{ pagination: { paginationModel } }}
+                            pageSizeOptions={[10, 50, 100]}
+                            sx={{ border: 0 }}
+                        />
+                        <Download data={dailyTrendsData} filename="daily-trends-by-candidate" />
+                    </Paper>}
+            </div>
+            <Footer />
+        </div>
     );
 }
 

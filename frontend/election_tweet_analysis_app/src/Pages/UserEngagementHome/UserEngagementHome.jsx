@@ -5,6 +5,8 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import "./UserEngagementHome.css";
 
+import Footer from "../../Components/Footer/Footer";
+
 function UserEngagementHome() {
     return (
         <>
@@ -55,6 +57,9 @@ function UserEngagementHome() {
                         </Paper>
                     </Grid>
                 </Grid>
+            </div>
+            <div style={{ position: "fixed", bottom: "0", width: "100%" }}>
+                <Footer />
             </div>
         </>
     );

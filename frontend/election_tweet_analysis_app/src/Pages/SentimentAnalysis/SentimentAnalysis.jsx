@@ -1,5 +1,6 @@
 import AppNavbar from "../../Components/AppNavbar/AppNavbar";
 import Download from "../../Components/Download/Download";
+import Footer from "../../Components/Footer/Footer";
 
 import { useState, useEffect } from 'react';
 import ToggleButton from '@mui/material/ToggleButton';
@@ -19,6 +20,9 @@ import {
 import { DataGrid } from '@mui/x-data-grid';
 import Paper from '@mui/material/Paper';
 
+import './SentimentAnalysis.css';
+
+const config = require("../../config.json");
 
 function SentimentAnalysis() {
 
@@ -53,17 +57,17 @@ function SentimentAnalysis() {
             {
                 label: "Positive",
                 data: trumpData.map((row) => row.positive),
-                backgroundColor: "rgba(75, 192, 192, 0.6)"
+                backgroundColor: "#4CAF50"
             },
             {
                 label: "Neutral",
                 data: trumpData.map((row) => row.neutral),
-                backgroundColor: "rgba(153, 102, 255, 0.6)"
+                backgroundColor: "#BDBDBD"
             },
             {
                 label: "Negative",
                 data: trumpData.map((row) => row.negative),
-                backgroundColor: "rgba(255, 99, 132, 0.6)"
+                backgroundColor: "#F44336"
             }
         ]
     };
@@ -74,17 +78,17 @@ function SentimentAnalysis() {
             {
                 label: "Positive",
                 data: bidenData.map((row) => row.positive),
-                backgroundColor: "rgba(75, 192, 192, 0.6)"
+                backgroundColor: "#4CAF50"
             },
             {
                 label: "Neutral",
                 data: bidenData.map((row) => row.neutral),
-                backgroundColor: "rgba(153, 102, 255, 0.6)"
+                backgroundColor: "#BDBDBD"
             },
             {
                 label: "Negative",
                 data: bidenData.map((row) => row.negative),
-                backgroundColor: "rgba(255, 99, 132, 0.6)"
+                backgroundColor: "#F44336"
             }
         ]
     }
@@ -112,14 +116,14 @@ function SentimentAnalysis() {
     };
 
     useEffect(() => {
-        fetch(`http://127.0.0.1:5000/api/engagement-trends/weekly-sentiment?candidate=Trump`, { mode: 'cors' })
+        fetch(`${config.api_url}/engagement-trends/weekly-sentiment?candidate=Trump`, { mode: 'cors' })
             .then((response) => response.json())
             .then((data) => setTrumpData(data))
             .catch((err) => {
                 console.log(err.message);
             });
 
-        fetch(`http://127.0.0.1:5000/api/engagement-trends/weekly-sentiment?candidate=Biden`, { mode: 'cors' })
+        fetch(`${config.api_url}/engagement-trends/weekly-sentiment?candidate=Biden`, { mode: 'cors' })
             .then((response) => response.json())
             .then((data) => setBidenData(data))
             .catch((err) => {
@@ -128,7 +132,7 @@ function SentimentAnalysis() {
     }, []);
 
     return (
-        <>
+        <div className="body">
             <AppNavbar />
             <h3>Analysis of Tweets made about Trump</h3>
             <ToggleButtonGroup
@@ -137,20 +141,23 @@ function SentimentAnalysis() {
                 exclusive
                 onChange={(event, newFormat) => setTrumpDataFormat(newFormat)}
                 aria-label="Data View"
+                style={{ marginLeft: "2rem", marginBottom: "1rem" }}
             >
                 <ToggleButton value="chart">Chart</ToggleButton>
                 <ToggleButton value="table">Table</ToggleButton>
             </ToggleButtonGroup>
-            {trumpDataFormat === "chart" ? <Bar data={trumpChartData} options={chartOptions} />
-                : <Paper sx={{ height: 400, width: '100%' }}>
-                    <DataGrid
-                        rows={trumpData}
-                        getRowId={(row) => row.week_start}
-                        columns={tableColumns}
-                        sx={{ border: 0 }}
-                    />
-                    <Download data={trumpData} filename="analysis-tweets-trump" />
-                </Paper>}
+            <div className="data">
+                {trumpDataFormat === "chart" ? <Bar data={trumpChartData} options={chartOptions} />
+                    : <Paper sx={{ height: 400, width: '50%', marginLeft: 'auto', marginRight: 'auto' }}>
+                        <DataGrid
+                            rows={trumpData}
+                            getRowId={(row) => row.week_start}
+                            columns={tableColumns}
+                            sx={{ border: 0 }}
+                        />
+                        <Download data={trumpData} filename="analysis-tweets-trump" />
+                    </Paper>}
+            </div>
             <h3>Analysis of Tweets made about Biden</h3>
             <ToggleButtonGroup
                 color="primary"
@@ -158,21 +165,25 @@ function SentimentAnalysis() {
                 exclusive
                 onChange={(event, newFormat) => setBidenDataFormat(newFormat)}
                 aria-label="Data View"
+                style={{ marginLeft: "2rem", marginBottom: "1rem" }}
             >
                 <ToggleButton value="chart">Chart</ToggleButton>
                 <ToggleButton value="table">Table</ToggleButton>
             </ToggleButtonGroup>
-            {bidenDataFormat === "chart" ? <Bar data={bidenChartData} options={chartOptions} />
-                : <Paper sx={{ height: 400, width: '100%' }}>
-                    <DataGrid
-                        rows={bidenData}
-                        getRowId={(row) => row.week_start}
-                        columns={tableColumns}
-                        sx={{ border: 0 }}
-                    />
-                    <Download data={bidenData} filename="analysis-tweets-biden" />
-                </Paper>}
-        </>
+            <div className="data">
+                {bidenDataFormat === "chart" ? <Bar data={bidenChartData} options={chartOptions} />
+                    : <Paper sx={{ height: 400, width: '50%', marginLeft: 'auto', marginRight: 'auto' }}>
+                        <DataGrid
+                            rows={bidenData}
+                            getRowId={(row) => row.week_start}
+                            columns={tableColumns}
+                            sx={{ border: 0 }}
+                        />
+                        <Download data={bidenData} filename="analysis-tweets-biden" />
+                    </Paper>}
+            </div>
+            <Footer />
+        </div>
     );
 }
 

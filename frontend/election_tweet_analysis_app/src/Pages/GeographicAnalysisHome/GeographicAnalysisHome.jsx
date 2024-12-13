@@ -6,6 +6,8 @@ import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import './GeographicAnalysisHome.css'; // Custom CSS file
 
+import Footer from '../../Components/Footer/Footer';
+
 function GeographicAnalysisHome() {
     return (
         <>
@@ -16,7 +18,7 @@ function GeographicAnalysisHome() {
                 </Typography>
 
                 <Typography variant="body1" align="center" paragraph>
-                    Explore geographic metrics of tweets related to the 2020 US Presidential Election. 
+                    Explore geographic metrics of tweets related to the 2020 US Presidential Election.
                     Select the desired analysis type to dive deeper into the data.
                 </Typography>
 
@@ -30,9 +32,9 @@ function GeographicAnalysisHome() {
                             <Typography variant="body2" align="center" paragraph>
                                 Analyze tweets based on the country and city from which they were posted.
                             </Typography>
-                            <Button 
-                                variant="contained" 
-                                sx={{ backgroundColor: 'red', '&:hover': { backgroundColor: 'darkred' } }} 
+                            <Button
+                                variant="contained"
+                                sx={{ backgroundColor: 'red', '&:hover': { backgroundColor: 'darkred' } }}
                                 href="/geographic-analysis/country-city-analysis"
                                 fullWidth
                             >
@@ -50,9 +52,9 @@ function GeographicAnalysisHome() {
                             <Typography variant="body2" align="center" paragraph>
                                 Discover insights by analyzing tweets based on regions and timezones.
                             </Typography>
-                            <Button 
-                                variant="contained" 
-                                sx={{ backgroundColor: 'blue', '&:hover': { backgroundColor: 'darkblue' } }} 
+                            <Button
+                                variant="contained"
+                                sx={{ backgroundColor: 'blue', '&:hover': { backgroundColor: 'darkblue' } }}
                                 href="/geographic-analysis/region-timezone-analysis"
                                 fullWidth
                             >
@@ -61,6 +63,9 @@ function GeographicAnalysisHome() {
                         </Paper>
                     </Grid>
                 </Grid>
+            </div>
+            <div style={{ position: "fixed", bottom: "0", width: "100%" }}>
+                <Footer />
             </div>
         </>
     );

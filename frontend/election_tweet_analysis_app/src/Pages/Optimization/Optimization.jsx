@@ -1,4 +1,6 @@
 import AppNavbar from "../../Components/AppNavbar/AppNavbar";
+import Footer from "../../Components/Footer/Footer";
+
 import { useState, useEffect } from "react";
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
@@ -31,6 +33,10 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import dayjs from 'dayjs';
+
+import './Optimization.css';
+
+const config = require("../../config.json");
 
 function Optimization() {
     const [highVolumeData, setHighVolumeData] = useState([]);
@@ -122,16 +128,16 @@ function Optimization() {
                     aggregatedData.Biden.totalRetweets
                 ],
                 backgroundColor: [
-                    "rgba(255, 99, 132, 0.5)",
-                    "rgba(255, 159, 64, 0.5)",
-                    "rgba(255, 205, 86, 0.5)",
-                    "rgba(54, 162, 235, 0.5)"
+                    "#FF4500",
+                    "#FFA500",
+                    "#1DA1F2",
+                    "#00B8D4"
                 ],
                 borderColor: [
-                    "rgba(255, 99, 132, 1)",
-                    "rgba(255, 159, 64, 1)",
-                    "rgba(255, 205, 86, 1)",
-                    "rgba(54, 162, 235, 1)"
+                    "#FF4500",
+                    "#FFA500",
+                    "#1DA1F2",
+                    "#00B8D4"
                 ],
                 borderWidth: 1
             }
@@ -140,21 +146,22 @@ function Optimization() {
 
     const userCandidateChartOptions = {
         responsive: true,
+        maintainAspectRatio: false,
         plugins: {
             legend: { position: "top" },
             tooltip: { mode: "index" },
-        },
+        }
     };
 
     useEffect(() => {
-        fetch(`http://127.0.0.1:5000/api/optimization/most-tweeted-about`, { mode: 'cors' })
+        fetch(`${config.api_url}/optimization/most-tweeted-about`, { mode: 'cors' })
             .then((response) => response.json())
             .then((data) => setUserCandidateData(data))
             .catch((err) => {
                 console.log(err.message);
             });
 
-        fetch(`http://127.0.0.1:5000/api/optimization/user-engagement-with-candidate`, {mode: 'cors'})
+        fetch(`${config.api_url}/optimization/user-engagement-with-candidate`, { mode: 'cors' })
             .then((response) => response.json())
             .then((data) => setUserEngagementData(data))
             .catch((err) => {
@@ -163,7 +170,7 @@ function Optimization() {
     }, []);
 
     useEffect(() => {
-        fetch(`http://127.0.0.1:5000/api/engagement-trends/high-volume-days?limit=${limit}&sort_by=${highVolumeSortMetric}&order=${highVolumeOrder}`, { mode: 'cors' })
+        fetch(`${config.api_url}/engagement-trends/high-volume-days?limit=${limit}&sort_by=${highVolumeSortMetric}&order=${highVolumeOrder}`, { mode: 'cors' })
             .then((response) => response.json())
             .then((data) => setHighVolumeData(data))
             .catch((err) => {
@@ -172,7 +179,7 @@ function Optimization() {
     }, [limit, highVolumeSortMetric, highVolumeOrder]);
 
     useEffect(() => {
-        fetch(`http://127.0.0.1:5000/api/optimization/weekly-engagement-with-events`, {
+        fetch(`${config.api_url}/optimization/weekly-engagement-with-events`, {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json"
@@ -190,12 +197,12 @@ function Optimization() {
     }, [eventDates]);
 
     return (
-        <>
+        <div className="body">
             <AppNavbar />
             <h3>Days with High Volume of Tweets</h3>
-            <Box>
-                <TextField id="outlined-basic" label="Number of Days" onChange={(event) => setLimit(event.target.value)} variant="outlined" />
-                <FormControl>
+            <Box className="query-params">
+                <TextField id="outlined-basic" label="Number of Days" style={{ marginLeft: "2rem" }} onChange={(event) => setLimit(event.target.value)} variant="outlined" />
+                <FormControl style={{ marginLeft: "2rem" }}>
                     <InputLabel id="rollavg-metric-select-label">Sort Metric</InputLabel>
                     <Select
                         labelId="rollavg-metric-select-label"
@@ -209,7 +216,7 @@ function Optimization() {
                         <MenuItem value="engagement">Total Engagement</MenuItem>
                     </Select>
                 </FormControl>
-                <FormControl>
+                <FormControl style={{ marginLeft: "2rem" }}>
                     <FormLabel id="demo-radio-buttons-group-label">Sorting Order</FormLabel>
                     <RadioGroup
                         aria-labelledby="demo-radio-buttons-group-label"
@@ -221,17 +228,19 @@ function Optimization() {
                     </RadioGroup>
                 </FormControl>
             </Box>
-            <Paper sx={{ height: 400, width: '100%' }}>
-                <DataGrid
-                    rows={highVolumeData}
-                    getRowId={(row) => row.tweet_date + row.candidate}
-                    columns={highVolumeColumns}
-                    initialState={{ pagination: { paginationModel } }}
-                    pageSizeOptions={[5, 10, 100]}
-                    sx={{ border: 0 }}
-                />
-                <Download data={highVolumeData} filename="high-volume-days" />
-            </Paper>
+            <div className="data">
+                <Paper sx={{ height: 400, width: '55%', marginLeft: 'auto', marginRight: 'auto' }}>
+                    <DataGrid
+                        rows={highVolumeData}
+                        getRowId={(row) => row.tweet_date + row.candidate}
+                        columns={highVolumeColumns}
+                        initialState={{ pagination: { paginationModel } }}
+                        pageSizeOptions={[5, 10, 100]}
+                        sx={{ border: 0 }}
+                    />
+                    <Download data={highVolumeData} filename="high-volume-days" />
+                </Paper>
+            </div>
             <h3>Most Tweeted About Candidate By Users</h3>
             <ToggleButtonGroup
                 color="primary"
@@ -239,51 +248,61 @@ function Optimization() {
                 exclusive
                 onChange={(event, newFormat) => setUserCandidateDataFormat(newFormat)}
                 aria-label="Data View"
+                style={{ marginLeft: "2rem", marginBottom: "1rem" }}
             >
                 <ToggleButton value="chart">Chart</ToggleButton>
                 <ToggleButton value="table">Table</ToggleButton>
             </ToggleButtonGroup>
-            {userCandidateDataFormat === "chart" ? <Pie data={userCandidateChartData} options={userCandidateChartOptions} />
-                : <Paper sx={{ height: 400, width: '100%' }}>
+            <div className="data">
+                {userCandidateDataFormat === "chart" ? <Pie height={400} width={600} data={userCandidateChartData} options={userCandidateChartOptions} />
+                    : <Paper sx={{ height: 400, width: '70%', marginLeft: 'auto', marginRight: 'auto' }}>
+                        <DataGrid
+                            rows={userCandidateData}
+                            getRowId={(row) => row.user_name}
+                            columns={userCandidateColumns}
+                            initialState={{ pagination: { paginationModel } }}
+                            pageSizeOptions={[5, 10, 100]}
+                            sx={{ border: 0 }}
+                        />
+                        <Download data={userCandidateData} filename="most-tweeted-candidate-by-users" />
+                    </Paper>}
+            </div>
+            <h3>Weekly Engagement with Events</h3>
+            <div className="query-params" style={{ marginLeft: "2rem" }}>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DatePicker label="Event Date" minDate={dayjs('2020-10-15')} maxDate={dayjs('2020-11-08')} onChange={(newDate) => setEventDates([...eventDates, dayjs(newDate).format('YYYY-MM-DD')])
+                    } />
+                </LocalizationProvider>
+            </div>
+            <div className="data">
+                <Paper sx={{ height: 400, width: '99%', marginLeft: 'auto', marginRight: 'auto' }}>
                     <DataGrid
-                        rows={userCandidateData}
-                        getRowId={(row) => row.user_name}
-                        columns={userCandidateColumns}
+                        rows={eventData}
+                        getRowId={(row) => row.candidate + row.event_date + row.tweet_week}
+                        columns={eventColumns}
                         initialState={{ pagination: { paginationModel } }}
                         pageSizeOptions={[5, 10, 100]}
                         sx={{ border: 0 }}
                     />
-                    <Download data={userCandidateData} filename="most-tweeted-candidate-by-users" />
-                </Paper>}
-            <h3>Weekly Engagement with Events</h3>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DatePicker label="Event Date" minDate={dayjs('2020-10-15')} maxDate={dayjs('2020-11-08')} onChange={(newDate) => setEventDates([...eventDates, dayjs(newDate).format('YYYY-MM-DD')])
-                } />
-            </LocalizationProvider>
-            <Paper sx={{ height: 400, width: '100%' }}>
-                <DataGrid
-                    rows={eventData}
-                    getRowId={(row) => row.candidate + row.event_date + row.tweet_week}
-                    columns={eventColumns}
-                    initialState={{ pagination: { paginationModel } }}
-                    pageSizeOptions={[5, 10, 100]}
-                    sx={{ border: 0 }}
-                />
-                <Download data={eventData} filename="weekly-engagement-with-events" />
-            </Paper>
+                    <Download data={eventData} filename="weekly-engagement-with-events" />
+                </Paper>
+            </div>
             <h3>User Engagement By Candidate</h3>
-            <Paper sx={{ height: 400, width: '100%' }}>
-                <DataGrid
-                    rows={userEngagementData}
-                    getRowId={(row) => row.candidate + row.user_id}
-                    columns={userEngagementColumns}
-                    initialState={{ pagination: { paginationModel } }}
-                    pageSizeOptions={[5, 50, 100]}
-                    sx={{ border: 0 }}
-                />
-                <Download data={userEngagementData} filename="user-engagement-by-candidate" />
-            </Paper>
-        </>
+            <div className="data">
+                <Paper sx={{ height: 400, width: '85%', marginLeft: 'auto', marginRight: 'auto' }}>
+                    <DataGrid
+                        rows={userEngagementData}
+                        getRowId={(row) => row.candidate + row.user_id}
+                        columns={userEngagementColumns}
+                        initialState={{ pagination: { paginationModel } }}
+                        pageSizeOptions={[5, 50, 100]}
+                        sx={{ border: 0 }}
+                    />
+                    <Download data={userEngagementData} filename="user-engagement-by-candidate" />
+                </Paper>
+            </div>
+            <Footer />
+        </div>
     );
 }
 

@@ -24,6 +24,8 @@ import './Home.css';
 import trump_img from './trump.png';
 import biden_img from './biden.png';
 
+const config = require("../../config.json");
+
 function Home() {
     const [trumpStats, setTrumpStats] = useState({});
     const [bidenStats, setBidenStats] = useState({});
@@ -33,6 +35,8 @@ function Home() {
 
     const [totalTweets, setTotalTweets] = useState();
     const [uniqueUsers, setUniqueUsers] = useState();
+
+    console.log(config);
 
     ChartJS.register(
         CategoryScale,
@@ -92,7 +96,7 @@ function Home() {
     };
 
     useEffect(() => {
-        fetch(`http://127.0.0.1:5000/api/homepage/tweet-stats-by-candidate`, { mode: 'cors' })
+        fetch(`${config.api_url}/homepage/tweet-stats-by-candidate`, { mode: 'cors' })
             .then((response) => response.json())
             .then((data) => {
                 for (let i in data) {
@@ -109,7 +113,7 @@ function Home() {
     }, []);
 
     useEffect(() => {
-        fetch(`http://127.0.0.1:5000/api/homepage/overview?start_date=${dayjs(startDate).format('YYYY-MM-DD')}&end_date=${dayjs(endDate).format('YYYY-MM-DD')}`, { mode: 'cors' })
+        fetch(`${config.api_url}/homepage/overview?start_date=${dayjs(startDate).format('YYYY-MM-DD')}&end_date=${dayjs(endDate).format('YYYY-MM-DD')}`, { mode: 'cors' })
             .then((response) => response.json())
             .then((data) => {
                 setTotalTweets(data.total_tweets);
@@ -170,11 +174,11 @@ function Home() {
             </div>
             <div className='overview'>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <p className='overview-stats' style={{marginRight: '0.5rem'}}>Between</p>
+                    <p className='overview-stats' style={{ marginRight: '0.5rem' }}>Between</p>
                     <DatePicker label="Start Date" defaultValue={startDate} minDate={dayjs('2020-10-15')} maxDate={endDate} onChange={(newValue) => setStartDate(newValue)} />
-                    <p className='overview-stats' style={{marginRight: '0.5rem', marginLeft: '0.5rem'}}> and </p>
+                    <p className='overview-stats' style={{ marginRight: '0.5rem', marginLeft: '0.5rem' }}> and </p>
                     <DatePicker label="End Date" defaultValue={endDate} minDate={startDate} maxDate={dayjs('2020-11-08')} onChange={(newValue) => setEndDate(newValue)} />
-                    <p className='overview-stats' style={{marginLeft: '0.5rem'}}>,there have been <strong>{totalTweets}</strong> tweets by <strong>{uniqueUsers}</strong> unique users.</p>
+                    <p className='overview-stats' style={{ marginLeft: '0.5rem' }}>,there have been <strong>{totalTweets}</strong> tweets by <strong>{uniqueUsers}</strong> unique users.</p>
                 </LocalizationProvider>
             </div>
             <Footer />

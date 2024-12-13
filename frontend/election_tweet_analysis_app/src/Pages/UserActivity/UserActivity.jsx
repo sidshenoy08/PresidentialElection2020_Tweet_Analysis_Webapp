@@ -1,5 +1,6 @@
 import AppNavbar from "../../Components/AppNavbar/AppNavbar";
 import Download from "../../Components/Download/Download";
+import Footer from "../../Components/Footer/Footer";
 
 import { DataGrid } from '@mui/x-data-grid';
 import Paper from '@mui/material/Paper';
@@ -15,6 +16,10 @@ import Select from '@mui/material/Select';
 import Box from "@mui/material/Box";
 import { useState, useEffect } from "react";
 
+import './UserActivity.css';
+
+const config = require("../../config.json");
+
 function UserActivity() {
     const [userActivity, setUserActivity] = useState([]);
     const [activityCandidate, setActivityCandidate] = useState('Trump');
@@ -26,15 +31,6 @@ function UserActivity() {
     const [influenceLimit, setInfluenceLimit] = useState();
 
     const paginationModel = { page: 0, pageSize: 5 };
-
-    // const backgroundStyle = {
-    //     Trump: {
-    //         backgroundColor: '#FF0000'
-    //     },
-    //     Biden: {
-    //         backgroundColor: '#0015BC'
-    //     }
-    // };
 
     const activityColumns = [
         { field: 'user_id', headerName: 'User ID', width: 150 },
@@ -52,7 +48,7 @@ function UserActivity() {
     ];
 
     useEffect(() => {
-        fetch(`http://127.0.0.1:5000/api/user-engagement/activity-breakdown?candidate=${activityCandidate}&limit=${activityLimit}&order=${order}`, { mode: 'cors' })
+        fetch(`${config.api_url}/user-engagement/activity-breakdown?candidate=${activityCandidate}&limit=${activityLimit}&order=${order}`, { mode: 'cors' })
             .then((response) => response.json())
             .then((data) => setUserActivity(data))
             .catch((err) => {
@@ -61,7 +57,7 @@ function UserActivity() {
     }, [activityCandidate, activityLimit, order]);
 
     useEffect(() => {
-        fetch(`http://127.0.0.1:5000/api/user-engagement/influential-users?candidate=${influenceCandidate}&limit=${influenceLimit}`, { mode: 'cors' })
+        fetch(`${config.api_url}/user-engagement/influential-users?candidate=${influenceCandidate}&limit=${influenceLimit}`, { mode: 'cors' })
             .then((response) => response.json())
             .then((data) => setInfluentialUsers(data))
             .catch((err) => {
@@ -70,11 +66,11 @@ function UserActivity() {
     }, [influenceCandidate, influenceLimit])
 
     return (
-        <>
+        <div className="body">
             <AppNavbar />
             <h3>User Activity Breakdown</h3>
-            <Box>
-                <FormControl>
+            <Box className="query-params">
+                <FormControl style={{ marginLeft: "2rem" }}>
                     <InputLabel id="demo-simple-select-label">Candidate</InputLabel>
                     <Select
                         labelId="demo-simple-select-label"
@@ -88,8 +84,8 @@ function UserActivity() {
                         <MenuItem value="Biden">Biden</MenuItem>
                     </Select>
                 </FormControl>
-                <TextField id="outlined-basic" label="Number of Users" onChange={(event) => setActivityLimit(event.target.value)} variant="outlined" />
-                <FormControl>
+                <TextField id="outlined-basic" label="Number of Users" style={{ marginLeft: "2rem" }} onChange={(event) => setActivityLimit(event.target.value)} variant="outlined" />
+                <FormControl style={{ marginLeft: "2rem" }}>
                     <FormLabel id="demo-radio-buttons-group-label">Sorting Order</FormLabel>
                     <RadioGroup
                         aria-labelledby="demo-radio-buttons-group-label"
@@ -101,19 +97,21 @@ function UserActivity() {
                     </RadioGroup>
                 </FormControl>
             </Box>
-            <Paper sx={{ height: 400 }}>
-                <DataGrid
-                    rows={userActivity}
-                    getRowId={(row) => row.user_id}
-                    columns={activityColumns}
-                    initialState={{ pagination: { paginationModel } }}
-                    pageSizeOptions={[5, 10]}
-                />
-                <Download data={userActivity} filename="user-activity-breakdown" />
-            </Paper>
+            <div className="data">
+                <Paper sx={{ height: 400, width: '50%', marginLeft: 'auto', marginRight: 'auto' }}>
+                    <DataGrid
+                        rows={userActivity}
+                        getRowId={(row) => row.user_id}
+                        columns={activityColumns}
+                        initialState={{ pagination: { paginationModel } }}
+                        pageSizeOptions={[5, 10]}
+                    />
+                    <Download data={userActivity} filename="user-activity-breakdown" />
+                </Paper>
+            </div>
             <h3>Influential Users</h3>
-            <Box>
-                <FormControl>
+            <Box className="query-params">
+                <FormControl style={{ marginLeft: "2rem" }}>
                     <InputLabel id="demo-simple-select-label">Candidate</InputLabel>
                     <Select
                         labelId="demo-simple-select-label"
@@ -127,19 +125,22 @@ function UserActivity() {
                         <MenuItem value="Biden">Biden</MenuItem>
                     </Select>
                 </FormControl>
-                <TextField id="outlined-basic" label="Number of Users" onChange={(event) => setInfluenceLimit(event.target.value)} variant="outlined" />
+                <TextField id="outlined-basic" label="Number of Users" style={{ marginLeft: "2rem" }} onChange={(event) => setInfluenceLimit(event.target.value)} variant="outlined" />
             </Box>
-            <Paper sx={{ height: 400 }}>
-                <DataGrid
-                    rows={influentialUsers}
-                    getRowId={(row) => row.user_id}
-                    columns={influenceColumns}
-                    initialState={{ pagination: { paginationModel } }}
-                    pageSizeOptions={[5, 10, 100]}
-                />
-                <Download data={influentialUsers} filename="influential-users" />
-            </Paper>
-        </>
+            <div className="data">
+                <Paper sx={{ height: 400, width: '60%', marginLeft: 'auto', marginRight: 'auto' }}>
+                    <DataGrid
+                        rows={influentialUsers}
+                        getRowId={(row) => row.user_id}
+                        columns={influenceColumns}
+                        initialState={{ pagination: { paginationModel } }}
+                        pageSizeOptions={[5, 10, 100]}
+                    />
+                    <Download data={influentialUsers} filename="influential-users" />
+                </Paper>
+            </div>
+            <Footer />
+        </div>
     );
 }
 

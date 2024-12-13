@@ -1,5 +1,6 @@
 import AppNavbar from "../../Components/AppNavbar/AppNavbar";
 import Download from "../../Components/Download/Download";
+import Footer from "../../Components/Footer/Footer";
 
 import { DataGrid } from '@mui/x-data-grid';
 import Paper from '@mui/material/Paper';
@@ -26,6 +27,10 @@ import {
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import { Bar } from 'react-chartjs-2';
+
+import './RegionTimezoneAnalysis.css';
+
+const config = require("../../config.json");
 
 function RegionTimezoneAnalysis() {
     const [regionData, setRegionData] = useState([]);
@@ -74,17 +79,17 @@ function RegionTimezoneAnalysis() {
             {
                 label: "Number of Tweets",
                 data: timezoneData.map((row) => row.tweet_count),
-                backgroundColor: "rgba(75, 192, 192, 0.6)"
+                backgroundColor: "#1DA1F2"
             },
             {
                 label: "Number of Retweets",
                 data: timezoneData.map((row) => row.retweets),
-                backgroundColor: "rgba(153, 102, 255, 0.6)"
+                backgroundColor: "#4CAF50"
             },
             {
                 label: "Number of Likes",
                 data: timezoneData.map((row) => row.likes),
-                backgroundColor: "rgba(255, 159, 64, 0.6)"
+                backgroundColor: "#FF6F61"
             }
         ]
     };
@@ -103,7 +108,7 @@ function RegionTimezoneAnalysis() {
     };
 
     useEffect(() => {
-        fetch(`http://127.0.0.1:5000/api/geographic-analysis/top-tweets-by-region?continent=${continent}&country=${country}&state=${state}&city=${city}&limit=${limit}&sort_by=${sortMetric}&order=${order}`)
+        fetch(`${config.api_url}/geographic-analysis/top-tweets-by-region?continent=${continent}&country=${country}&state=${state}&city=${city}&limit=${limit}&sort_by=${sortMetric}&order=${order}`)
             .then((response) => response.json())
             .then((data) => setRegionData(data))
             .catch((err) => {
@@ -112,7 +117,7 @@ function RegionTimezoneAnalysis() {
     }, [continent, country, state, city, limit, sortMetric, order]);
 
     useEffect(() => {
-        fetch(`http://127.0.0.1:5000/api/geographic-analysis/engagement-by-timezone?candidate=${candidate}`)
+        fetch(`${config.api_url}/geographic-analysis/engagement-by-timezone?candidate=${candidate}`)
             .then((response) => response.json())
             .then((data) => setTimezoneData(data))
             .catch((err) => {
@@ -121,16 +126,16 @@ function RegionTimezoneAnalysis() {
     }, [candidate]);
 
     return (
-        <>
+        <div className="body">
             <AppNavbar />
             <h3>Top Tweets By Region</h3>
-            <Box>
-                <TextField id="outlined-basic" label="Continent" onChange={(event) => setContinent(event.target.value)} variant="outlined" />
-                <TextField id="outlined-basic" label="Country" onChange={(event) => setCountry(event.target.value)} variant="outlined" />
-                <TextField id="outlined-basic" label="State" onChange={(event) => setState(event.target.value)} variant="outlined" />
-                <TextField id="outlined-basic" label="City" onChange={(event) => setCity(event.target.value)} variant="outlined" />
-                <TextField id="outlined-basic" label="Number of Tweets" onChange={(event) => setLimit(event.target.value)} variant="outlined" />
-                <FormControl>
+            <Box className="query-params">
+                <TextField id="outlined-basic" label="Continent" style={{ marginLeft: "2rem" }} onChange={(event) => setContinent(event.target.value)} variant="outlined" />
+                <TextField id="outlined-basic" label="Country" style={{ marginLeft: "2rem" }} onChange={(event) => setCountry(event.target.value)} variant="outlined" />
+                <TextField id="outlined-basic" label="State" style={{ marginLeft: "2rem" }} onChange={(event) => setState(event.target.value)} variant="outlined" />
+                <TextField id="outlined-basic" label="City" style={{ marginLeft: "2rem" }} onChange={(event) => setCity(event.target.value)} variant="outlined" />
+                <TextField id="outlined-basic" label="Number of Tweets" style={{ marginLeft: "2rem" }} onChange={(event) => setLimit(event.target.value)} variant="outlined" />
+                <FormControl style={{ marginLeft: "2rem" }}>
                     <InputLabel id="demo-simple-select-label">Sort By</InputLabel>
                     <Select
                         labelId="demo-simple-select-label"
@@ -145,7 +150,7 @@ function RegionTimezoneAnalysis() {
                         <MenuItem value="likes">Likes</MenuItem>
                     </Select>
                 </FormControl>
-                <FormControl>
+                <FormControl style={{ marginLeft: "2rem" }}>
                     <FormLabel id="demo-radio-buttons-group-label">Sorting Order</FormLabel>
                     <RadioGroup
                         aria-labelledby="demo-radio-buttons-group-label"
@@ -157,19 +162,21 @@ function RegionTimezoneAnalysis() {
                     </RadioGroup>
                 </FormControl>
             </Box>
-            <Paper sx={{ height: 400 }}>
-                <DataGrid
-                    rows={regionData}
-                    getRowId={(row) => row.tweet_id}
-                    columns={regionColumns}
-                    initialState={{ pagination: { paginationModel } }}
-                    pageSizeOptions={[5, 10, 100]}
-                />
-                <Download data={regionData} filename="top-tweets-by-region" />
-            </Paper>
+            <div className="data">
+                <Paper sx={{ height: 400, width: '99%', marginLeft: 'auto', marginRight: 'auto' }}>
+                    <DataGrid
+                        rows={regionData}
+                        getRowId={(row) => row.tweet_id}
+                        columns={regionColumns}
+                        initialState={{ pagination: { paginationModel } }}
+                        pageSizeOptions={[5, 10, 100]}
+                    />
+                    <Download data={regionData} filename="top-tweets-by-region" />
+                </Paper>
+            </div>
             <h3>Tweet Engagement By Timezone</h3>
-            <Box>
-                <FormControl>
+            <Box className="query-params">
+                <FormControl style={{ marginLeft: "2rem" }}>
                     <InputLabel id="demo-simple-select-label">Candidate</InputLabel>
                     <Select
                         labelId="demo-simple-select-label"
@@ -190,22 +197,26 @@ function RegionTimezoneAnalysis() {
                 exclusive
                 onChange={(event, newFormat) => setTimezoneDataFormat(newFormat)}
                 aria-label="Data View"
+                style={{ marginLeft: "2rem", marginBottom: "1rem" }}
             >
                 <ToggleButton value="chart">Chart</ToggleButton>
                 <ToggleButton value="table">Table</ToggleButton>
             </ToggleButtonGroup>
-            {timezoneDataFormat === "chart" ? <Bar data={timezoneChartData} options={timezoneChartOptions} />
-            : <Paper sx={{ height: 400 }}>
-                <DataGrid
-                    rows={timezoneData}
-                    getRowId={(row) => row.time_zone}
-                    columns={timezoneColumns}
-                    initialState={{ pagination: { paginationModel } }}
-                    pageSizeOptions={[5, 10, 100]}
-                />
-                <Download data={timezoneData} filename="tweet-engagement-by-timezone" />
-            </Paper>}
-        </>
+            <div className="data">
+                {timezoneDataFormat === "chart" ? <Bar data={timezoneChartData} options={timezoneChartOptions} />
+                    : <Paper sx={{ height: 400, width: '90%', marginLeft: 'auto', marginRight: 'auto' }}>
+                        <DataGrid
+                            rows={timezoneData}
+                            getRowId={(row) => row.time_zone}
+                            columns={timezoneColumns}
+                            initialState={{ pagination: { paginationModel } }}
+                            pageSizeOptions={[5, 10, 100]}
+                        />
+                        <Download data={timezoneData} filename="tweet-engagement-by-timezone" />
+                    </Paper>}
+            </div>
+            <Footer />
+        </div>
     );
 }
 
