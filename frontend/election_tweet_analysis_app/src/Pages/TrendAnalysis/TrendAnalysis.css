@@ -1,0 +1,20 @@
+h3 {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin-left: 2rem;
+}
+
+p {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.body {
+    background-color: whitesmoke;
+}
+
+.query-params {
+    margin-top: 2rem;
+}
+
+.data {
+    padding-bottom: 2rem;
+}

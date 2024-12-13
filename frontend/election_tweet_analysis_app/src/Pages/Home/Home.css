@@ -3,23 +3,20 @@ h3 {
     margin-top: 2.5rem !important;
 }
 
-footer {
-    padding-top: 1rem;
-    text-align: center;
-    background-color: #FFFFFF;
+p {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
-.flex-container1 {
-    display: flex;
-    flex-wrap: wrap;
-    background-color: #FFFFFF;
+.intro {
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .para-text {
     margin-top: 2.5rem;
     color: black;
     margin-bottom: 2.5rem;
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
 .trump-container {
@@ -77,4 +74,15 @@ footer {
     justify-content: center !important;
     align-items: center !important;
     margin: auto;
+}
+
+.overview {
+    background-color:aliceblue;
+    text-align: center;
+    padding: 2rem;
+}
+
+.overview-stats {
+    display: inline-block;
+    margin-top: 1rem;
 }

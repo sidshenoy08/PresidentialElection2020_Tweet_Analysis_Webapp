@@ -5,7 +5,7 @@ function Download(props) {
     return (
         <>
             <CSVLink data={props.data} filename={props.filename}>
-                <Button variant="outlined">Download</Button>
+                <Button style={{marginTop: "0.5rem", position: 'absolute'}} variant="contained">Export</Button>
             </CSVLink>
         </>
     );

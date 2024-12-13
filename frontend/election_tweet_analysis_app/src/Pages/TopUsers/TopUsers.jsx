@@ -1,5 +1,6 @@
 import AppNavbar from "../../Components/AppNavbar/AppNavbar";
 import Download from "../../Components/Download/Download";
+import Footer from "../../Components/Footer/Footer";
 
 import { DataGrid } from '@mui/x-data-grid';
 import Paper from '@mui/material/Paper';
@@ -9,7 +10,10 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
+import Box from "@mui/material/Box";
 import { useState, useEffect } from "react";
+
+import './TopUsers.css';
 
 function TopUsers() {
     const [users, setUsers] = useState([]);
@@ -68,46 +72,53 @@ function TopUsers() {
     }, [userIds])
 
     return (
-        <>
+        <div className="body">
             <AppNavbar />
             <h3>Top Users by Engagement</h3>
-            <TextField id="outlined-basic" label="Number of Top Users" onChange={(event) => setLimit(event.target.value)} variant="outlined" />
-            <FormControl>
-                <FormLabel id="demo-radio-buttons-group-label">Sorting Order</FormLabel>
-                <RadioGroup
-                    aria-labelledby="demo-radio-buttons-group-label"
-                    name="radio-buttons-group"
-                    defaultValue={order}
-                >
-                    <FormControlLabel value="asc" onChange={(event) => setOrder(event.target.value)} control={<Radio />} label="Ascending" />
-                    <FormControlLabel value="desc" onChange={(event) => setOrder(event.target.value)} control={<Radio />} label="Descending" />
-                </RadioGroup>
-            </FormControl>
-            <Paper sx={{ height: 400, width: '100%' }}>
-                <DataGrid
-                    rows={users}
-                    getRowId={(row) => row.user_id}
-                    onCellClick={(row) => setUserIds([...userIds, row.row.user_id])}
-                    columns={userColumns}
-                    initialState={{ pagination: { paginationModel } }}
-                    pageSizeOptions={[5, 10, 100]}
-                    sx={{ border: 0 }}
-                />
-                <Download data={users} filename="top-users-by-engagement" />
-            </Paper>
+            <Box className="query-params">
+                <TextField id="outlined-basic" label="Number of Top Users" style={{ marginLeft: "2rem" }} onChange={(event) => setLimit(event.target.value)} variant="outlined" />
+                <FormControl style={{ marginLeft: "2rem" }}>
+                    <FormLabel id="demo-radio-buttons-group-label">Sorting Order</FormLabel>
+                    <RadioGroup
+                        aria-labelledby="demo-radio-buttons-group-label"
+                        name="radio-buttons-group"
+                        defaultValue={order}
+                    >
+                        <FormControlLabel value="asc" onChange={(event) => setOrder(event.target.value)} control={<Radio />} label="Ascending" />
+                        <FormControlLabel value="desc" onChange={(event) => setOrder(event.target.value)} control={<Radio />} label="Descending" />
+                    </RadioGroup>
+                </FormControl>
+            </Box>
+            <div className="data">
+                <Paper sx={{ height: 400, width: '80%', marginLeft: 'auto', marginRight: 'auto' }}>
+                    <DataGrid
+                        rows={users}
+                        getRowId={(row) => row.user_id}
+                        onCellClick={(row) => setUserIds([...userIds, row.row.user_id])}
+                        columns={userColumns}
+                        initialState={{ pagination: { paginationModel } }}
+                        pageSizeOptions={[5, 10, 100]}
+                        sx={{ border: 0 }}
+                    />
+                    <Download data={users} filename="top-users-by-engagement" />
+                </Paper>
+            </div>
             <h3>Tweets by Top Users</h3>
-            <Paper sx={{ height: 400, width: '100%' }}>
-                <DataGrid
-                    rows={tweets}
-                    getRowId={(row) => row.tweet_id}
-                    columns={tweetColumns}
-                    initialState={{ pagination: { paginationModel } }}
-                    pageSizeOptions={[5, 10, 100]}
-                    sx={{ border: 0 }}
-                />
-                <Download data={tweets} filename="tweets-by-top-users" />
-            </Paper>
-        </>
+            <div className="data">
+                <Paper sx={{ height: 400, width: '100%' }}>
+                    <DataGrid
+                        rows={tweets}
+                        getRowId={(row) => row.tweet_id}
+                        columns={tweetColumns}
+                        initialState={{ pagination: { paginationModel } }}
+                        pageSizeOptions={[5, 10, 100]}
+                        sx={{ border: 0 }}
+                    />
+                    <Download data={tweets} filename="tweets-by-top-users" />
+                </Paper>
+            </div>
+            <Footer />
+        </div>
     );
 }
 

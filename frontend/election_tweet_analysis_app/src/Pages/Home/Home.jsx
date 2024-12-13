@@ -17,6 +17,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import dayjs from 'dayjs';
 
 import AppNavbar from '../../Components/AppNavbar/AppNavbar';
+import Footer from '../../Components/Footer/Footer';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Home.css';
@@ -124,7 +125,7 @@ function Home() {
             <AppNavbar />
             <h3 style={{ textAlign: "center" }}>Welcome to PollPulse!</h3>
 
-            <div>
+            <div className='intro'>
                 <p className='para-text'>The 2020 US Presidential Election generated immense discussion on Twitter, with users sharing their thoughts on both candidates, Joe Biden and Donald Trump. This application provides insights into key trends, user behaviors, and geographic patterns by utilizing complex SQL queries on structured tweet data. The application can be used by political analysts, researchers, and data scientists to derive meaningful information from the election conversation.</p>
             </div>
 
@@ -167,18 +168,16 @@ function Home() {
             <div className='chart-box'>
                 <Bar options={options} data={data} />
             </div>
-            <div>
+            <div className='overview'>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <p>Between </p>
+                    <p className='overview-stats' style={{marginRight: '0.5rem'}}>Between</p>
                     <DatePicker label="Start Date" defaultValue={startDate} minDate={dayjs('2020-10-15')} maxDate={endDate} onChange={(newValue) => setStartDate(newValue)} />
-                    <p> and </p>
+                    <p className='overview-stats' style={{marginRight: '0.5rem', marginLeft: '0.5rem'}}> and </p>
                     <DatePicker label="End Date" defaultValue={endDate} minDate={startDate} maxDate={dayjs('2020-11-08')} onChange={(newValue) => setEndDate(newValue)} />
-                    <p>, there have been {totalTweets} tweets by {uniqueUsers} unique users.</p>
+                    <p className='overview-stats' style={{marginLeft: '0.5rem'}}>,there have been <strong>{totalTweets}</strong> tweets by <strong>{uniqueUsers}</strong> unique users.</p>
                 </LocalizationProvider>
             </div>
-            <footer>
-                <p>Created by Group 26</p>
-            </footer>
+            <Footer />
         </>
     );
 }

@@ -1,5 +1,8 @@
 import AppNavbar from "../../Components/AppNavbar/AppNavbar";
 import Download from "../../Components/Download/Download";
+import Footer from "../../Components/Footer/Footer";
+
+import './TrendAnalysis.css';
 
 import { useState, useEffect } from "react";
 import ToggleButton from '@mui/material/ToggleButton';
@@ -56,12 +59,12 @@ function TrendAnalysis() {
     const rollavgColumns = [
         { field: 'date', headerName: 'Date', width: 250 },
         { field: 'engagement', headerName: 'Engagement', type: 'number', width: 100 },
-        { field: 'rolling_avg', headerName: 'Rolling Average', type: 'number', width: 100 }
+        { field: 'rolling_avg', headerName: 'Rolling Average', type: 'number', width: 150 }
     ];
 
     const spikeColumns = [
         { field: 'date', headerName: 'Date', width: 250 },
-        { field: 'engagement', headerName: 'Engagement', type: 'number', width: 100 }
+        { field: 'engagement', headerName: 'Total Engagement', type: 'number', width: 200 }
     ];
 
     const paginationModel = { page: 0, pageSize: 5 };
@@ -73,15 +76,15 @@ function TrendAnalysis() {
                 label: "Total Engagement",
                 data: rollavgData.map((row) => row.engagement),
                 borderColor: "rgba(75, 192, 192, 1)",
-                backgroundColor: "rgba(75, 192, 192, 0.2)",
+                backgroundColor: "rgba(75, 192, 192)",
                 borderWidth: 2,
                 tension: 0.4
             },
             {
                 label: "Rolling Average",
                 data: rollavgData.map((row) => row.rolling_avg),
-                borderColor: "rgba(153, 102, 255, 1)",
-                backgroundColor: "rgba(153, 102, 255, 0.2)",
+                borderColor: "rgba(153, 102, 255)",
+                backgroundColor: "rgba(153, 102, 255)",
                 borderWidth: 2,
                 tension: 0.4,
                 borderDash: [5, 5]
@@ -95,8 +98,8 @@ function TrendAnalysis() {
             {
                 label: "Total Engagement",
                 data: spikeData.map((row) => row.engagement),
-                borderColor: "rgba(75, 192, 192, 1)",
-                backgroundColor: "rgba(75, 192, 192, 0.2)"
+                borderColor: "rgba(75, 192, 192)",
+                backgroundColor: "rgba(75, 192, 192)"
             }
         ]
     };
@@ -165,7 +168,7 @@ function TrendAnalysis() {
     }, [rollavgCandidate, window, rollavgSortMetric, rollavgOrder]);
 
     useEffect(() => {
-        fetch(`http://127.0.0.1:5000/api/engagement-trends/spikes?candidate=${spikeCandidate}&threshold=${threshold}&sort_by=${spikeSortMetric}&order=${spikeOrder}`, {mode: 'cors'})
+        fetch(`http://127.0.0.1:5000/api/engagement-trends/spikes?candidate=${spikeCandidate}&threshold=${threshold}&sort_by=${spikeSortMetric}&order=${spikeOrder}`, { mode: 'cors' })
             .then((response) => response.json())
             .then((data) => setSpikeData(data))
             .catch((err) => {
@@ -174,11 +177,11 @@ function TrendAnalysis() {
     }, [spikeCandidate, threshold, spikeSortMetric, spikeOrder]);
 
     return (
-        <>
+        <div className="body">
             <AppNavbar />
             <h3>Rolling Average By Day</h3>
-            <Box>
-                <FormControl>
+            <Box className="query-params">
+                <FormControl style={{ marginLeft: "2rem" }}>
                     <InputLabel id="rollavg-candidate-select-label">Candidate</InputLabel>
                     <Select
                         labelId="rollavg-candidate-select-label"
@@ -192,8 +195,8 @@ function TrendAnalysis() {
                         <MenuItem value="Biden">Biden</MenuItem>
                     </Select>
                 </FormControl>
-                <TextField id="outlined-basic" label="Window" onChange={(event) => setWindow(event.target.value)} variant="outlined" />
-                <FormControl>
+                <TextField id="outlined-basic" label="Window" style={{ marginLeft: "2rem" }} onChange={(event) => setWindow(event.target.value)} variant="outlined" />
+                <FormControl style={{ marginLeft: "2rem" }}>
                     <InputLabel id="rollavg-metric-select-label">Sort Metric</InputLabel>
                     <Select
                         labelId="rollavg-metric-select-label"
@@ -208,7 +211,7 @@ function TrendAnalysis() {
                         <MenuItem value="rolling_avg">Rolling Average</MenuItem>
                     </Select>
                 </FormControl>
-                <FormControl>
+                <FormControl style={{ marginLeft: "2rem" }}>
                     <FormLabel id="demo-radio-buttons-group-label">Sorting Order</FormLabel>
                     <RadioGroup
                         aria-labelledby="demo-radio-buttons-group-label"
@@ -226,25 +229,28 @@ function TrendAnalysis() {
                 exclusive
                 onChange={(event, newFormat) => setRollAvgDataFormat(newFormat)}
                 aria-label="Data View"
+                style={{ marginLeft: "2rem" }}
             >
                 <ToggleButton value="chart">Chart</ToggleButton>
                 <ToggleButton value="table">Table</ToggleButton>
             </ToggleButtonGroup>
-            {rollavgDataFormat === "chart" ? <Line data={rollavgChartData} options={rollavgChartOptions} />
-                : <Paper sx={{ height: 400, width: '100%' }}>
-                <DataGrid
-                    rows={rollavgData}
-                    getRowId={(row) => row.date}
-                    columns={rollavgColumns}
-                    initialState={{ pagination: { paginationModel } }}
-                    pageSizeOptions={[5, 10, 100]}
-                    sx={{ border: 0 }}
-                />
-                <Download data={rollavgData} filename="rolling-average-by-day" />
-            </Paper>}
+            <div className="data">
+                {rollavgDataFormat === "chart" ? <Line data={rollavgChartData} options={rollavgChartOptions} />
+                    : <Paper sx={{ height: 400, width: '40%', marginLeft: 'auto', marginRight: 'auto' }}>
+                        <DataGrid
+                            rows={rollavgData}
+                            getRowId={(row) => row.date}
+                            columns={rollavgColumns}
+                            initialState={{ pagination: { paginationModel } }}
+                            pageSizeOptions={[5, 10, 100]}
+                            sx={{ border: 0 }}
+                        />
+                        <Download data={rollavgData} filename="rolling-average-by-day" />
+                    </Paper>}
+            </div>
             <h3>Spikes in Total Engagment</h3>
-            <Box>
-                <FormControl>
+            <Box className='query-params'>
+                <FormControl style={{ marginLeft: "2rem" }}>
                     <InputLabel id="spike-candidate-select-label">Candidate</InputLabel>
                     <Select
                         labelId="spike-candidate-select-label"
@@ -258,8 +264,8 @@ function TrendAnalysis() {
                         <MenuItem value="Biden">Biden</MenuItem>
                     </Select>
                 </FormControl>
-                <TextField id="outlined-basic" label="Threshold" onChange={(event) => setThreshold(event.target.value)} variant="outlined" />
-                <FormControl>
+                <TextField id="outlined-basic" label="Threshold" style={{ marginLeft: "2rem" }} onChange={(event) => setThreshold(event.target.value)} variant="outlined" />
+                <FormControl style={{ marginLeft: "2rem" }}>
                     <InputLabel id="spike-metric-select-label">Sort Metric</InputLabel>
                     <Select
                         labelId="spike-metric-select-label"
@@ -273,7 +279,7 @@ function TrendAnalysis() {
                         <MenuItem value="engagement">Total Engagement</MenuItem>
                     </Select>
                 </FormControl>
-                <FormControl>
+                <FormControl style={{ marginLeft: "2rem" }}>
                     <FormLabel id="demo-radio-buttons-group-label">Sorting Order</FormLabel>
                     <RadioGroup
                         aria-labelledby="demo-radio-buttons-group-label"
@@ -291,23 +297,27 @@ function TrendAnalysis() {
                 exclusive
                 onChange={(event, newFormat) => setSpikeDataFormat(newFormat)}
                 aria-label="Data View"
+                style={{ marginLeft: "2rem" }}
             >
                 <ToggleButton value="chart">Chart</ToggleButton>
                 <ToggleButton value="table">Table</ToggleButton>
             </ToggleButtonGroup>
-            {spikeDataFormat === "chart" ? <Line data={spikeChartData} options={spikeChartOptions} />
-                : <Paper sx={{ height: 400, width: '100%' }}>
-                <DataGrid
-                    rows={spikeData}
-                    getRowId={(row) => row.date}
-                    columns={spikeColumns}
-                    initialState={{ pagination: { paginationModel } }}
-                    pageSizeOptions={[5, 10, 100]}
-                    sx={{ border: 0 }}
-                />
-                <Download data={spikeData} filename="spikes-in-total-engagement" />
-            </Paper>}
-        </>
+            <div className="data">
+                {spikeDataFormat === "chart" ? <Line data={spikeChartData} options={spikeChartOptions} />
+                    : <Paper sx={{ height: 400, width: '30%', marginLeft: 'auto', marginRight: 'auto' }}>
+                        <DataGrid
+                            rows={spikeData}
+                            getRowId={(row) => row.date}
+                            columns={spikeColumns}
+                            initialState={{ pagination: { paginationModel } }}
+                            pageSizeOptions={[5, 10, 100]}
+                            sx={{ border: 0 }}
+                        />
+                        <Download data={spikeData} filename="spikes-in-total-engagement" />
+                    </Paper>}
+            </div>
+            <Footer />
+        </div>
     );
 }
 

@@ -9,7 +9,7 @@ import './AppNavbar.css';
 function AppNavbar() {
     return (
         <>
-            <Navbar sticky="top" expand="lg" className="bg-body-tertiary">
+            <Navbar sticky="top" expand="lg" bg="dark" data-bs-theme="dark">
                 <Container>
                     <Navbar.Brand as={Link} to='/'>PollPulse</Navbar.Brand>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
