@@ -29,7 +29,7 @@ class TestGeographicAnalysisService(unittest.TestCase):
     def test_get_engagement_by_timezone(self, mock_get_engagement_by_timezone):
         mock_get_engagement_by_timezone.return_value = ([(45, 50, 25, 40, 30)], ['lat', 'long', 'tweet_count', 'likes', 'retweets'])
         result = GeographicAnalysisService.get_engagement_by_timezone()
-        expected = [{'time_zone': 'America/New_York', 'tweet_count': 45, 'likes': 50, 'retweets': 25}]
+        expected = [{'time_zone': 'Asia/Aqtau', 'tweet_count': 25, 'likes': 40, 'retweets': 30}]
         self.assertEqual(result, expected)
 
 if __name__ == '__main__':
