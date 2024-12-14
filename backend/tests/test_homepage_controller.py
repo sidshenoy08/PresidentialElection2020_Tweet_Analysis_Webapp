@@ -27,7 +27,7 @@ def test_get_total_tweets_overview(mock_get_total_tweets_overview, client):
         "total_quotes": 25
     }
     mock_get_total_tweets_overview.return_value = mock_data
-    response = client.get('/api/homepage/total-tweets-overview')
+    response = client.get('/api/homepage/overview')
     assert response.status_code == 200
     assert response.json == mock_data
 
