@@ -3,6 +3,7 @@ import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
+import { Link } from "react-router-dom";
 import "./UserEngagementHome.css";
 
 import Footer from "../../Components/Footer/Footer";
@@ -28,14 +29,16 @@ function UserEngagementHome() {
                             <Typography variant="body2" className="card-description">
                                 Explore the most active and impactful users during the election period.
                             </Typography>
-                            <Button
-                                href="/user-engagement/top-users"
-                                variant="contained"
-                                sx={{ backgroundColor: 'red', '&:hover': { backgroundColor: 'darkred' } }} 
-                                className="custom-button red-button"
-                            >
-                                View Top Users
-                            </Button>
+                            <Link to='/user-engagement/top-users'>
+                                <Button
+                                    // href="/user-engagement/top-users"
+                                    variant="contained"
+                                    sx={{ backgroundColor: 'red', '&:hover': { backgroundColor: 'darkred' } }}
+                                    className="custom-button red-button"
+                                >
+                                    View Top Users
+                                </Button>
+                            </Link>
                         </Paper>
                     </Grid>
                     <Grid item xs={12} sm={6} md={4}>
@@ -46,14 +49,16 @@ function UserEngagementHome() {
                             <Typography variant="body2" className="card-description">
                                 Dive into detailed insights about user activities and trends.
                             </Typography>
-                            <Button
-                                href="/user-engagement/activity-breakdown"
-                                sx={{ backgroundColor: 'blue', '&:hover': { backgroundColor: 'darkblue' } }}
-                                variant="contained"
-                                className="custom-button blue-button"
-                            >
-                                View Activity Breakdown
-                            </Button>
+                            <Link to='/user-engagement/activity-breakdown'>
+                                <Button
+                                    // href="/user-engagement/activity-breakdown"
+                                    sx={{ backgroundColor: 'blue', '&:hover': { backgroundColor: 'darkblue' } }}
+                                    variant="contained"
+                                    className="custom-button blue-button"
+                                >
+                                    View Activity Breakdown
+                                </Button>
+                            </Link>
                         </Paper>
                     </Grid>
                 </Grid>

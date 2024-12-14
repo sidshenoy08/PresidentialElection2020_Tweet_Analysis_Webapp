@@ -4,6 +4,7 @@ import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
+import { Link } from "react-router-dom";
 import './GeographicAnalysisHome.css'; // Custom CSS file
 
 import Footer from '../../Components/Footer/Footer';
@@ -32,14 +33,16 @@ function GeographicAnalysisHome() {
                             <Typography variant="body2" align="center" paragraph>
                                 Analyze tweets based on the country and city from which they were posted.
                             </Typography>
-                            <Button
-                                variant="contained"
-                                sx={{ backgroundColor: 'red', '&:hover': { backgroundColor: 'darkred' } }}
-                                href="/geographic-analysis/country-city-analysis"
-                                fullWidth
-                            >
-                                Explore
-                            </Button>
+                            <Link to='/geographic-analysis/country-city-analysis'>
+                                <Button
+                                    variant="contained"
+                                    sx={{ backgroundColor: 'red', '&:hover': { backgroundColor: 'darkred' } }}
+                                    // href="/geographic-analysis/country-city-analysis"
+                                    fullWidth
+                                >
+                                    Explore
+                                </Button>
+                            </Link>
                         </Paper>
                     </Grid>
 
@@ -52,14 +55,16 @@ function GeographicAnalysisHome() {
                             <Typography variant="body2" align="center" paragraph>
                                 Discover insights by analyzing tweets based on regions and timezones.
                             </Typography>
-                            <Button
-                                variant="contained"
-                                sx={{ backgroundColor: 'blue', '&:hover': { backgroundColor: 'darkblue' } }}
-                                href="/geographic-analysis/region-timezone-analysis"
-                                fullWidth
-                            >
-                                Explore
-                            </Button>
+                            <Link to="/geographic-analysis/region-timezone-analysis">
+                                <Button
+                                    variant="contained"
+                                    sx={{ backgroundColor: 'blue', '&:hover': { backgroundColor: 'darkblue' } }}
+                                    // href="/geographic-analysis/region-timezone-analysis"
+                                    fullWidth
+                                >
+                                    Explore
+                                </Button>
+                            </Link>
                         </Paper>
                     </Grid>
                 </Grid>
