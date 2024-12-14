@@ -29,21 +29,26 @@ class UserEngagementRepository:
 
     @staticmethod
     def get_user_activity_breakdown(candidate, sort_order, limit=10):
-        return (
-            db.session.query(
-                User.user_id,
-                User.user_name,
-                User.user_screen_name,
-                func.sum(Tweet.likes + Tweet.retweet_count).label("total_engagement"),
-                func.count(Tweet.tweet_id).label("tweet_count")
-            )
-            .join(Tweet, Tweet.user_id == User.user_id)
-            .filter(Tweet.tweet_about == candidate)
-            .group_by(User.user_id, User.user_name, User.user_screen_name)
-            .order_by(sort_order("total_engagement"))
-            .limit(limit)
-            .all()
-        )
+        sort_order_sql = "DESC" if sort_order.__name__ == "desc" else "ASC"
+
+        sql = text(f"""
+            SELECT 
+                u.user_id, 
+                u.user_name, 
+                u.user_screen_name, 
+                SUM(t.likes + t.retweet_count) AS total_engagement,
+                COUNT(t.tweet_id) AS tweet_count
+            FROM users u
+            JOIN tweets t ON u.user_id = t.user_id
+            WHERE t.tweet_about = :candidate
+            GROUP BY u.user_id, u.user_name, u.user_screen_name
+            ORDER BY total_engagement {sort_order_sql}
+            LIMIT :limit;
+        """)
+        with current_app.app_context():
+            result = db.session.execute(sql, {"candidate": candidate, "limit": limit})
+            return result.fetchall(), result.keys()
+
 
     @staticmethod
     def get_popular_tweets_by_users(user_ids, sort_order, by="total_engagement"):
