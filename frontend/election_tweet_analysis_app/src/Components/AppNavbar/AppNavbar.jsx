@@ -26,12 +26,12 @@ function AppNavbar() {
                         <Nav className='ms-auto'>
                             <Nav.Link as={Link} to='/'>Home</Nav.Link>
                             <NavDropdown title="Analytics" id="basic-nav-dropdown">
-                                <NavDropdown.Item href='/trend-analytics'>Trend Analytics</NavDropdown.Item>
-                                <NavDropdown.Item href='/user-engagement'>User Analytics</NavDropdown.Item>
-                                <NavDropdown.Item href='/geographic-analytics'>Geographic Analytics</NavDropdown.Item>
-                                <NavDropdown.Item href='/sentiment-analytics'>Sentiment Analytics</NavDropdown.Item>
-                                <NavDropdown.Item href='/candidate-analytics'>Candidate Analytics</NavDropdown.Item>
-                                <NavDropdown.Item href='/optimization'>Optimization</NavDropdown.Item>
+                                <NavDropdown.Item as={Link} to='/trend-analytics'>Trend Analytics</NavDropdown.Item>
+                                <NavDropdown.Item as={Link} to='/user-engagement'>User Analytics</NavDropdown.Item>
+                                <NavDropdown.Item as={Link} to='/geographic-analytics'>Geographic Analytics</NavDropdown.Item>
+                                <NavDropdown.Item as={Link} to='/sentiment-analytics'>Sentiment Analytics</NavDropdown.Item>
+                                <NavDropdown.Item as={Link} to='/candidate-analytics'>Candidate Analytics</NavDropdown.Item>
+                                <NavDropdown.Item as={Link} to='/optimization'>Optimization</NavDropdown.Item>
                             </NavDropdown>
                             <Nav.Link as={Link} className='hof glow' to='/hall-of-fame'>Hall of Fame</Nav.Link>
                         </Nav>
