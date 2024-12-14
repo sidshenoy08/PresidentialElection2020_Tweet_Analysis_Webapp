@@ -21,31 +21,73 @@ def client(app):
 
 @patch('app.modules.candidate_analysis.controller.CandidateAnalysisController.CandidateAnalysisService.get_region_wise_engagement')
 def test_get_region_wise_engagement(mock_get_region_wise_engagement, client):
-    mock_get_region_wise_engagement.return_value = {"data": "region_wise_engagement"}
+    mock_data = [
+        {
+            "country": "Afghanistan",
+            "engagement_percentage": "59.26",
+            "total_engagement": 112,
+            "tweet_about": "Biden"
+        },
+        {
+            "country": "Afghanistan",
+            "engagement_percentage": "40.74",
+            "total_engagement": 77,
+            "tweet_about": "Trump"
+        }
+    ]
+    mock_get_region_wise_engagement.return_value = mock_data
     response = client.get('/api/candidate-analysis/region-wise-engagement')
     assert response.status_code == 200
-    assert response.json == {"data": "region_wise_engagement"}
+    assert response.json == mock_data
 
-@patch('app.modules.candidate_analysis.controller.CandidateAnalysisController.CandidateAnalysisService.get_region_wise_engagement')
+@patch('app.modules.candidate_analysis.controller.CandidateAnalysisController.CandidateAnalysisService.get_daily_trends')
 def test_get_daily_trends_default(mock_get_daily_trends, client):
-    mock_get_daily_trends.return_value = {"data": "daily_trends"}
+    mock_data = [
+        {
+            "rolling_avg": "52784.00",
+            "total_engagement": 52784,
+            "tweet_count": 4061,
+            "tweet_date": "Thu, 15 Oct 2020 00:00:00 GMT"
+        }
+    ]
+    mock_get_daily_trends.return_value = mock_data
+
     response = client.get('/api/candidate-analysis/daily-trends')
+    
     assert response.status_code == 200
-    assert response.json == {"data": "daily_trends"}
+    assert response.json == mock_data
     mock_get_daily_trends.assert_called_with("Trump")
 
-@patch('app.modules.candidate_analysis.controller.CandidateAnalysisController.CandidateAnalysisService.get_region_wise_engagement')
+
+@patch('app.modules.candidate_analysis.controller.CandidateAnalysisController.CandidateAnalysisService.get_daily_trends')
 def test_get_daily_trends_with_candidate(mock_get_daily_trends, client):
-    mock_get_daily_trends.return_value = {"data": "daily_trends"}
+    mock_data = [
+        {
+            "rolling_avg": "44471.00",
+            "total_engagement": 44471,
+            "tweet_count": 2766,
+            "tweet_date": "Thu, 15 Oct 2020 00:00:00 GMT"
+        }
+    ]
+    mock_get_daily_trends.return_value = mock_data
+
     response = client.get('/api/candidate-analysis/daily-trends?candidate=Biden')
+    
     assert response.status_code == 200
-    assert response.json == {"data": "daily_trends"}
+    assert response.json == mock_data
     mock_get_daily_trends.assert_called_with("Biden")
 
 @patch('app.modules.candidate_analysis.controller.CandidateAnalysisController.CandidateAnalysisService.get_region_wise_engagement')
 def test_get_daily_trends_invalid_candidate(mock_get_daily_trends, client):
-    mock_get_daily_trends.return_value = {"data": "daily_trends"}
+    mock_data = [{
+            "rolling_avg": "52784.00",
+            "total_engagement": 52784,
+            "tweet_count": 4061,
+            "tweet_date": "Thu, 15 Oct 2020 00:00:00 GMT"
+        }
+    ]
+    mock_get_daily_trends.return_value = mock_data
     response = client.get('/api/candidate-analysis/daily-trends?candidate=InvalidCandidate')
     assert response.status_code == 200
-    assert response.json == {"data": "daily_trends"}
-    mock_get_daily_trends.assert_called_with("Trump")
+    assert response.json == mock_data
+    mock_get_daily_trends.assert_called_with("InvalidCandidate")
