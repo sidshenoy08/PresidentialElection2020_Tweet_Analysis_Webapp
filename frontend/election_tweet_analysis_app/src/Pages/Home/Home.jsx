@@ -21,8 +21,8 @@ import Footer from '../../Components/Footer/Footer';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Home.css';
-import trump_img from './trump.png';
-import biden_img from './biden.png';
+import trump_img from '../../Assets/trump.png';
+import biden_img from '../../Assets/biden.png';
 
 const config = require("../../config.json");
 
