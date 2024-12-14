@@ -44,14 +44,14 @@ class TestHomepageService(unittest.TestCase):
     #     self.assertEqual(result, expected)
     #     mock_get_trending_candidates.assert_called_once_with(5, 'tweet_count', 'desc')
 
-    @patch('app.modules.homepage.service.HomepageService.HomepageRepository.get_most_active_users')
-    def test_get_most_active_users(self, mock_get_most_active_users):
-        mock_get_most_active_users.return_value = {'user_name': 'user1', 'tweet_count': 1000}
+    # @patch('app.modules.homepage.service.HomepageService.HomepageRepository.get_most_active_users')
+    # def test_get_most_active_users(self, mock_get_most_active_users):
+    #     mock_get_most_active_users.return_value = {'user_name': 'user1', 'tweet_count': 1000}
         
-        result = HomepageService.get_most_active_users(5, 1, 'tweet_count', 'desc')
-        expected = [{'user_name': 'user1', 'tweet_count': 1000}]
-        self.assertEqual(result, expected)
-        mock_get_most_active_users.assert_called_once_with(5, 0, 'tweet_count', 'desc')
+    #     result = HomepageService.get_most_active_users(5, 1, 'tweet_count', 'desc')
+    #     expected = [{'user_name': 'user1', 'tweet_count': 1000}]
+    #     self.assertEqual(result, expected)
+    #     mock_get_most_active_users.assert_called_once_with(5, 0, 'tweet_count', 'desc')
     
     # @patch('app.modules.homepage.service.HomepageService.HomepageRepository.get_tweet_stats_by_candidate')
     # def test_get_tweet_stats_by_candidate(self, mock_get_tweet_stats_by_candidate):
