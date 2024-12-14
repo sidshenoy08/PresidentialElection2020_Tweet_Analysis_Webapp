@@ -50,10 +50,29 @@ def test_get_top_tweets_by_likes_with_params(mock_get_top_tweets_by_likes, clien
     }
     ]
     mock_get_top_tweets_by_likes.return_value = mock_data
-    response = client.get('/api/popular-tweets/likes?limit=4&order=desc')
+    response = client.get('/api/popular-tweets/likes?candidate=Trump&limit=4')
     assert response.status_code == 200
     assert response.json == mock_data
-    mock_get_top_tweets_by_likes.assert_called_with("desc", 4)
+    mock_get_top_tweets_by_likes.assert_called_with("Trump", 4)
+
+@patch('app.modules.popular_tweets.controller.PopularTweetsController.PopularTweetsService.get_top_tweets_by_likes')
+def test_get_top_tweets_by_likes_with_invalid_params(mock_get_top_tweets_by_likes, client):
+    mock_data = [
+        {
+        "city": "Washington",
+        "likes": 25987,
+        "retweet_count": 5986,
+        "state": "District of Columbia",
+        "tweet": "The White House still has not released a health care plan. #60Minutes #Trump https://t.co/hvz3VUE1J2",
+        "tweet_id": 1320517598568734720,
+        "user_name": "Paula Reid"
+    }
+    ]
+    mock_get_top_tweets_by_likes.return_value = mock_data
+    response = client.get('/api/popular-tweets/likes?candidate=Random&limit=-4')
+    assert response.status_code == 200
+    assert response.json == mock_data
+    # mock_get_top_tweets_by_likes.assert_called_with("Random", -4)
 
 @patch('app.modules.popular_tweets.controller.PopularTweetsController.PopularTweetsService.get_top_tweets_by_retweets')
 def test_get_top_tweets_by_retweets(mock_get_top_tweets_by_retweets, client):
@@ -69,7 +88,7 @@ def test_get_top_tweets_by_retweets(mock_get_top_tweets_by_retweets, client):
     }
     ]
     mock_get_top_tweets_by_retweets.return_value = mock_data
-    response = client.get('/api/popular-tweets/top-tweets-by-retweets')
+    response = client.get('/api/popular-tweets/retweets')
     assert response.status_code == 200
     assert response.json == mock_data
 
@@ -87,10 +106,29 @@ def test_get_top_tweets_by_retweets_with_params(mock_get_top_tweets_by_retweets,
     }
     ]
     mock_get_top_tweets_by_retweets.return_value = mock_data
-    response = client.get('/api/popular-tweets/retweets?limit=4&order=desc')
+    response = client.get('/api/popular-tweets/retweets?candidate=Trump&limit=4')
     assert response.status_code == 200
     assert response.json == mock_data
-    mock_get_top_tweets_by_retweets.assert_called_with("desc", 4)
+    mock_get_top_tweets_by_retweets.assert_called_with("Trump", 4)
+
+@patch('app.modules.popular_tweets.controller.PopularTweetsController.PopularTweetsService.get_top_tweets_by_retweets')
+def test_get_top_tweets_by_retweets_with_invalid_params(mock_get_top_tweets_by_retweets, client):
+    mock_data = [
+        {
+        "city": "Washington",
+        "likes": 25987,
+        "retweet_count": 5986,
+        "state": "District of Columbia",
+        "tweet": "The White House still has not released a health care plan. #60Minutes #Trump https://t.co/hvz3VUE1J2",
+        "tweet_id": 1320517598568734720,
+        "user_name": "Paula Reid"
+    }
+    ]
+    mock_get_top_tweets_by_retweets.return_value = mock_data
+    response = client.get('/api/popular-tweets/retweets?candidate=Random&limit=-4')
+    assert response.status_code == 200
+    assert response.json == mock_data
+    # mock_get_top_tweets_by_retweets.assert_called_with("Random", -4)
 
 @patch('app.modules.popular_tweets.controller.PopularTweetsController.PopularTweetsService.get_tweet_location_insights')
 def test_get_tweet_location_insights(mock_get_tweet_location_insights, client):
