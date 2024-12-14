@@ -1,4 +1,4 @@
-from app.modules.homepage.repository.homepageRepo import HomepageRepository
+from app.modules.homepage.repository.HomepageRepository import HomepageRepository
 from datetime import datetime
 
 class HomepageService:

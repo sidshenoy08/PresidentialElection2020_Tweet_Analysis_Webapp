@@ -2,7 +2,7 @@ import pytest
 from flask import Flask, jsonify, request
 from unittest.mock import patch
 from app import create_app
-from app.modules.homepage.controller.homepageController import HomepageController
+from app.modules.homepage.controller.HomepageController import HomepageController
 
 # Tests for File: tweet-analysis-app/backend/app/modules/homepage/controller/test_homepage_controller.py
 
@@ -18,7 +18,7 @@ def app():
 def client(app):
     return app.test_client()
 
-@patch('app.modules.homepage.controller.homepageController.HomepageService.get_total_tweets_overview')
+@patch('app.modules.homepage.controller.HomepageController.HomepageService.get_total_tweets_overview')
 def test_get_total_tweets_overview(mock_get_total_tweets_overview, client):
     mock_data = {
         "total_tweets": 100,
@@ -31,7 +31,7 @@ def test_get_total_tweets_overview(mock_get_total_tweets_overview, client):
     assert response.status_code == 200
     assert response.json == mock_data
 
-@patch('app.modules.homepage.controller.homepageController.HomepageService.get_trending_candidates')
+@patch('app.modules.homepage.controller.HomepageController.HomepageService.get_trending_candidates')
 def test_get_trending_candidates(mock_get_trending_candidates, client):
     mock_data = [
         {
@@ -44,7 +44,7 @@ def test_get_trending_candidates(mock_get_trending_candidates, client):
     assert response.status_code == 200
     assert response.json == mock_data
 
-@patch('app.modules.homepage.controller.homepageController.HomepageService.get_most_active_users')
+@patch('app.modules.homepage.controller.HomepageController.HomepageService.get_most_active_users')
 def test_get_most_active_users(mock_get_most_active_users, client):
     mock_data = [
         {
@@ -59,7 +59,7 @@ def test_get_most_active_users(mock_get_most_active_users, client):
     assert response.status_code == 200
     assert response.json == mock_data
 
-@patch('app.modules.homepage.controller.homepageController.HomepageService.get_tweet_stats_by_candidate')
+@patch('app.modules.homepage.controller.HomepageController.HomepageService.get_tweet_stats_by_candidate')
 def test_get_tweet_stats_by_candidate(mock_get_tweet_stats_by_candidate, client):
     mock_data = {
         "total_tweets": 100,

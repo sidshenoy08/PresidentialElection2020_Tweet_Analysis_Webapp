@@ -1,5 +1,5 @@
 from flask import Blueprint
-from app.modules.homepage.controller.homepageController import HomepageController
+from app.modules.homepage.controller.HomepageController import HomepageController
 
 homepage_bp = Blueprint('homepage', __name__)
 

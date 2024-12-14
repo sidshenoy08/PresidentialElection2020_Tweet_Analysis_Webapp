@@ -1,5 +1,5 @@
 from flask import jsonify, request
-from app.modules.homepage.service.homepageService import HomepageService
+from app.modules.homepage.service.HomepageService import HomepageService
 
 class HomepageController:
 
