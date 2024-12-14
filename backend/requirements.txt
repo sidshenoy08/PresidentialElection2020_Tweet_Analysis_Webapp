@@ -12,6 +12,3 @@ textblob
 coverage
 pytest
 pytest-cov
-react-chartjs-2
-dayjs
-react-csv
