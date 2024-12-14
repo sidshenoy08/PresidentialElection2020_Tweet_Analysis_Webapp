@@ -49,7 +49,11 @@ cd path_to_project/tweet-analysis-app/frontend/election_tweet_analysis_app
 ```
 npm install
 ```
-3. Start the Frontend Server
+3. Add the API URL in the config.json file
+```
+e.g. "api_url": "http://127.0.0.1:5000/api"
+```
+4. Start the Frontend Server
 ```
 npm start
 ```
