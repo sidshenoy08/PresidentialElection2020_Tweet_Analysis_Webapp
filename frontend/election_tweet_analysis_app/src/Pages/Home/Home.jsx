@@ -36,8 +36,6 @@ function Home() {
     const [totalTweets, setTotalTweets] = useState();
     const [uniqueUsers, setUniqueUsers] = useState();
 
-    console.log(config);
-
     ChartJS.register(
         CategoryScale,
         LinearScale,
