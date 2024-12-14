@@ -5,7 +5,6 @@ from app import create_app
 from app.modules.user_engagement.controller.UserEngagementController import UserEngagementController
 
 # Tests for File: tweet-analysis-app/backend/app/modules/user_engagement/controller/test_UserEngagementController.py
-
 @pytest.fixture
 def app():
     app = create_app()
