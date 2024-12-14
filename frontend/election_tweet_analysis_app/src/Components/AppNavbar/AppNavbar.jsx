@@ -3,6 +3,7 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import { Link } from 'react-router-dom';
 import NavDropdown from 'react-bootstrap/NavDropdown';
+import Logo from '../../Assets/logo.png';
 
 import './AppNavbar.css';
 
@@ -13,7 +14,7 @@ function AppNavbar() {
                 <Container>
                     <Navbar.Brand as={Link} to= '/'>
                         <img
-                            src="./logo.png"
+                            src={Logo}
                             width="30"
                             height="30"
                             className="d-inline-block align-top"
