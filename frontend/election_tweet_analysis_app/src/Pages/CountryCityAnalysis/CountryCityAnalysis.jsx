@@ -41,7 +41,7 @@ function CountryCityAnalysis() {
     const [groupedBarChartDataFormat, setGroupedBarChartDataFormat] = useState('chart');
 
     const [cityLimit, setCityLimit] = useState();
-    const [sortMetric, setSortMetric] = useState();
+    const [sortMetric, setSortMetric] = useState('tweet_count');
     const [order, setOrder] = useState('desc');
 
     ChartJS.register(
@@ -181,13 +181,14 @@ function CountryCityAnalysis() {
             <Box className="query-params">
                 <TextField id="outlined-basic" label="Number of Cities" style={{ marginLeft: "2rem" }} onChange={(event) => setCityLimit(event.target.value)} variant="outlined" />
                 <FormControl style={{ marginLeft: "2rem" }}>
-                    <InputLabel id="demo-simple-select-label">Sort By Metric</InputLabel>
+                    <InputLabel id="engagement-metric-select-label">Sort Metric</InputLabel>
                     <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        label="Metric"
+                        labelId="engagement-metric-select-label"
+                        id="engagement-metric-simple-select"
+                        label="Sort Metric"
                         sx={{ width: 150 }}
                         onChange={(event) => setSortMetric(event.target.value)}
+                        defaultValue={sortMetric}
                     >
                         <MenuItem value="city">City</MenuItem>
                         <MenuItem value="tweet_count">Number of Tweets</MenuItem>

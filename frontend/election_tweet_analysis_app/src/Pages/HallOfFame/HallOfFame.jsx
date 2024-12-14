@@ -221,7 +221,7 @@ function HallOfFame() {
                     <Select
                         labelId="metric-select-label"
                         id="metric-simple-select"
-                        label="Metric"
+                        label="Popularity Metric"
                         sx={{ width: 150 }}
                         onChange={(event) => setMetric(event.target.value)}
                         defaultValue={metric}
