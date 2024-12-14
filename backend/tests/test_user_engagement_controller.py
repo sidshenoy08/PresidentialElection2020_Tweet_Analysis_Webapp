@@ -47,10 +47,11 @@ def test_get_top_users_by_engagement_with_params(mock_get_top_users_by_engagemen
         "user_screen_name": "BetteMidler"
     }
     ]
+    mock_get_top_users_by_engagement.return_value = mock_data
     response = client.get('/api/user-engagement/top-users?limit=4&order=desc')
     assert response.status_code == 200
     assert response.json == mock_data
-    mock_get_top_users_by_engagement.assert_called_with(4, "desc")
+    mock_get_top_users_by_engagement.assert_called_with("desc", 4)
 
 @patch('app.modules.user_engagement.controller.UserEngagementController.UserEngagementService.get_top_users_by_engagement')
 def test_get_top_users_by_engagement_with_invalid_params(mock_get_top_users_by_engagement, client):
@@ -64,6 +65,7 @@ def test_get_top_users_by_engagement_with_invalid_params(mock_get_top_users_by_e
         "user_screen_name": "BetteMidler"
     }
     ]
+    mock_get_top_users_by_engagement.return_value = mock_data
     response = client.get('/api/user-engagement/top-users?limit=-4&order=Random')
     assert response.status_code == 200
     assert response.json == mock_data
@@ -97,11 +99,28 @@ def test_get_user_activity_breakdown_with_params(mock_get_user_activity_breakdow
         "user_screen_name": "BetteMidler"
     }
     ]
+    mock_get_user_activity_breakdown.return_value = mock_data
     response = client.get('/api/user-engagement/activity-breakdown?candidate=Biden&limit=4&order=desc')
     assert response.status_code == 200
     assert response.json == mock_data
-    mock_get_user_activity_breakdown.assert_called_with("Biden", 4, "desc")
+    mock_get_user_activity_breakdown.assert_called_with("Biden", "desc", 4)
 
+@patch('app.modules.user_engagement.controller.UserEngagementController.UserEngagementService.get_user_activity_breakdown')
+def test_get_user_activity_breakdown_with_invalid_params(mock_get_user_activity_breakdown, client):
+    mock_data = [
+        {
+        "total_engagement": 175808,
+        "tweet_count": 19,
+        "user_id": 139823781,
+        "user_name": "bettemidler",
+        "user_screen_name": "BetteMidler"
+    }
+    ]
+    mock_get_user_activity_breakdown.return_value = mock_data
+    response = client.get('/api/user-engagement/activity-breakdown?candidate=Random&limit=-4&order=Random')
+    assert response.status_code == 200
+    assert response.json == mock_data
+    # mock_get_user_activity_breakdown.assert_called_with("Random", "Random", -4)
 
 @patch('app.modules.user_engagement.controller.UserEngagementController.UserEngagementService.get_popular_tweets_by_users')
 def test_get_popular_tweets_by_users(mock_get_popular_tweets_by_users, client):
@@ -125,3 +144,50 @@ def test_get_popular_tweets_by_users(mock_get_popular_tweets_by_users, client):
 })
     assert response.status_code == 200
     assert response.json == mock_data
+
+@patch('app.modules.user_engagement.controller.UserEngagementController.UserEngagementService.get_influential_users')
+def test_get_influential_users(mock_get_influential_users, client):
+    mock_data = [
+        {
+        "engagement_ratio": "145.00",
+        "user_followers_count": 2,
+        "user_id": 1314656874608943104,
+        "user_name": "El Graba Todo"
+    }
+    ]
+    mock_get_influential_users.return_value = mock_data
+    response = client.get('/api/user-engagement/influential-users')
+    assert response.status_code == 200
+    assert response.json == mock_data
+
+@patch('app.modules.user_engagement.controller.UserEngagementController.UserEngagementService.get_influential_users')
+def test_get_influential_users_with_params(mock_get_influential_users, client):
+    mock_data = [
+        {
+        "engagement_ratio": "145.00",
+        "user_followers_count": 2,
+        "user_id": 1314656874608943104,
+        "user_name": "El Graba Todo"
+    }
+    ]
+    mock_get_influential_users.return_value = mock_data
+    response = client.get('/api/user-engagement/influential-users?candidate=Biden&limit=5')
+    assert response.status_code == 200
+    assert response.json == mock_data
+    mock_get_influential_users.assert_called_with("Biden", 5)
+
+@patch('app.modules.user_engagement.controller.UserEngagementController.UserEngagementService.get_influential_users')
+def test_get_influential_users_with_invalid_params(mock_get_influential_users, client):
+    mock_data = [
+        {
+        "engagement_ratio": "145.00",
+        "user_followers_count": 2,
+        "user_id": 1314656874608943104,
+        "user_name": "El Graba Todo"
+    }
+    ]
+    mock_get_influential_users.return_value = mock_data
+    response = client.get('/api/user-engagement/influential-users?candidate=Random&limit=-5')
+    assert response.status_code == 200
+    assert response.json == mock_data
+    # mock_get_influential_users.assert_called_with("Trump", -5)
