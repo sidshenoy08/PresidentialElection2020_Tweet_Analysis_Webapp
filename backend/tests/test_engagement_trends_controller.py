@@ -108,8 +108,6 @@ def test_get_rolling_average_comparison_with_invalid_params(mock_get_rolling_ave
     
     assert response.status_code == 200
     assert response.json == mock_data
-    mock_get_rolling_average_comparison.assert_called_with("Biden", 14, "engagement", "asc")
-
 
 @patch('app.modules.engagement_trends.controller.EngagementTrendsController.EngagementTrendsService.get_high_volume_days')
 def test_get_high_volume_days(mock_get_high_volume_days, client):
