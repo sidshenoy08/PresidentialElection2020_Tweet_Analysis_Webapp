@@ -65,7 +65,7 @@ class TestOptimizationRepository(unittest.TestCase):
         mock_result.keys.return_value = ['user_id', 'total_trump_tweets', 'total_likes', 'total_retweets']
         mock_execute.return_value = mock_result
         
-        result, keys = OptimizationRepository.get_user_engagement_with_candidate('Trump')
+        result, keys = OptimizationRepository.get_user_engagement_with_candidate()
         
         expected_result = [(1, 100, 200, 300)]
         expected_keys = ['user_id', 'total_trump_tweets', 'total_likes', 'total_retweets']

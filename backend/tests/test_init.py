@@ -20,15 +20,15 @@ def test_create_app(app):
     assert isinstance(app, Flask)
 
 def test_swagger_ui(client):
-    response = client.get("/docs")
+    response = client.get('/docs', follow_redirects=True)
     assert response.status_code == 200
     assert b"Swagger UI" in response.data
 
 def test_swagger_yaml(client):
-    response = client.get("/static/swagger.yaml")
+    response = client.get('/static/swagger.yaml')
     assert response.status_code == 200
-    assert b"swagger" in response.data
-
+    assert b"openapi: 3.0.0" in response.data
+    
 def test_handle_value_error(client):
     @client.application.route("/value_error")
     def value_error_route():
