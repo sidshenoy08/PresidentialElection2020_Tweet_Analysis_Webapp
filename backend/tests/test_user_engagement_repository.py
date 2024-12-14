@@ -2,6 +2,7 @@ import unittest
 from unittest.mock import patch, MagicMock
 from flask import Flask
 from app import create_app
+from sqlalchemy import desc, asc
 from app.modules.user_engagement.repository.UserEngagementRepository import UserEngagementRepository
 
 class TestUserEngagementRepository(unittest.TestCase):
@@ -42,7 +43,7 @@ class TestUserEngagementRepository(unittest.TestCase):
         ]
 
         # Call the repository function
-        result = UserEngagementRepository.get_top_users_by_engagement('desc', 5)
+        result = UserEngagementRepository.get_top_users_by_engagement(desc, 5)
 
         # Assertions
         expected = [
@@ -61,7 +62,6 @@ class TestUserEngagementRepository(unittest.TestCase):
     @patch('app.modules.user_engagement.repository.UserEngagementRepository.db.session.execute')
     @patch('app.modules.user_engagement.repository.UserEngagementRepository.text')
     def test_get_user_activity_breakdown(self, mock_text, mock_execute):
-        # Mock SQL text and db session execute
         mock_text.return_value = 'mock_sql'
         mock_result = MagicMock()
         mock_result.fetchall.return_value = [
@@ -69,9 +69,7 @@ class TestUserEngagementRepository(unittest.TestCase):
         ]
         mock_result.keys.return_value = ['user_id', 'user_name', 'user_screen_name', 'total_engagement', 'tweet_count']
         mock_execute.return_value = mock_result
-
-        # Call the repository function
-        result = UserEngagementRepository.get_user_activity_breakdown('Biden', 'desc', 10)
+        result = UserEngagementRepository.get_user_activity_breakdown('Biden', desc, 10)
         expected = [
             (123, 'John Doe', 'johndoe', 5000, 20)
         ], ['user_id', 'user_name', 'user_screen_name', 'total_engagement', 'tweet_count']
@@ -83,7 +81,6 @@ class TestUserEngagementRepository(unittest.TestCase):
 
     @patch('app.modules.user_engagement.repository.UserEngagementRepository.db.session.query')
     def test_get_popular_tweets_by_users(self, mock_query):
-        # Mock query
         mock_query_instance = MagicMock()
         mock_query.return_value = mock_query_instance
         mock_query_instance.join.return_value = mock_query_instance
@@ -103,7 +100,7 @@ class TestUserEngagementRepository(unittest.TestCase):
         ]
 
         # Call the repository function
-        result = UserEngagementRepository.get_popular_tweets_by_users(['123'], 'desc', 'total_engagement')
+        result = UserEngagementRepository.get_popular_tweets_by_users(['123'], desc, 'total_engagement')
 
         # Assertions
         expected = [
@@ -124,7 +121,6 @@ class TestUserEngagementRepository(unittest.TestCase):
     @patch('app.modules.user_engagement.repository.UserEngagementRepository.db.session.execute')
     @patch('app.modules.user_engagement.repository.UserEngagementRepository.text')
     def test_get_influential_users(self, mock_text, mock_execute):
-        # Mock SQL text and db session execute
         mock_text.return_value = 'mock_sql'
         mock_result = MagicMock()
         mock_result.fetchall.return_value = [
@@ -132,14 +128,10 @@ class TestUserEngagementRepository(unittest.TestCase):
         ]
         mock_result.keys.return_value = ['user_id', 'user_name', 'user_followers_count', 'engagement_ratio']
         mock_execute.return_value = mock_result
-
-        # Call the repository function
         result = UserEngagementRepository.get_influential_users('Biden', 10)
         expected = [
             (123, 'John Doe', 10000, 0.5)
         ], ['user_id', 'user_name', 'user_followers_count', 'engagement_ratio']
-
-        # Assertions
         self.assertEqual(result, expected)
         mock_text.assert_called_once()
         mock_execute.assert_called_once_with('mock_sql', {'candidate': 'Biden', 'limit': 10})
