@@ -22,7 +22,6 @@ class GeographicAnalysisService:
         rows, keys = GeographicAnalysisRepository.get_engagement_by_timezone(candidate)
         tf = TimezoneFinder()
 
-        # Process results to include the time zone
         enriched_data = []
         for row in rows:
             record = dict(zip(keys, row))
@@ -44,7 +43,6 @@ class GeographicAnalysisService:
             aggregated_data[tz]["likes"] += record["likes"]
             aggregated_data[tz]["retweets"] += record["retweets"]
 
-        # Convert aggregated data into a sorted list to return to controller
         sorted_data = sorted(aggregated_data.items(), key=lambda x: x[1]["tweet_count"], reverse=True)
         return [
             {"time_zone": tz, **metrics} for tz, metrics in sorted_data
