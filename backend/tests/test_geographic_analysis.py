@@ -45,6 +45,38 @@ def test_get_city_level_analysis(mock_get_city_level_analysis, client):
     assert response.status_code == 200
     assert response.json == mock_data
 
+@patch('app.modules.geographic_analysis.controller.GeographicAnalysisController.GeographicAnalysisService.get_city_level_analysis')
+def test_get_city_level_analysis_with_params(mock_get_city_level_analysis, client):
+    mock_data = [
+        {
+        "city": "New York",
+        "likes": 1392284,
+        "retweets": 277991,
+        "tweet_count": 33724
+    }
+    ]
+    mock_get_city_level_analysis.return_value = mock_data
+    response = client.get('/api/geographic-analysis/city-level-analysis?limit=4&sort_by=tweet_count&order=asc')
+    assert response.status_code == 200
+    assert response.json == mock_data
+    mock_get_city_level_analysis.assert_called_with(4, 'tweet_count', 'ASC')
+
+@patch('app.modules.geographic_analysis.controller.GeographicAnalysisController.GeographicAnalysisService.get_city_level_analysis')
+def test_get_city_level_analysis_with_invalid_params(mock_get_city_level_analysis, client):
+    mock_data = [
+        {
+        "city": "New York",
+        "likes": 1392284,
+        "retweets": 277991,
+        "tweet_count": 33724
+    }
+    ]
+    mock_get_city_level_analysis.return_value = mock_data
+    response = client.get('/api/geographic-analysis/city-level-analysis?limit=-2&sort_by=invalid&order=invalid')
+    assert response.status_code == 200
+    assert response.json == mock_data
+    # mock_get_city_level_analysis.assert_called_with(10, 'tweet_count', 'DESC')
+
 @patch('app.modules.geographic_analysis.controller.GeographicAnalysisController.GeographicAnalysisService.get_top_tweets_by_region')
 def test_get_top_tweets_by_region(mock_get_top_tweets_by_region, client):
     mock_data = [
